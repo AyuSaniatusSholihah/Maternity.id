@@ -2,8 +2,8 @@
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 my-auto">
         <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             
-            <!-- Kolom Kiri: Gambar Hero (Ukuran pas tanpa overflow/scroll) -->
-            <div class="w-full flex justify-center lg:justify-start">
+            <!-- Kolom Kiri: Gambar Hero (Digeser ke kanan agar lebih simetris & proporsional) -->
+            <div class="w-full flex justify-center lg:justify-center lg:pl-6">
                 <div class="relative w-full max-w-[420px] lg:max-w-[460px] aspect-[4/4.2] rounded-3xl overflow-hidden shadow-sm border border-[#EEE0DC]">
                     <img 
                         src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1000&auto=format&fit=crop" 
