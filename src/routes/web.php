@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +19,8 @@ Route::get('/', function () {
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::get('/login/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
 Route::get('/login/google/callback', [LoginController::class, 'callbackGoogleLogin'])->name('google.callback');
+
+Route::get('/my/account', [MyController::class, 'viewAccount'])->name('my.account');
 
 Route::post('/logout', function () {
     // Nanti disambung ke AuthController@logout
