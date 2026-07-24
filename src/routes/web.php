@@ -16,7 +16,8 @@ Route::get('/', function () {
 
 // Auth Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-
+Route::get('/login/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
+Route::get('/login/google/callback', [LoginController::class, 'callbackGoogleLogin'])->name('google.callback');
 
 Route::get('/auth/google', function () {
     // Nanti disambung ke AuthController@redirectToGoogle
