@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Account;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Socialite;
 
 class LoginController extends Controller
@@ -20,6 +20,15 @@ class LoginController extends Controller
 
     public function callbackGoogleLogin()
     {
-        return Socialite::driver('google')->user()->getEmail();
+        $googleUserData = Socialite::driver('google')->user();
+        $user = Account::query()->updateOrCreate([
+            'email' => $googleUserData->getEmail(),
+        ] ,[
+            'name' => $googleUserData->getName(),
+            'profile_img' => $googleUserData->getAvatar(),
+        ]);
+
+        Auth::login($user);
+        return redirect()->route('home');
     }
 }

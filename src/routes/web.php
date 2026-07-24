@@ -19,16 +19,6 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::get('/login/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
 Route::get('/login/google/callback', [LoginController::class, 'callbackGoogleLogin'])->name('google.callback');
 
-Route::get('/auth/google', function () {
-    // Nanti disambung ke AuthController@redirectToGoogle
-    return redirect()->route('login');
-})->name('google.login');
-
-Route::get('/auth/google/callback', function () {
-    // Nanti disambung ke AuthController@handleGoogleCallback
-    return redirect()->route('home');
-})->name('google.callback');
-
 Route::post('/logout', function () {
     // Nanti disambung ke AuthController@logout
     return redirect()->route('home');
