@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,19 +16,11 @@ Route::get('/', function () {
 })->name('home');
 
 // Auth Routes
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::get('/login/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
+Route::get('/login/google/callback', [LoginController::class, 'callbackGoogleLogin'])->name('google.callback');
 
-Route::get('/auth/google', function () {
-    // Nanti disambung ke AuthController@redirectToGoogle
-    return redirect()->route('login');
-})->name('google.login');
-
-Route::get('/auth/google/callback', function () {
-    // Nanti disambung ke AuthController@handleGoogleCallback
-    return redirect()->route('home');
-})->name('google.callback');
+Route::get('/my/account', [MyController::class, 'viewAccount'])->name('my.account');
 
 Route::post('/logout', function () {
     // Nanti disambung ke AuthController@logout
