@@ -27,7 +27,7 @@
     @if(isset($minimalHeader) && $minimalHeader)
         <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between pt-4">
             <a href="{{ url('/') }}" class="flex items-center gap-2.5">
-                <x-logo class="w-8 h-8" />
+                <x-logo_putih class="w-8 h-8" />
                 <span class="text-xl md:text-2xl text-[#2A1614]" style="font-family: 'DM Serif Display', serif;">
                     Maternity
                 </span>
@@ -40,11 +40,15 @@
             </a>
         </header>
     @else
-        <x-navbar />
+        <div class="sticky top-0 z-50 w-full bg-[#FAF0EE]/80 backdrop-blur-md pt-4 pb-2 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <x-header />
+            </div>
+        </div>
     @endif
 
     {{-- ─── MAIN CONTENT ───────────────────────────────────── --}}
-    <main class="flex-grow flex items-center justify-center">
+    <main class="flex-grow flex flex-col items-center justify-start py-2 sm:py-4">
         {{ $slot }}
     </main>
 
