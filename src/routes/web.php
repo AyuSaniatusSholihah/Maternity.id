@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +15,8 @@ Route::get('/', function () {
 })->name('home');
 
 // Auth Routes
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+
 
 Route::get('/auth/google', function () {
     // Nanti disambung ke AuthController@redirectToGoogle
