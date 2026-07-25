@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Socialite;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\GoogleProvider;
 
 class LoginController extends Controller
 {
@@ -15,12 +16,16 @@ class LoginController extends Controller
 
     public function requestGoogleLogin()
     {
-        return Socialite::driver('google')->redirect();
+        /** @var GoogleProvider $driver */
+        $driver = Socialite::driver('google');
+        return $driver->stateless()->redirect();
     }
 
     public function callbackGoogleLogin()
     {
-        $googleUserData = Socialite::driver('google')->user();
+        /** @var GoogleProvider $driver */
+        $driver = Socialite::driver('google');
+        $googleUserData = $driver->stateless()->user();
         $user = Account::query()->updateOrCreate([
             'email' => $googleUserData->getEmail(),
         ] ,[
@@ -29,6 +34,6 @@ class LoginController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect()->route('my.account');
+        return redirect()->route('home');
     }
 }
