@@ -17,20 +17,13 @@ Route::get('/', function () {
 
 // Auth Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::get('/login/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
-Route::get('/login/google/callback', [LoginController::class, 'callbackGoogleLogin'])->name('google.callback');
 
 Route::get('/register', function () {
     return view('auth.login');
 })->name('register');
 
-Route::get('/auth/google', function () {
-    return redirect()->route('login');
-})->name('google.login');
-
-Route::get('/auth/google/callback', function () {
-    return redirect()->route('home');
-})->name('google.callback');
+Route::get('/auth/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
+Route::get('/auth/google/callback', [LoginController::class, 'callbackGoogleLogin']);
 
 Route::post('/logout', function () {
     return redirect()->route('home');
@@ -66,6 +59,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', function () {
         return view('landing');
     })->name('profile.edit');
+
+    Route::get('/my/account', [App\Http\Controllers\MyController::class, 'viewAccount'])->name('my.account');
 
     Route::get('/my-subscriptions', function () {
         return view('landing');

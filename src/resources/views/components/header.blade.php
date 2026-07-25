@@ -52,8 +52,8 @@
                 <div x-show="openNavNotif" 
                      @click.away="openNavNotif = false"
                      x-transition
-                     class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl py-3 border border-gray-100 z-50 text-sm hidden" 
-                     :class="{ 'hidden': !openNavNotif }">
+                     class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl py-3 border border-gray-100 z-50 text-sm"
+                     style="display: none;">
                     <div class="px-4 py-2 border-b border-gray-100 font-bold text-gray-700 flex justify-between items-center">
                         <span>Notifikasi</span>
                         <span class="text-xs text-[#5F8A6E] font-normal">Tandai dibaca</span>
@@ -71,7 +71,7 @@
             <div class="relative" x-data="{ openProfile: false }">
                 <button @click="openProfile = !openProfile" class="flex items-center space-x-2 focus:outline-none group">
                     <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/80 shadow-sm group-hover:border-[#6B8E78] transition">
-                        <img src="{{ Auth::user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=6B8E78&color=fff' }}" 
+                        <img src="{{ Auth::user()->profile_img ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=6B8E78&color=fff' }}" 
                              alt="{{ Auth::user()->name }}" 
                              class="w-full h-full object-cover">
                     </div>
@@ -82,8 +82,8 @@
                 <div x-show="openProfile" 
                      @click.away="openProfile = false"
                      x-transition
-                     class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl py-2 border border-gray-100 z-50 text-sm hidden"
-                     :class="{ 'hidden': !openProfile }">
+                     class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl py-2 border border-gray-100 z-50 text-sm"
+                     style="display: none;">
                     <div class="px-4 py-2 border-b border-gray-100">
                         <p class="font-bold text-gray-800 truncate">{{ Auth::user()->name }}</p>
                         <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
