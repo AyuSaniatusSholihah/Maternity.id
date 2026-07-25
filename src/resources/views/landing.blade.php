@@ -74,17 +74,18 @@
             <!-- CONTENT UTAMA -->
             <div class="max-w-2xl text-center z-10 px-4">
                 <h1
-                    class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#331E1E] tracking-tight leading-tight mb-2">
+                    class="text-4xl sm:text-5xl lg:text-6xl font-semibold text-[#3D2B2B] tracking-tight leading-tight mb-2"
+                    style="font-family: 'Lexend', sans-serif;">
                     Empowering Women's
                 </h1>
                 <p class="font-handwriting text-4xl sm:text-5xl lg:text-6xl text-[#5F8A6E] font-bold mb-8">
                     Health Awareness
                 </p>
 
-                <p class="text-gray-600 text-sm sm:text-base leading-loose mb-10 max-w-xl mx-auto font-medium">
-                    Temukan seminar, pelatihan, konsultasi, dan e-book terpercaya untuk mendampingi perjalanan Anda,<br
+                <p class="text-gray-600 text-sm sm:text-base leading-loose mb-10 max-w-xl mx-auto font-medium" style="font-family: 'Lexend', sans-serif;">
+                    Temukan seminar, pelatihan, konsultasi, dan e-book terpercaya untuk mendampingi perjalanan Anda, mulai dari persiapan<br
                         class="hidden sm:block">
-                    mulai dari persiapan kehamilan hingga tumbuh kembang buah hati.
+                    kehamilan hingga tumbuh kembang buah hati.
                 </p>
 
                 <!-- Action Buttons -->
@@ -110,7 +111,10 @@
             <div class="bg-white/20 p-1.5 rounded-full flex items-center justify-center">
                 <i class="fa-brands fa-whatsapp text-lg"></i>
             </div>
-            <span class="text-sm font-semibold pr-1">Ajukan Event &gt;</span>
+            <span class="text-sm font-semibold">Ajukan Event</span>
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.4134 17.4133C21.7879 17.0383 21.9983 16.53 21.9983 16C21.9983 15.47 21.7879 14.9617 21.4134 14.5867L13.8721 7.04266C13.4969 6.66765 12.9881 6.45704 12.4576 6.45716C12.1949 6.45722 11.9348 6.50902 11.6922 6.6096C11.4495 6.71017 11.2291 6.85755 11.0434 7.04333C10.8577 7.22911 10.7104 7.44964 10.61 7.69233C10.5095 7.93503 10.4578 8.19514 10.4579 8.4578C10.4579 8.72047 10.5097 8.98055 10.6103 9.2232C10.7109 9.46585 10.8583 9.68631 11.0441 9.872L17.1707 16L11.0427 22.128C10.8516 22.3124 10.6991 22.533 10.5942 22.777C10.4893 23.0209 10.434 23.2833 10.4316 23.5489C10.4291 23.8145 10.4796 24.0778 10.58 24.3237C10.6805 24.5695 10.8289 24.7929 11.0166 24.9808C11.2043 25.1686 11.4275 25.3173 11.6733 25.4179C11.919 25.5186 12.1823 25.5693 12.4479 25.5672C12.7135 25.565 12.9759 25.5099 13.22 25.4052C13.464 25.3005 13.6848 25.1483 13.8694 24.9573L21.4161 17.4133H21.4134Z" fill="#FAF0EE"/>
+            </svg>
         </a>
     </div>
 </x-layout>

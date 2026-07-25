@@ -35,15 +35,14 @@
         <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between pt-4">
             <a href="{{ url('/') }}" class="flex items-center gap-2.5">
                 <x-logo_putih class="w-8 h-8" />
-                <span class="text-xl md:text-2xl text-[#2A1614]" style="font-family: 'DM Serif Display', serif;">
+                <span class="text-xl md:text-2xl" style="font-family: 'DM Serif Display', serif; background: linear-gradient(to right, rgba(61, 43, 43, 0.8), #2A1614); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
                     Maternity
                 </span>
             </a>
             <a href="{{ url('/') }}"
                 class="flex items-center gap-2 text-sm font-semibold text-[#2A1614] hover:opacity-80 transition-opacity">
-                <svg class="w-4 h-4 text-[#4D6A56]" fill="none" stroke="currentColor" stroke-width="2.5"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M22 20.418C19.5533 17.4313 17.3807 15.7367 15.482 15.334C13.5833 14.9313 11.7757 14.8705 10.059 15.1515V20.5L2 11.7725L10.059 3.5V8.5835C13.2333 8.6085 15.932 9.74733 18.155 12C20.3777 14.2527 21.6593 17.0587 22 20.418Z" fill="#7A9E7E" stroke="#7A9E7E" stroke-width="2" stroke-linejoin="round"/>
                 </svg>
                 <span>Back to Home</span>
             </a>

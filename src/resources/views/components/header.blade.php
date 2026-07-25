@@ -6,7 +6,7 @@
     </a>
 
     <!-- Navigation Links -->
-    <div class="hidden md:flex items-center space-x-8 font-semibold text-[#2D1E1E]">
+    <div class="hidden md:flex items-center space-x-8 text-[#2D1E1E]" style="font-family: 'Lexend', sans-serif;">
         <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'border-b-2 border-[#2D1E1E] pb-0.5' : 'hover:text-gray-700 transition' }}">
             Home
         </a>
@@ -29,7 +29,7 @@
             <a href="{{ route('login') }}" class="font-semibold text-[#2D1E1E] hover:underline px-2">
                 Login
             </a>
-            <a href="{{ route('register') }}" class="bg-[#6B8E78] hover:bg-[#5a7a66] text-white font-medium px-5 py-2 rounded-xl transition shadow-sm">
+            <a href="{{ route('register') }}" class="bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium px-5 py-2 rounded-xl transition shadow-sm">
                 Join Membership
             </a>
             <button class="text-[#2D1E1E] p-1.5 hover:bg-black/5 rounded-full transition relative">
