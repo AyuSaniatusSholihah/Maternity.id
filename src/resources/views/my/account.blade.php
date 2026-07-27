@@ -9,9 +9,9 @@
 </head>
 <body>
     <h1>Test</h1>
-    <p>{{ dd(Auth::check(), Auth::user()) }}</p>
     @if(Auth::check())
-        Selamat datang, {{ Auth::user()->name }}
+        Selamat datang, {{ Auth::user()->email }}
+        <img src="{{Auth::user()->profile_img}}"/>
     @endif
 </body>
 </html>
