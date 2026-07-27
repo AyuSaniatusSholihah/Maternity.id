@@ -16,16 +16,12 @@ class LoginController extends Controller
 
     public function requestGoogleLogin()
     {
-        /** @var GoogleProvider $driver */
-        $driver = Socialite::driver('google');
-        return $driver->stateless()->redirect();
+        return Socialite::driver('google')->redirect();
     }
 
     public function callbackGoogleLogin()
     {
-        /** @var GoogleProvider $driver */
-        $driver = Socialite::driver('google');
-        $googleUserData = $driver->stateless()->user();
+        $googleUserData = Socialite::driver('google')->user();
         $user = Account::query()->updateOrCreate([
             'email' => $googleUserData->getEmail(),
         ] ,[
