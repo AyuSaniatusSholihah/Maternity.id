@@ -10,9 +10,13 @@ class Account extends Authenticatable
 {
     use HasUuids, Notifiable;
 
+    protected $table = 'accounts';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
         'name',
         'email',
-        'profile_img',
+        'profile_img',  
     ];
 }

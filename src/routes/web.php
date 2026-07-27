@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\MyController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,8 @@ Route::get('/', function () {
 
 // Auth Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::get('/login/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
+Route::get('/login/google/callback', [LoginController::class, 'callbackGoogleLogin'])->name('google.callback');
 
 Route::get('/register', function () {
     return view('auth.login');
@@ -69,4 +72,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bookmarks', function () {
         return view('landing');
     })->name('bookmarks');
+
+    Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
 });
