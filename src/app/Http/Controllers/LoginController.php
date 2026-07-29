@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\GoogleProvider;
 
 class LoginController extends Controller
 {

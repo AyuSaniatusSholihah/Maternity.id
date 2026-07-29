@@ -16,22 +16,6 @@ Route::get('/', function () {
     return view('landing');
 })->name('home');
 
-// Auth Routes
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::get('/login/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
-Route::get('/login/google/callback', [LoginController::class, 'callbackGoogleLogin'])->name('google.callback');
-
-Route::get('/register', function () {
-    return view('auth.login');
-})->name('register');
-
-Route::get('/auth/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
-Route::get('/auth/google/callback', [LoginController::class, 'callbackGoogleLogin']);
-
-Route::post('/logout', function () {
-    return redirect()->route('home');
-})->name('logout');
-
 // Guest & Member Journey Routes
 Route::get('/events', function () {
     return view('landing');
@@ -64,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('profile.edit');
 
     Route::get('/my/account', [App\Http\Controllers\MyController::class, 'viewAccount'])->name('my.account');
+    Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
 
     Route::get('/my-subscriptions', function () {
         return view('landing');
@@ -73,5 +58,17 @@ Route::middleware(['auth'])->group(function () {
         return view('landing');
     })->name('bookmarks');
 
-    Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
+});
+
+Route::middleware(['guest'])->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::get('/login/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
+    Route::get('/login/google/callback', [LoginController::class, 'callbackGoogleLogin'])->name('google.callback');
+
+    Route::get('/register', function () {
+        return view('auth.login');
+    })->name('register');
+
+    Route::get('/auth/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
+    Route::get('/auth/google/callback', [LoginController::class, 'callbackGoogleLogin']);
 });
