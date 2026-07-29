@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->uuid('account_id')->primary();
             $table->enum('gender', ['female', 'male']);
-            $table->bigInteger('no_member');
+            $table->bigInteger('phone_number')->unique();
             $table->enum('salutation', ['Bapak', 'Ayah', 'Mas', 'Ibu', 'Bunda', 'Mbak', 'Suster', 'Dokter']);
             $table->date('birth_date');
             $table->string('job')->nullable();

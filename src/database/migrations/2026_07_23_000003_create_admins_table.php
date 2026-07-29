@@ -13,6 +13,7 @@ return new class extends Migration
             $table->date('assigned_at');
             $table->enum('position', ['maintainer', 'consultant']);
             $table->string('number_contact', 15);
+
             $table->foreignUuid('account_id')->references('id')->on('accounts')->onDelete('cascade');
         });
     }

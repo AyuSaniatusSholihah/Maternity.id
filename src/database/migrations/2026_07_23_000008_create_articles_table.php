@@ -16,7 +16,6 @@ return new class extends Migration
             $table->text('short_description', 255)->nullable();
             $table->string('thumbnail_image', 255)->nullable();
             $table->longText('content');
-            $table->uuid('author_id')->comment('Admin penulis');
             $table->enum('status', ['draft', 'published'])->default('draft');
             $table->uuid('author_id');
             $table->timestamps();
