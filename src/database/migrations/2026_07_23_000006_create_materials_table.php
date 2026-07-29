@@ -10,16 +10,18 @@ return new class extends Migration
     {
         Schema::create('materials', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name', 255);
+            $table->uuid('event_id');
+            $table->string('title', 255);
             $table->string('slug', 260)->unique();
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->string('thumbnail_image', 255)->nullable();
-            $table->text('content_link')->comment('URL ke file: Google Drive, dsb.');
+            $table->string('content_link', 255);
             $table->unsignedInteger('viewer_count')->default(0);
-            $table->uuid('uploaded_by')->comment('Admin yang mengupload materi (FR-15)');
+            $table->uuid('uploaded_by');
             $table->timestamps();
 
-            $table->foreign('uploaded_by')->references('account_id')->on('admins')->onDelete('restrict');
+            $table->foreignUuid('event_id')->references('id')->on('events')->onDelete('cascade');
+            $table->foreignUuid('uploaded_by')->references('account_id')->on('admins')->onDelete('restrict');
         });
     }
 

@@ -10,15 +10,18 @@ return new class extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->uuid('account_id')->primary();
-            $table->enum('salutation', ['Ibu', 'Bunda', 'Mbak', 'Suster', 'Dokter']);
             $table->enum('gender', ['female', 'male']);
+            $table->bigInteger('no_member');
+            $table->enum('salutation', ['Bapak', 'Ayah', 'Mas', 'Ibu', 'Bunda', 'Mbak', 'Suster', 'Dokter']);
             $table->date('birth_date');
-            $table->date('date_of_pregnancy')->nullable()->comment('HPL - hari perkiraan lahir');
-            $table->uuid('provision_by')->comment('Admin yang mendaftarkan member ini');
-            $table->timestamps();
+            $table->string('job')->nullable();
+            $table->string('address');
+            $table->integer('zip_code');
+            $table->string('institution')->nullable();
+            $table->uuid('provision_by')->nullable();
 
-            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
-            $table->foreign('provision_by')->references('account_id')->on('admins')->onDelete('restrict');
+            $table->foreignUuid('account_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreignUuid('provision_by')->references('account_id')->on('admins')->onDelete('restrict');
         });
     }
 

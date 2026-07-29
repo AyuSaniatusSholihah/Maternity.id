@@ -11,19 +11,17 @@ return new class extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('title', 255);
+            $table->string('keywords', 255)->nullable();
             $table->string('slug', 260)->unique();
-            $table->longText('content');
-            $table->string('meta_title', 255)->nullable();
-            $table->string('meta_description', 160)->nullable()->comment('Max 160 karakter sesuai best practice SEO');
+            $table->text('short_description', 255)->nullable();
             $table->string('thumbnail_image', 255)->nullable();
-            $table->uuid('related_workshop_id')->nullable()->comment('Workshop yang dipromosikan di akhir artikel');
+            $table->longText('content');
             $table->uuid('author_id')->comment('Admin penulis');
             $table->enum('status', ['draft', 'published'])->default('draft');
-            $table->dateTime('published_at')->nullable();
+            $table->uuid('author_id');
             $table->timestamps();
 
-            $table->foreign('related_workshop_id')->references('id')->on('workshops')->onDelete('set null');
-            $table->foreign('author_id')->references('account_id')->on('admins')->onDelete('restrict');
+            $table->foreignUuid('author_id')->references('account_id')->on('admins')->onDelete('restrict');
         });
     }
 
