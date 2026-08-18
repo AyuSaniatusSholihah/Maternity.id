@@ -1,294 +1,227 @@
-﻿# Timeline Sprint Maternity.id
+# Timeline Sprint Maternity.id — REVISI (Alur Login & Pembayaran Manual)
 > Deadline: **31 Juli 2026** | Durasi: **9 Hari (23–31 Juli)** | Database: MySQL | Stack: Laravel 11 + Blade
-
-Masing-masing orang pegang fitur **end-to-end** (Blade View + Controller + Model sekaligus).
-
----
-
-## Pembagian Peran
-
-| | **Nia** | **Rafi** |
-|---|---|---|
-| **Domain** | Guest Experience + Member Journey | Admin Panel + Backend Logic |
-| **Tanggung Jawab** | Blade views user-facing + Controller + Route | Migration, Model, Controller admin + logika bisnis |
-
-> Satu project Laravel. Nia pegang folder `resources/views/` bagian user, Rafi pegang `resources/views/admin/`. Controller, Model, dan Route dibagi sesuai domain masing-masing.
+> Dokumen ini merevisi alur **login** dan **checkout/pembayaran** sesuai flowchart terbaru, serta menambahkan tracker progress **per halaman**.
 
 ---
 
-## Tech Stack
+## 🔄 Apa yang Berubah dari Timeline Sebelumnya
 
-| Layer | Teknologi |
+Timeline lama menganggap checkout = klik tombol → langsung buka WA. Berdasarkan alur terbaru, proses pembayaran membutuhkan verifikasi manual dari admin:
+
+| Sebelumnya (Lama) | Sekarang (Sesuai Flowchart Terbaru) |
 |---|---|
-| Frontend | Laravel Blade (SSR) |
-| Interaktivitas | Alpine.js + CSS (animasi, toggle, filter) |
-| Backend | Laravel 11 |
-| Auth | Google OAuth 2.0 (Laravel Socialite) |
-| Database | MySQL |
-| Styling | Tailwind CSS |
-| Deploy | Railway / VPS (satu server, full Laravel) |
+| Cek login → langsung checkout | Cek login → **jika belum login, redirect ke login Google → setelah berhasil, isi/lengkapi data diri (`/complete-profile`) jika data belum lengkap → baru lanjut ke checkout** |
+| Checkout → klik tombol → buka WA (link `wa.me`) | Checkout → **halaman pembayaran (instruksi transfer & rekening) → upload bukti pembayaran (screenshot) → submit → sistem kirim email konfirmasi ke user (`OrderReceivedMail`) + notifikasi badge ke admin → admin verifikasi manual (`admin/orders`) → sistem kirim akses produk via web & WA → admin update status "selesai"** |
+| Tidak ada status pesanan | Perlu status pesanan real-time: `menunggu_pembayaran` → `menunggu_verifikasi` → `diverifikasi` / `ditolak` → `selesai` |
+| Halaman Mitra berdiri sendiri (`/mitra`) | Section Mitra **di dalam landing page (`home.blade.php`)**, sedangkan `/ajukan-seminar` tetap halaman terpisah untuk pengajuan kolaborasi media partner |
+
+### Konsekuensi Teknis & Arsitektur
+- **Tabel baru `orders`**: Menyimpan bukti pembayaran (`payment_proof`), nominal (`amount`), dan status pesanan (`status`).
+- **Field baru di `member`**: `phone_number`, `address`, dan `is_profile_complete` (boolean) untuk gatekeeping alur sebelum checkout.
+- **Halaman Baru User**: `/complete-profile` (Lengkapi Data Diri), `/checkout/{order}/payment` (Pembayaran & Upload Bukti), `/orders/{id}` (Status Pesanan Real-time).
+- **Halaman Baru Admin**: `admin/orders` (Verifikasi Pembayaran: lihat bukti bayar, tombol Approve/Reject).
+- **Notifikasi & Mailable**: Class Mailable `OrderReceivedMail` untuk konfirmasi ke user + notifikasi in-app badge count di sidebar admin. WA digunakan pada tahap *pengiriman link akses* setelah disetujui admin.
 
 ---
 
-## Struktur Folder Kerja
+## 🧭 Alur End-to-End Ringkas
 
-```
-resources/views/
-├── layouts/
-│   ├── app.blade.php        ← Nia
-│   └── admin.blade.php      ← Rafi
-├── components/              ← Nia
-├── pages/                   ← Nia (semua halaman user)
-│   ├── home.blade.php
-│   ├── seminars/
-│   ├── library/
-│   ├── articles/
-│   ├── profile.blade.php
-│   └── ...
-└── admin/                   ← Rafi (semua halaman admin)
-    ├── dashboard.blade.php
-    ├── workshops/
-    ├── materials/
-    ├── articles/
-    ├── testimonials/
-    ├── memberships/
-    └── ...
+1. **Guest Browsing**
+   - User jelajahi katalog seminar / library / artikel sebagai guest.
+   - User memilih seminar atau paket langganan.
 
-app/Http/Controllers/
-├── Auth/                    ← Rafi
-├── WorkshopController.php   ← Nia (user view) + Rafi (admin)
-├── MaterialController.php   ← Nia (user view) + Rafi (admin)
-├── ArticleController.php    ← Nia (user view) + Rafi (admin)
-└── Admin/                   ← Rafi
-```
+2. **Login & Lengkapi Data Diri**
+   - Belum login → Redirect ke Google OAuth.
+   - Setelah login, sistem mengecek `is_profile_complete`:
+     - Jika `false` → Redirect ke `/complete-profile` (isi No. HP, Alamat, dll). Setelah diisi, set `is_profile_complete = true`.
+     - Jika `true` → Lanjut ke halaman checkout.
+
+3. **Checkout & Pembayaran Manual**
+   - User membuka `/checkout`, memilih paket/seminar → Sistem membuat record `Order` dengan status `menunggu_pembayaran`.
+   - User diarahkan ke `/checkout/{order}/payment` (tampil info rekening bank, nominal transfer, batas waktu, dan form upload bukti bayar).
+   - User upload screenshot bukti transfer dan klik Kirim.
+   - Status order berubah menjadi `menunggu_verifikasi`.
+   - Sistem mengirim email konfirmasi `OrderReceivedMail` ke user & notifikasi badge order masuk ke Admin.
+
+4. **Verifikasi Admin & Pengiriman Akses**
+   - Admin mengecek list order di `admin/orders`, melihat bukti bayar, lalu memilih **Approve** atau **Reject**.
+   - **Jika Approve**:
+     - Status order berubah menjadi `diverifikasi`.
+     - Sistem otomatis melampirkan hak akses ke user (`membership` atau `workshop_booking`).
+     - Tautan akses produk dikirimkan via WA (`wa.me` prefilled link) dan tampil di `/library` atau `/my-subscriptions`.
+     - Admin memperbarui status order menjadi `selesai`.
+   - **Jika Reject**:
+     - Status order berubah menjadi `ditolak` beserta catatan alasan penolakan.
+     - User dapat melihat alasan dan mengunggah ulang bukti pembayaran di `/orders/{id}`.
 
 ---
 
-## Hari 1 — Kamis, 24 Juli: Setup & Foundation
+## 📅 Rencana Kerja Harian (Skenario Terintegrasi)
 
-> ⚠️ Wajib kerjain bareng di awal hari ini dulu sebelum pecah tugas!
+### Hari 1 — Kamis, 24 Juli: Setup & Foundation
+**Bersama (Pagi):**
+- Repo GitHub, setup Laravel 11, install `laravel/socialite`, Tailwind CSS, Alpine.js.
+- Jalankan migration awal + tabel `orders` baru. Setup Google Cloud Console OAuth credentials.
 
-### Bersama (pagi, ~2 jam)
-- [ ] Buat repo GitHub (1 repo Laravel)
-- [ ] Inisialisasi project Laravel 11 (`laravel new maternity-id`)
-- [ ] Install package: `laravel/socialite`, `laravel-lang`, Tailwind CSS, Alpine.js
-- [ ] Buat semua migration sesuai ERD
-- [ ] Setup Google OAuth credentials di Google Cloud Console
-- [ ] Bagi branch: `feat/nia-*` untuk Nia, `feat/rafi-*` untuk Rafi
+**Nia:**
+- Layout utama `layouts/app.blade.php` (Navbar, Footer, Design Tokens).
+- Component Blade `<x-navbar>`, `<x-footer>`, `<x-card-seminar>`, `<x-card-ebook>`.
+- Landing page skeleton (`pages/home.blade.php`).
 
-### Nia
-- [ ] Buat layout utama: `layouts/app.blade.php` (Navbar, Footer, warna brand, font)
-- [ ] Buat komponen Blade: `<x-navbar>`, `<x-footer>`, `<x-card-seminar>`, `<x-card-ebook>`
-- [ ] Halaman Landing Page skeleton (`pages/home.blade.php`) — hero, placeholder section
-- [ ] Setup route user di `routes/web.php`: `/`, `/seminars`, `/library`, `/articles`, `/profile`
-
-### Rafi
-- [ ] Jalankan semua migration (`account`, `user_session`, `member`, `admin`, `material`, `workshop`, `workshop_material`, `article`, `testimonial`, `bookmark`, `membership`, `workshop_booking`)
-- [ ] Buat semua Model + relasi Eloquent
-- [ ] Seeder data dummy (5 workshop, 3 material, 3 article, 3 testimonial, 1 admin)
-- [ ] Setup Google OAuth: `AuthController` dengan method `redirectToGoogle` & `handleGoogleCallback`
-- [ ] Route auth: `GET /auth/google`, `GET /auth/google/callback`
-- [ ] Setup session auth (Laravel session, bukan token — karena Blade SSR)
-- [ ] Buat layout admin: `layouts/admin.blade.php` + middleware `IsAdmin`
+**Rafi:**
+- Migration lengkap (termasuk `orders` & update `member`).
+- Model & Eloquent Relationships. Seeder data dummy.
+- Setup Google OAuth (`AuthController`), middleware `IsAdmin`, layout admin `layouts/admin.blade.php`.
 
 ---
 
-## Hari 2 — Jumat, 25 Juli: Auth + Landing Page
+### Hari 2 — Jumat, 25 Juli: Auth, Complete Profile & Landing Page
+**Nia:**
+- Landing Page lengkap (`home.blade.php`) beserta **Section Mitra** (info kemitraan + tombol WA Fasilitator).
+- UI navbar dengan avatar & menu profil/langganan.
+- UI redirect ke `/complete-profile` jika `is_profile_complete == false`.
 
-### Nia — FR-01, FR-02, FR-03
-- [ ] **Landing Page lengkap** (`home.blade.php`): Hero, Seminar Unggulan (dari controller), Artikel terbaru, Testimoni, CTA langganan
-- [ ] **Navbar** (`x-navbar`): Logo, link (Info Seminar, Ebook, Artikel), tombol Login Google, avatar jika sudah login
-- [ ] **Halaman setelah login**: redirect ke `/dashboard` atau `/seminars`
-- [ ] Pasang `@auth` / `@guest` directive di Blade untuk kondisi login
-- [ ] Tampilkan flash message sukses setelah login
-
-### Rafi — FR-03 + Controller Landing
-- [ ] `AuthController@redirectToGoogle` & `handleGoogleCallback` — simpan ke `account`, buat sesi, redirect
-- [ ] `HomeController@index` — ambil: 3 workshop upcoming, 3 artikel published, testimoni landing
-- [ ] Route: `GET /` → `HomeController@index`
-- [ ] Halaman login admin + middleware `IsAdmin` untuk proteksi route `/admin/*`
-- [ ] `Admin\DashboardController@index` — halaman dashboard admin
+**Rafi:**
+- `AuthController` callback Google: cek `is_profile_complete`, buat sesi, atur redirect logis.
+- `HomeController@index` (seminar upcoming, artikel terbaru, testimoni).
+- Login Admin & `Admin\DashboardController@index`.
 
 ---
 
-## Hari 3 — Sabtu, 26 Juli: Katalog Seminar + Filter
+### Hari 3 — Sabtu, 26 Juli: Katalog Seminar & Filter
+**Nia:**
+- Halaman katalog `/seminars` dengan filter Alpine.js (topik, lokasi, format, harga).
+- Detail seminar `/seminars/{slug}` dengan tombol daftar/langganan yang mengarah ke `/checkout`.
 
-### Nia — FR-04, US-02, US-03, US-04
-- [ ] **Halaman `/seminars`** (`seminars/index.blade.php`): Grid card seminar dengan loading state
-- [ ] **Filter UI** menggunakan Alpine.js + form GET: Topik, Lokasi, Format, Harga (query param `?topic=&format=&price_max=`)
-- [ ] **Halaman `/seminars/{slug}`** (`seminars/show.blade.php`): Detail seminar (nama, deskripsi, tanggal, lokasi, harga, tombol daftar)
-- [ ] Tampilkan "Tidak ada seminar" jika hasil filter kosong
-- [ ] Tombol "Daftar / Langganan Seminar" → arahkan ke `/subscribe?workshop={slug}`
-
-### Rafi — FR-04, FR-17 + Admin Workshop
-- [ ] `WorkshopController@index` — filter query: `topic`, `location`, `format`, `price_min`, `price_max`
-- [ ] `WorkshopController@show` — detail workshop by slug
-- [ ] Route: `GET /seminars`, `GET /seminars/{slug}`
-- [ ] **Admin: `Admin\WorkshopController`** — CRUD (index, create, store, edit, update, destroy)
-- [ ] Blade admin: `admin/workshops/index.blade.php`, `create.blade.php`, `edit.blade.php`
-- [ ] Slug auto-generate dari name (gunakan `Str::slug()`)
+**Rafi:**
+- `WorkshopController@index` & `@show` dengan query filter.
+- Admin CRUD Workshop (`Admin\WorkshopController`).
 
 ---
 
-## Hari 4 — Minggu, 27 Juli: Library Ebook + Langganan + Bookmark
+### Hari 4 — Minggu, 27 Juli: Complete Profile, Checkout, Pembayaran & Admin Orders
+**Nia:**
+- Halaman `/complete-profile` — form data diri (No. HP, Alamat, Tanggal Lahir/HPL) + validasi.
+- Halaman `/checkout` — pilih paket langganan / seminar.
+- Halaman `/checkout/{order}/payment` — instruksi rekening + form upload bukti bayar (input file + preview image).
+- Halaman `/orders/{id}` — status order real-time.
 
-### Nia — FR-05, FR-06, FR-07, FR-11, FR-12
-- [ ] **Halaman `/library`** (`library/index.blade.php`): Grid ebook, state locked vs unlocked pakai `@if ($material->isAccessibleBy(auth()->user()))`
-- [ ] **Halaman `/library/{slug}`** (`library/show.blade.php`): Detail ebook — tombol baca jika punya akses, tampilkan locked state jika tidak
-- [ ] **Halaman `/subscribe`** (`subscribe/index.blade.php`): Pilih tipe langganan + tampilkan testimoni checkout
-- [ ] **Tombol Checkout**: link `wa.me` dengan pesan otomatis berisi nama user + paket yang dipilih (FR-06)
-- [ ] **Fitur Bookmark**: form POST toggle bookmark + halaman `/bookmarks`
-
-### Rafi — FR-09, FR-15, FR-16 + Admin Ebook & Langganan
-- [ ] `MaterialController@index` & `@show` — cek akses via `membership` atau `workshop_booking` + `workshop_material`
-- [ ] Method helper `isAccessibleBy(User $user)` di Model `Material`
-- [ ] `BookmarkController@toggle` (POST) & `@index` (GET)
-- [ ] **Admin: `Admin\MaterialController`** — CRUD ebook + attach/detach ke workshop
-- [ ] **Admin: `Admin\MembershipController`** — set langganan user (pilih member, pilih tipe, set tanggal)
-- [ ] **Admin: `Admin\WorkshopBookingController`** — set booking user ke workshop
-- [ ] **Admin: `Admin\MemberController@index`** — daftar member + status langganan
+**Rafi:**
+- Migration & Model `Order` (polymorphic relation to `membership`/`workshop_booking`).
+- `OrderController@store`, `@uploadProof`, `@show`.
+- Class Mailable `OrderReceivedMail` ke user & notifikasi badge count di `admin/orders`.
+- **Admin Order Controller (`Admin\OrderController`)**: index (list pending), show (detail bukti bayar), approve (attach akses + generate link WA), reject (input alasan).
 
 ---
 
-## Hari 5 — Senin, 28 Juli: Profil + Status Langganan + Artikel SEO
+### Hari 5 — Senin, 28 Juli: Library, Profil & Artikel SEO
+**Nia:**
+- Halaman `/library` & `/library/{slug}` — state locked vs unlocked berbasis `isAccessibleBy()`.
+- Halaman `/profile` & `/my-subscriptions` — status langganan aktif & sisa hari.
+- Halaman `/articles` & `/articles/{slug}` — artikel SEO + CTA seminar.
 
-### Nia — FR-13, FR-14, FR-19
-- [ ] **Halaman `/profile`** (`profile/edit.blade.php`): Form edit nama, update via POST + flash message sukses
-- [ ] **Halaman `/my-subscriptions`** (`profile/subscriptions.blade.php`): Status tiap langganan (jenis, aktif/expired, sisa hari pakai `Carbon::diffInDays()`)
-- [ ] **Halaman `/articles`** (`articles/index.blade.php`): List artikel SEO (card, thumbnail, cuplikan)
-- [ ] **Halaman `/articles/{slug}`** (`articles/show.blade.php`): Konten artikel + CTA seminar terkait di bawah
-- [ ] SEO per halaman: `<title>`, `<meta name="description">`, Open Graph tag di Blade layout
-
-### Rafi — FR-13, FR-14, FR-19 + Admin Artikel
-- [ ] `ProfileController@edit` & `@update` — update data member
-- [ ] `SubscriptionController@index` — ambil membership & workshop_booking aktif milik user
-- [ ] `ArticleController@index` & `@show` — list & detail artikel published
-- [ ] **Admin: `Admin\ArticleController`** — CRUD artikel (dengan rich text editor, slug, meta SEO, seminar terkait, status publish)
-- [ ] Pastikan `published_at` diisi saat status diubah ke `published`
+**Rafi:**
+- `MaterialController` & access checker helper di model `Material`.
+- `ProfileController` & `SubscriptionController`.
+- `ArticleController` & Admin CRUD Artikel (`Admin\ArticleController`).
 
 ---
 
-## Hari 6 — Selasa, 29 Juli: Testimoni + Halaman Mitra + Admin Keuangan
+### Hari 6 — Selasa, 29 Juli: Testimoni, Ajukan Seminar & Admin Finance
+**Nia:**
+- Testimoni di landing page & checkout.
+- Halaman `/ajukan-seminar` (form pengajuan media partner / kolaborasi seminar).
+- Mobile responsiveness review (375px viewport).
 
-### Nia — FR-21, FR-10, FR-20
-- [ ] **Testimoni di halaman checkout** (`/subscribe`) — tampilkan yang `display_location = checkout` atau `both`
-- [ ] Pastikan testimoni landing (`display_location = landing` atau `both`) tampil di `home.blade.php`
-- [ ] **Halaman `/mitra`** (`mitra/index.blade.php`): Info program kemitraan + tombol WA Fasilitator (direct `wa.me` link, FR-20)
-- [ ] **Halaman `/ajukan-seminar`** (`mitra/ajukan.blade.php`): Deskripsi singkat + tombol redirect WA Admin (FR-10)
-- [ ] Mobile responsiveness review — cek semua halaman di viewport 375px
-
-### Rafi — FR-18, FR-22 + Admin Testimoni & Dashboard Keuangan
-- [ ] **Admin: `Admin\TestimonialController`** — CRUD (nama, foto, isi, role, display_location, status, sort_order)
-- [ ] Blade admin: `admin/testimonials/index.blade.php`, `create.blade.php`, `edit.blade.php`
-- [ ] **Admin: `Admin\FinanceController@index`** — ringkasan: total pendapatan, jumlah langganan aktif per tipe, tabel riwayat
-- [ ] Query dashboard: `Membership::sum('amount_paid')`, `WorkshopBooking::sum('amount_paid')`, count aktif
+**Rafi:**
+- Admin CRUD Testimoni (`Admin\TestimonialController`).
+- Admin Finance Dashboard (`Admin\FinanceController@index`) — mengambil data dari agregasi tabel `orders` (pendapatan, status order).
 
 ---
 
-## Hari 7 — Rabu, 30 Juli: Integration + Bug Fix + Polish
+### Hari 7 — Rabu, 30 Juli: QA Integration, Reject Flow & Staging Deploy
+**Nia:**
+- View QA: test alur belum login → login → `/complete-profile` → `/checkout` → upload bukti → status order.
+- Error pages (`404.blade.php`, `403.blade.php`).
 
-### Nia — View Integration & QA
-- [ ] Pastikan semua `@if`, `@auth`, `@foreach` di Blade benar dan tidak ada error view
-- [ ] Error handling: custom page `404.blade.php`, `403.blade.php` (akses ditolak)
-- [ ] Middleware `auth` sudah terpasang di semua route yang butuh login
-- [ ] Test Google Login flow end-to-end (login → sesi → tampil avatar di navbar)
-- [ ] Test flow utama: login → filter seminar → klik checkout → WA terbuka dengan pesan benar ✅
-- [ ] Test library: langganan aktif → konten bisa diakses | belum langganan → locked ✅
-- [ ] Animasi & transisi menggunakan Alpine.js (`x-transition`) dan CSS
-- [ ] Mobile responsiveness final (375px, 768px, 1280px)
-
-### Rafi — Backend Hardening & Deploy Staging
-- [ ] Validasi semua form request (`FormRequest` class) untuk controller yang menerima input
-- [ ] Middleware chain: `auth` untuk user, `IsAdmin` untuk `/admin/*`
-- [ ] Test FR-07: `workshop_booking` dibuat → query `workshop_material` → akses material granted ✅
-- [ ] Test FR-14: `Carbon::now()->lte($membership->active_until)` untuk status aktif/expired ✅
-- [ ] Database seeder final — data realistis untuk demo
-- [ ] **Deploy ke Railway/VPS** — setup `.env` production, `php artisan migrate --force`, `php artisan storage:link`
-- [ ] Test semua halaman di URL production
+**Rafi:**
+- Validasi `FormRequest` semua endpoint.
+- Handling flow reject: user dapat re-upload bukti pembayaran jika order status = `ditolak`.
+- Deploy ke staging environment (Railway/VPS), `php artisan storage:link`, migrate & seed.
 
 ---
 
-## Hari 8 — Kamis, 31 Juli: FINAL DAY 🚀
-
-### Nia — Final View Polish + Test Production
-- [ ] Test semua halaman di URL production (mobile + desktop)
-- [ ] Cek SEO tag muncul benar (`<title>`, meta description) di browser
-- [ ] Fix hotfix kalau ada yang error di production
-- [ ] Screenshot / rekam demo alur utama untuk dokumentasi
-
-### Rafi — Final Backend + Dokumentasi
-- [ ] Final check semua route & controller di production URL
-- [ ] Update Google OAuth callback URL ke domain production di Google Cloud Console
-- [ ] `php artisan route:cache` & `php artisan config:cache` untuk optimasi production
-- [ ] Tulis `README.md` — cara setup, daftar fitur, env variables
-- [ ] Backup database production
-
-### Bersama (sore hari)
-- [ ] Demo walkthrough bareng — tes semua user flow dari awal
-- [ ] Fix last-minute bug kritis (maks 1–2 jam)
-- [ ] **SHIP IT!** 🚢
+### Hari 8 — Kamis, 31 Juli: Final Polish & Launch 🚀
+**Nia & Rafi:**
+- Final test production URL (desktop & mobile).
+- Route caching, config caching, SEO tag verification.
+- `README.md` documentation, database backup, & system walkthrough demo.
 
 ---
 
-## Ringkasan FR per Orang
+## ✅ Progress Tracker per Halaman
 
-### Nia (Blade Views + Controller user-facing)
+Status: `☐ Belum` / `🔧 On progress` / `✅ Selesai`
 
-| Hari | FR | Fitur |
-|---|---|---|
-| H1 | — | Layout utama, komponen Blade, routing user |
-| H2 | FR-01, FR-02, FR-03 | Landing page + Navbar + Login Google UI |
-| H3 | FR-04 | Katalog seminar + Filter Alpine.js + Detail seminar |
-| H4 | FR-05, FR-06, FR-11, FR-12 | Library + Subscribe + Checkout WA link + Bookmark |
-| H5 | FR-13, FR-14, FR-19 | Profil + Status langganan + Artikel SEO |
-| H6 | FR-21, FR-10, FR-20 | Testimoni checkout + Halaman Mitra + Ajukan Seminar |
-| H7 | — | View QA, error pages, animasi Alpine.js, responsif |
-| H8 | — | Final test production + screenshot demo |
+### Nia — Halaman User-Facing
 
-### Rafi (Migration + Model + Controller + Admin)
-
-| Hari | FR | Fitur |
-|---|---|---|
-| H1 | — | Migration, Model, Seeder, OAuth setup, layout admin |
-| H2 | FR-03 | AuthController Google + HomeController + Admin dashboard |
-| H3 | FR-04, FR-17 | WorkshopController (filter) + Admin CRUD workshop |
-| H4 | FR-09, FR-15, FR-16 | MaterialController (akses) + Admin ebook + Admin langganan |
-| H5 | FR-13, FR-14, FR-19 | ProfileController + SubscriptionController + Admin artikel |
-| H6 | FR-18, FR-21, FR-22 | Admin keuangan + Admin testimoni + query dashboard |
-| H7 | FR-07 | Hardening, FormRequest, deploy ke staging |
-| H8 | — | Final check + README + backup DB |
-
----
-
-## Tabel ERD → Siapa yang Handle
-
-| Tabel | Rafi (Migration + Model + Logic) | Nia (Blade View) |
-|---|---|---|
-| `account` | ✅ | ✅ (navbar, profil) |
-| `user_session` | ✅ | — |
-| `member` | ✅ | ✅ (edit profil) |
-| `admin` | ✅ | — |
-| `workshop` | ✅ | ✅ (katalog, detail, filter) |
-| `workshop_material` | ✅ | — |
-| `material` | ✅ | ✅ (library, locked/unlocked state) |
-| `article` | ✅ | ✅ (list + detail artikel) |
-| `testimonial` | ✅ | ✅ (landing + checkout) |
-| `bookmark` | ✅ | ✅ (toggle button + list) |
-| `membership` | ✅ | ✅ (status langganan) |
-| `workshop_booking` | ✅ | ✅ (status booking) |
+| No | Halaman | Route | Hari Target | Status | Catatan |
+|---|---|---|---|---|---|
+| 1 | Layout Utama (Navbar, Footer) | `layouts/app.blade.php` | H1 | ☐ Belum | Design system dasar |
+| 2 | Landing Page | `/` | H2 | ☐ Belum | Hero, upcoming, artikel, testimoni |
+| 3 | Katalog Seminar + Filter | `/seminars` | H3 | ☐ Belum | Filter Alpine.js |
+| 4 | Detail Seminar | `/seminars/{slug}` | H3 | ☐ Belum | Detail & CTA Checkout |
+| 5 | Library Ebook | `/library` | H5 | ☐ Belum | Locked/Unlocked state |
+| 6 | Detail Ebook | `/library/{slug}` | H5 | ☐ Belum | Viewer / download link |
+| 7 | **Lengkapi Data Diri** | `/complete-profile` | H4 | ☐ Belum | Wajib sebelum checkout |
+| 8 | Checkout (Pilih Paket) | `/checkout` | H4 | ☐ Belum | Form pembuatan order |
+| 9 | **Pembayaran + Upload Bukti** | `/checkout/{order}/payment` | H4 | ☐ Belum | Info transfer & input file bukti |
+| 10 | **Status Pesanan** | `/orders/{id}` | H4 | ☐ Belum | Tampilan status order real-time |
+| 11 | Bookmark Saya | `/bookmarks` | H5 | ☐ Belum | List seminar/materi favorit |
+| 12 | Profil Saya | `/profile` | H5 | ☐ Belum | Edit nama & data diri |
+| 13 | Status Langganan | `/my-subscriptions` | H5 | ☐ Belum | Masa berlaku langganan aktif |
+| 14 | List Artikel SEO | `/articles` | H5 | ☐ Belum | Katalog artikel edukasi |
+| 15 | Detail Artikel SEO | `/articles/{slug}` | H5 | ☐ Belum | Konten artikel + CTA seminar |
+| 16 | Testimoni (Embedded) | embedded | H6 | ☐ Belum | Landing page & checkout modal |
+| 17 | Section Mitra (Embedded) | `/` (section `home.blade.php`) | H2 | ☐ Belum | Info kemitraan + tombol WA Fasilitator |
+| 18 | Ajukan Seminar | `/ajukan-seminar` | H6 | ☐ Belum | Form pengajuan media partner |
+| 19 | Error Pages (404/403) | — | H7 | ☐ Belum | Custom Blade error views |
+| 20 | QA Responsif Semua Halaman | — | H7 | ☐ Belum | Breakpoints: 375px, 768px, 1280px |
 
 ---
 
-## Risiko & Mitigasi
+### Rafi — Backend & Admin Panel
+
+| No | Halaman/Modul | Route | Hari Target | Status | Catatan |
+|---|---|---|---|---|---|
+| 1 | Migration + Model (termasuk `orders`) | — | H1 | ☐ Belum | MySQL schema setup |
+| 2 | Auth Google (Redirect & Callback) | `/auth/google*` | H1–H2 | ☐ Belum | Gatekeeping `is_profile_complete` |
+| 3 | Admin Layout & Middleware `IsAdmin` | — | H1 | ☐ Belum | Proteksi route `/admin/*` |
+| 4 | HomeController | `/` | H2 | ☐ Belum | Agregasi data landing page |
+| 5 | Admin Dashboard | `admin/dashboard` | H2 | ☐ Belum | Ringkasan umum admin |
+| 6 | WorkshopController (Filter Query) | `/seminars*` | H3 | ☐ Belum | Filtering logic backend |
+| 7 | Admin CRUD Workshop | `admin/workshops` | H3 | ☐ Belum | Kelola seminar |
+| 8 | MaterialController (Access Checker) | `/library*` | H5 | ☐ Belum | Logic `isAccessibleBy()` |
+| 9 | Admin CRUD Material | `admin/materials` | H5 | ☐ Belum | Upload ebook & mapping workshop |
+| 10 | **OrderController** | `/checkout*`, `/orders/*` | H4 | ☐ Belum | Store, upload proof, show status |
+| 11 | **Mailable `OrderReceivedMail`** | — | H4 | ☐ Belum | Email konfirmasi bukti diterima |
+| 12 | **Admin: Verifikasi Pembayaran** | `admin/orders` | H4 | ☐ Belum | List, show proof, approve/reject |
+| 13 | Admin CRUD Membership & Booking | `admin/memberships`, `admin/bookings` | H4 | ☐ Belum | Pengaturan langganan manual |
+| 14 | ProfileController & SubscriptionController | `/profile`, `/my-subscriptions` | H5 | ☐ Belum | Kelola profil & langganan member |
+| 15 | ArticleController & Admin CRUD Artikel | `/articles*`, `admin/articles` | H5 | ☐ Belum | Rich text, SEO meta, publish status |
+| 16 | Admin CRUD Testimoni | `admin/testimonials` | H6 | ☐ Belum | Kelola testimoni & status tayang |
+| 17 | Admin Finance Dashboard | `admin/finance` | H6 | ☐ Belum | Ringkasan dari tabel `orders` |
+| 18 | FormRequest Validation | — | H7 | ☐ Belum | Validasi input semua form |
+| 19 | Deploy Staging Environment | — | H7 | ☐ Belum | Production-ready setup |
+| 20 | Deploy Production + Backup | — | H8 | ☐ Belum | Route/config cache & DB backup |
+
+---
+
+## ⚠️ Analisis Risiko & Mitigasi Alur Pembayaran Manual
 
 | Risiko | Mitigasi |
 |---|---|
-| Google OAuth setup lama | Setup **bareng** di H1 pagi — jangan masing-masing |
-| Nia butuh data tapi controller Rafi belum jadi | Rafi buat seeder dulu H1, Nia pakai data seeder untuk dev |
-| Deploy error di menit terakhir | Deploy ke staging di H7, bukan H8 |
-| Fitur bookmark/keuangan menyita waktu | Kalau mepet, skip `Could Have` — prioritas `Must Have` dulu |
-| Konflik blade / merge hell | Pisah folder view: `pages/` untuk Nia, `admin/` untuk Rafi |
-
----
-
-> 💡 **Tips**: Gunakan `@if(app()->environment('local'))` untuk hide fitur yang belum siap di production supaya demo tetap lancar.
+| Verifikasi admin lambat → user menunggu lama | Tampilkan estimasi waktu verifikasi di `/orders/{id}` (mis. "Maksimal 1x24 jam") |
+| User mengunggah gambar bukti yang salah/blur | Validasi file upload (image max 2MB), admin dapat melakukan **Reject** dengan alasan jelas, dan user dapat mengunggah ulang di `/orders/{id}` |
+| Pembelian menggantung di `menunggu_pembayaran` | Sediakan otomatis expired timestamp pada order (misal 24 jam) agar order tidak menumpuk |
+| Fitur "Lengkapi Data Diri" mengganggu alur login | Hanya dimunculkan **satu kali** ketika `is_profile_complete == false`, diset `true` setelah form disubmit |
