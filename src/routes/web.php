@@ -37,6 +37,10 @@ Route::get('/consult', function () {
     return view('landing');
 })->name('consult');
 
+Route::get('/product', function () {
+    return view('landing');
+})->name('product');
+
 Route::get('/mitra', function () {
     return view('landing');
 })->name('mitra.index');

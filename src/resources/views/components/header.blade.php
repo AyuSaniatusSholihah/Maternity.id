@@ -16,25 +16,28 @@
         <a href="{{ route('library') }}" class="{{ request()->routeIs('library') ? 'border-b-2 border-[#2D1E1E] pb-0.5' : 'hover:text-gray-700 transition' }}">
             Library
         </a>
-        <a href="{{ route('consult') }}" class="{{ request()->routeIs('consult') ? 'border-b-2 border-[#2D1E1E] pb-0.5' : 'hover:text-gray-700 transition' }}">
-            Consult
+        <a href="{{ route('product') }}" class="{{ request()->routeIs('product') ? 'border-b-2 border-[#2D1E1E] pb-0.5' : 'hover:text-gray-700 transition' }}">
+            Product
         </a>
     </div>
 
-    <!-- Right Side: Conditional Auth State -->
-    <div class="flex items-center space-x-4">
+    <!-- Right Side: Conditional Auth State & Ajukan Event -->
+    <div class="flex items-center space-x-3 md:space-x-4">
         
+        <!-- Tombol Ajukan Event (WhatsApp / Mitra) -->
+        <a href="https://wa.me/" target="_blank" 
+           class="bg-[#6B8E78] hover:bg-[#587663] text-white text-xs md:text-sm font-semibold px-4 py-2 rounded-full border border-white/60 shadow-sm transition flex items-center space-x-1.5 transform hover:scale-[1.02]">
+            <span>Ajukan Event</span>
+        </a>
+
         @guest
             <!-- TAMPILAN SEBELUM LOGIN (GUEST) -->
-            <a href="{{ route('login') }}" class="font-semibold text-[#2D1E1E] hover:underline px-2">
+            <a href="{{ route('login') }}" class="font-semibold text-[#2D1E1E] hover:underline px-2 text-sm">
                 Login
             </a>
-            <a href="{{ route('register') }}" class="bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium px-5 py-2 rounded-xl transition shadow-sm">
+            <a href="{{ route('register') }}" class="bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium px-4 py-2 rounded-full text-sm transition shadow-sm">
                 Join Membership
             </a>
-            <button class="text-[#2D1E1E] p-1.5 hover:bg-black/5 rounded-full transition relative">
-                <i class="fa-regular fa-bell text-xl"></i>
-            </button>
         @endguest
 
         @auth

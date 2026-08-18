@@ -89,13 +89,16 @@
                 </p>
 
                 <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-5 mt-4">
+                    <!-- Akses Ebook Button -->
                     <a href="{{ url('/library') }}"
-                        class="w-full sm:w-auto bg-[#C47366] hover:bg-[#b06357] text-white font-semibold px-8 py-3.5 rounded-2xl shadow-md transition text-base">
+                        class="w-full sm:w-auto bg-transparent hover:bg-[#C27A6F] border-2 border-[#C27A6F] text-[#C27A6F] hover:text-white font-bold px-10 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 text-base text-center transform hover:scale-[1.02]">
                         Akses Ebook
                     </a>
+                    
+                    <!-- Akses Seminar Button -->
                     <a href="{{ url('/seminars') }}"
-                        class="w-full sm:w-auto bg-[#E6D9D0] hover:bg-[#dbcbc0] text-[#331E1E] font-semibold px-8 py-3.5 rounded-2xl shadow-sm transition text-base">
+                        class="w-full sm:w-auto bg-transparent hover:bg-[#C27A6F] border-2 border-[#C27A6F] text-[#C27A6F] hover:text-white font-bold px-10 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 text-base text-center transform hover:scale-[1.02]">
                         Akses Seminar
                     </a>
                 </div>
@@ -104,17 +107,12 @@
         </div>
     </div>
 
-    <!-- FLOATING WHATSAPP / AJUKAN EVENT BUTTON -->
+    <!-- FLOATING WHATSAPP BUTTON -->
     <div class="fixed bottom-6 right-6 z-50">
         <a href="https://wa.me/" target="_blank"
-            class="bg-[#5F8A6E] hover:bg-[#4f755d] text-white px-4 py-2.5 rounded-full flex items-center space-x-2 shadow-lg transition transform hover:scale-105 border-2 border-white">
-            <div class="bg-white/20 p-1.5 rounded-full flex items-center justify-center">
-                <i class="fa-brands fa-whatsapp text-lg"></i>
-            </div>
-            <span class="text-sm font-semibold">Ajukan Event</span>
-            <svg width="16" height="16" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.4134 17.4133C21.7879 17.0383 21.9983 16.53 21.9983 16C21.9983 15.47 21.7879 14.9617 21.4134 14.5867L13.8721 7.04266C13.4969 6.66765 12.9881 6.45704 12.4576 6.45716C12.1949 6.45722 11.9348 6.50902 11.6922 6.6096C11.4495 6.71017 11.2291 6.85755 11.0434 7.04333C10.8577 7.22911 10.7104 7.44964 10.61 7.69233C10.5095 7.93503 10.4578 8.19514 10.4579 8.4578C10.4579 8.72047 10.5097 8.98055 10.6103 9.2232C10.7109 9.46585 10.8583 9.68631 11.0441 9.872L17.1707 16L11.0427 22.128C10.8516 22.3124 10.6991 22.533 10.5942 22.777C10.4893 23.0209 10.434 23.2833 10.4316 23.5489C10.4291 23.8145 10.4796 24.0778 10.58 24.3237C10.6805 24.5695 10.8289 24.7929 11.0166 24.9808C11.2043 25.1686 11.4275 25.3173 11.6733 25.4179C11.919 25.5186 12.1823 25.5693 12.4479 25.5672C12.7135 25.565 12.9759 25.5099 13.22 25.4052C13.464 25.3005 13.6848 25.1483 13.8694 24.9573L21.4161 17.4133H21.4134Z" fill="#FAF0EE"/>
-            </svg>
+            class="bg-[#25D366] hover:bg-[#20ba5a] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-xl transition-all transform hover:scale-110 border-2 border-white focus:outline-none"
+            title="Hubungi Kami via WhatsApp">
+            <i class="fa-brands fa-whatsapp text-2xl"></i>
         </a>
     </div>
 </x-layout>
