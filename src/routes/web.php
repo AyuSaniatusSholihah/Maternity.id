@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\EbookController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\MyController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,29 +21,23 @@ Route::get('/', function () {
 })->name('home');
 
 // Guest & Member Journey Routes
-Route::get('/events', function () {
-    return view('landing');
-})->name('events');
+Route::get('/events', [EventController::class, 'index'])->name('events');
+Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
 
 Route::get('/seminars', function () {
     return view('landing');
 })->name('seminars.index');
 
-Route::get('/library', function () {
-    return view('landing');
-})->name('library');
+Route::get('/library', [EbookController::class, 'index'])->name('library');
 
-Route::get('/articles', function () {
-    return view('landing');
-})->name('articles.index');
+Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 
 Route::get('/consult', function () {
     return view('landing');
 })->name('consult');
 
-Route::get('/product', function () {
-    return view('landing');
-})->name('product');
+Route::get('/product', [ProductController::class, 'index'])->name('product');
 
 Route::get('/mitra', function () {
     return view('landing');
