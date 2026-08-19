@@ -48,9 +48,12 @@
             </a>
         </header>
     @else
-        {{-- Hanya kotak pink nav yang sticky, background halaman ikut scroll --}}
-        <div class="sticky top-0 z-50 w-full px-4 sm:px-6 lg:px-8 pt-4 pb-2">
-            <div class="max-w-7xl mx-auto">
+        {{-- Sticky Dynamic Floating Header (Animasi Menciut & Melebar saat Scroll) --}}
+        <div class="sticky top-0 z-50 w-full px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-2 transition-all duration-500 ease-out"
+             x-data="{ isScrolled: false }"
+             @scroll.window="isScrolled = (window.pageYOffset > 40)">
+            <div class="mx-auto transition-all duration-500 ease-out"
+                 :class="isScrolled ? 'max-w-4xl' : 'max-w-7xl'">
                 <x-header />
             </div>
         </div>
@@ -63,6 +66,9 @@
 
     {{-- ─── FOOTER ─────────────────────────────────────────── --}}
     <x-footer />
+
+    {{-- ─── FLOATING BOTTOM NAVIGATION ─────────────────────── --}}
+    <x-bottom_nav />
 
 </body>
 

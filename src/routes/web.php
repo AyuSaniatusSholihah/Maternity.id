@@ -37,18 +37,19 @@ Route::get('/consult', function () {
     return view('landing');
 })->name('consult');
 
+Route::get('/product', function () {
+    return view('landing');
+})->name('product');
+
 Route::get('/mitra', function () {
     return view('landing');
 })->name('mitra.index');
 
 // Member Protected Routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', function () {
-        return view('landing');
-    })->name('profile.edit');
-
-    Route::get('/my/account', [App\Http\Controllers\MyController::class, 'viewAccount'])->name('my.account');
-    Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
+    Route::get('/profile', [MyController::class, 'viewAccount'])->name('profile.edit');
+    Route::get('/my/account', [MyController::class, 'viewAccount'])->name('my.account');
+    Route::match(['get', 'post'], '/logout', [LogoutController::class, 'logout'])->name('logout');
 
     Route::get('/my-subscriptions', function () {
         return view('landing');

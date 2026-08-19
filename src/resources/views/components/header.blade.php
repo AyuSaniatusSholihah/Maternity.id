@@ -1,45 +1,51 @@
-<nav class="bg-[#DEA69E] rounded-2xl px-6 py-3.5 flex items-center justify-between shadow-sm">
+<nav :class="isScrolled 
+        ? 'bg-[#DEA69E] rounded-full px-4 sm:px-5 py-2 shadow-[0_10px_25px_rgba(61,43,43,0.18)] border border-transparent' 
+        : 'bg-[#DEA69E] rounded-2xl px-5 sm:px-6 py-3.5 shadow-sm border border-transparent'"
+     class="flex items-center justify-between transition-all duration-500 ease-out">
     <!-- Logo & Brand Name -->
-    <a href="{{ url('/') }}" class="flex items-center space-x-2">
-        <x-logo_pink class="w-8 h-8" />
-        <span class="text-xl md:text-2xl" style="font-family: 'DM Serif Display', serif; background: linear-gradient(to right, rgba(61, 43, 43, 0.8), #2A1614); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Maternity</span>
+    <a href="{{ url('/') }}" class="flex items-center space-x-2 shrink-0 transition-transform duration-300 transform" :class="isScrolled ? 'scale-95' : 'scale-100'">
+        <x-logo_pink class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-300" />
+        <span class="text-xl md:text-2xl transition-all duration-300" style="font-family: 'DM Serif Display', serif; background: linear-gradient(to right, rgba(61, 43, 43, 0.8), #2A1614); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Maternity</span>
     </a>
 
-    <!-- Navigation Links -->
-    <div class="hidden md:flex items-center space-x-8 text-[#2D1E1E]" style="font-family: 'Lexend', sans-serif;">
-        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'border-b-2 border-[#2D1E1E] pb-0.5' : 'hover:text-gray-700 transition' }}">
-            Home
-        </a>
-        <a href="{{ route('events') }}" class="{{ request()->routeIs('events') ? 'border-b-2 border-[#2D1E1E] pb-0.5' : 'hover:text-gray-700 transition' }}">
-            Events
-        </a>
-        <a href="{{ route('library') }}" class="{{ request()->routeIs('library') ? 'border-b-2 border-[#2D1E1E] pb-0.5' : 'hover:text-gray-700 transition' }}">
-            Library
-        </a>
-        <a href="{{ route('consult') }}" class="{{ request()->routeIs('consult') ? 'border-b-2 border-[#2D1E1E] pb-0.5' : 'hover:text-gray-700 transition' }}">
-            Consult
-        </a>
+    <!-- Search Bar Interaktif (Solid clean) -->
+    <div class="hidden md:flex items-center flex-1 mx-3 lg:mx-6 transition-all duration-500 ease-out" 
+         :class="isScrolled ? 'max-w-xs lg:max-w-sm' : 'max-w-md'">
+        <form action="{{ route('articles.index') }}" method="GET" class="w-full relative group">
+            <div class="relative flex items-center">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8C433C] group-focus-within:text-[#782819] transition-colors">
+                    <i class="fa-solid fa-magnifying-glass text-xs sm:text-sm"></i>
+                </span>
+                <input type="text" 
+                       name="q" 
+                       placeholder="Cari artikel, event, panduan..." 
+                       class="w-full pl-9 pr-14 py-1.5 sm:py-2 bg-white hover:bg-white focus:bg-white text-xs sm:text-sm text-[#2D1E1E] placeholder-[#2D1E1E]/50 rounded-full border border-white/80 focus:border-[#8C433C]/60 focus:outline-none focus:ring-2 focus:ring-[#8C433C]/20 shadow-xs transition-all duration-200" />
+                <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 px-2.5 sm:px-3 py-1 bg-[#FAF0EE] hover:bg-[#8C433C] text-[#782819] hover:text-white text-[11px] font-bold rounded-full transition-all duration-200 border border-[#DEA69E]/50">
+                    Cari
+                </button>
+            </div>
+        </form>
     </div>
 
-    <!-- Right Side: Conditional Auth State -->
-    <div class="flex items-center space-x-4">
+    <!-- Right Side: Conditional Auth State & Ajukan Event -->
+    <div class="flex items-center space-x-3 md:space-x-4">
         
         @guest
             <!-- TAMPILAN SEBELUM LOGIN (GUEST) -->
-            <a href="{{ route('login') }}" class="font-semibold text-[#2D1E1E] hover:underline px-2">
+            <a href="{{ route('login') }}" class="font-semibold text-[#2D1E1E] hover:underline px-2 text-sm">
                 Login
             </a>
-            <a href="{{ route('register') }}" class="bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium px-5 py-2 rounded-xl transition shadow-sm">
-                Join Membership
+            <a href="{{ route('register') }}" class="bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium px-4 py-2 rounded-full text-sm transition shadow-sm">
+                Ajukan Event
             </a>
-            <button class="text-[#2D1E1E] p-1.5 hover:bg-black/5 rounded-full transition relative">
-                <i class="fa-regular fa-bell text-xl"></i>
-            </button>
         @endguest
 
         @auth
             <!-- TAMPILAN SETELAH LOGIN (USER AUTHENTICATED) -->
-            
+            <a href="{{ route('events') }}" class="bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium px-4 py-2 rounded-full text-sm transition shadow-sm">
+                Ajukan Event
+            </a>
+
             <!-- Notification Icon dengan Badge Unread -->
             <div class="relative" x-data="{ openNavNotif: false }">
                 <button @click="openNavNotif = !openNavNotif" class="text-[#2D1E1E] p-2 hover:bg-black/5 rounded-full transition relative flex items-center justify-center">
