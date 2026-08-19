@@ -120,7 +120,7 @@
         <div class="md:hidden flex items-center space-x-2">
             <!-- 1. Tombol Search Toggle -->
             <button type="button" 
-                    @click="showMobileSearch = !showMobileSearch; if(showMobileSearch) openMobileMenu = false;" 
+                    @click.stop="showMobileSearch = !showMobileSearch; if(showMobileSearch) openMobileMenu = false;" 
                     class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/80 text-[#2D1E1E] transition-all shadow-xs"
                     aria-label="Cari">
                 <i class="fa-solid fa-magnifying-glass text-sm" :class="showMobileSearch ? 'text-[#8C433C]' : ''"></i>
@@ -128,7 +128,7 @@
 
             <!-- 2. Tombol Hamburger Menu -->
             <button type="button" 
-                    @click="openMobileMenu = !openMobileMenu; if(openMobileMenu) showMobileSearch = false;" 
+                    @click.stop="openMobileMenu = !openMobileMenu; if(openMobileMenu) showMobileSearch = false;" 
                     class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/80 text-[#2D1E1E] transition-all shadow-xs relative"
                     aria-label="Menu">
                 <i class="fa-solid text-base transition-transform duration-300" :class="openMobileMenu ? 'fa-xmark rotate-90 text-[#8C433C]' : 'fa-bars'"></i>
@@ -141,18 +141,18 @@
 
     </nav>
 
-    <!-- ── MOBILE SEARCH DRAWER (Muncul saat Search Icon diklik di Mobile) ── -->
+    <!-- ── MOBILE SEARCH DRAWER (Muncul floating di atas Hero saat Search Icon diklik di Mobile) ── -->
     <div x-show="showMobileSearch"
          x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0 -translate-y-2"
-         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:enter-start="opacity-0 -translate-y-2 scale-98"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
          x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100 translate-y-0"
-         x-transition:leave-end="opacity-0 -translate-y-2"
+         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+         x-transition:leave-end="opacity-0 -translate-y-2 scale-98"
          @click.away="showMobileSearch = false"
-         class="md:hidden mt-2 px-1 z-50 relative"
+         class="md:hidden absolute top-full left-0 right-0 mt-2 px-1 z-50"
          style="display: none;">
-        <form action="{{ route('articles.index') }}" method="GET" class="w-full relative group shadow-md rounded-full">
+        <form action="{{ route('articles.index') }}" method="GET" class="w-full relative group shadow-xl rounded-full">
             <div class="relative flex items-center">
                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8C433C]">
                     <i class="fa-solid fa-magnifying-glass text-xs"></i>
@@ -160,15 +160,15 @@
                 <input type="text" 
                        name="q" 
                        placeholder="Cari artikel, event, panduan..." 
-                       class="w-full pl-9 pr-16 py-2 bg-white text-xs text-[#2D1E1E] placeholder-[#2D1E1E]/50 rounded-full border border-[#DEA69E]/60 focus:border-[#8C433C] focus:outline-none focus:ring-2 focus:ring-[#8C433C]/20 shadow-xs" />
-                <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-[#8C433C] hover:bg-[#782819] text-white text-[11px] font-bold rounded-full transition-all duration-200">
+                       class="w-full pl-9 pr-16 py-2.5 bg-white text-xs text-[#2D1E1E] placeholder-[#2D1E1E]/50 rounded-full border border-[#DEA69E]/80 focus:border-[#8C433C] focus:outline-none focus:ring-2 focus:ring-[#8C433C]/20 shadow-md" />
+                <button type="submit" class="absolute right-1.5 top-1/2 -translate-y-1/2 px-3.5 py-1.5 bg-[#8C433C] hover:bg-[#782819] text-white text-[11px] font-bold rounded-full transition-all duration-200 shadow-xs">
                     Cari
                 </button>
             </div>
         </form>
     </div>
 
-    <!-- ── MOBILE HAMBURGER MENU DRAWER (Elegan, Bersih, dan Ringkas) ── -->
+    <!-- ── MOBILE HAMBURGER MENU DRAWER (Floating overlay di atas Hero Section) ── -->
     <div x-show="openMobileMenu"
          x-transition:enter="transition ease-out duration-250"
          x-transition:enter-start="opacity-0 -translate-y-3 scale-95"
@@ -177,7 +177,7 @@
          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
          x-transition:leave-end="opacity-0 -translate-y-3 scale-95"
          @click.away="openMobileMenu = false"
-         class="md:hidden mt-3 bg-white/95 backdrop-blur-xl border border-[#DEA69E]/50 rounded-3xl p-4 shadow-2xl z-50 relative space-y-3"
+         class="md:hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl border border-[#DEA69E]/50 rounded-3xl p-4 shadow-2xl z-50 space-y-3"
          style="display: none;">
 
         @auth
@@ -193,6 +193,12 @@
                     <p class="text-xs text-neutral-500 truncate">{{ Auth::user()->email }}</p>
                 </div>
             </div>
+
+            <!-- Ajukan Event Action -->
+            <a href="{{ route('events') }}" 
+               class="w-full flex items-center justify-center gap-2 py-2.5 bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium text-xs rounded-2xl transition shadow-sm">
+                <i class="fa-solid fa-calendar-plus"></i> Ajukan Event
+            </a>
 
             <!-- Menu Navigasi Akun -->
             <div class="space-y-1 pt-1 border-t border-gray-100">
@@ -235,6 +241,10 @@
         @else
             <!-- Menu Guest di Drawer -->
             <div class="space-y-2">
+                <a href="{{ route('events') }}" 
+                   class="w-full block text-center bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium py-2.5 rounded-2xl text-sm transition shadow-sm">
+                    Ajukan Event
+                </a>
                 <a href="{{ route('login') }}" 
                    class="w-full block text-center bg-[#FAF0EE] hover:bg-[#DEA69E]/50 text-[#782819] font-bold py-2.5 rounded-2xl text-sm transition border border-[#DEA69E]/50">
                     Masuk ke Akun
