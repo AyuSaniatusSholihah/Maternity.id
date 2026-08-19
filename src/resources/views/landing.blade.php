@@ -35,7 +35,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <!-- HERO SECTION -->
         <div
-            class="relative flex items-start justify-center min-h-[560px] lg:min-h-[620px] pt-10 sm:pt-14 pb-16 sm:pb-20">
+            class="relative flex items-start justify-center min-h-[480px] lg:min-h-[540px] pt-8 sm:pt-10 pb-6 sm:pb-8">
 
             <!-- GAMBAR DEKORASI - KIRI -->
             <div
@@ -106,6 +106,107 @@
 
         </div>
     </div>
+
+    <!-- UPCOMING EVENT SECTION -->
+    <section class="w-full bg-[#fcf5f3] pt-4 sm:pt-6 pb-16 px-4 sm:px-6 lg:px-8" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header Section -->
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#3D2B2B] tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                        Upcoming Event
+                    </h2>
+                    <p class="mt-2 text-sm sm:text-base text-neutral-600 font-medium" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                        Join our expert-led sessions designed to empower and inform
+                    </p>
+                </div>
+                <a href="{{ route('events') }}" class="group inline-flex items-center gap-1.5 text-sm font-bold text-[#7A9E7E] hover:text-[#5a7a66] transition-all duration-200" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                    <span>View All Calendar</span>
+                    <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                @php
+                    // Data dummy event (dapat diganti dengan data dari Controller/Database)
+                    $events = [
+                        [
+                            'tag' => 'ONLINE',
+                            'image' => 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
+                            'date' => 'Oct 12, 2024',
+                            'time' => '10:00 AM',
+                            'title' => 'Mindful Motherhood',
+                            'description' => 'Building mental resilience and community during early parenting stages',
+                            'link' => route('events')
+                        ],
+                        [
+                            'tag' => 'OFFLINE-UNS',
+                            'image' => 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80',
+                            'date' => 'Oct 12, 2024',
+                            'time' => '10:00 AM',
+                            'title' => 'Holistic Hormone Health',
+                            'description' => 'A deep dive into balancing your cycle naturally with Dr. Jenkins',
+                            'link' => route('events')
+                        ],
+                        [
+                            'tag' => 'ONLINE',
+                            'image' => 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
+                            'date' => 'Oct 12, 2024',
+                            'time' => '10:00 AM',
+                            'title' => 'Mindful Motherhood',
+                            'description' => 'Building mental resilience and community during early parenting stages',
+                            'link' => route('events')
+                        ],
+                    ];
+                @endphp
+
+                @foreach ($events as $event)
+                    <div class="group bg-[#FAF0EE] rounded-3xl border border-[#DEA69E]/50 hover:border-[#DEA69E] p-3.5 flex flex-col justify-between shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 ease-out">
+                        <div>
+                            <!-- Image Container -->
+                            <div class="relative w-full h-48 sm:h-52 rounded-2xl overflow-hidden mb-4 bg-gray-100">
+                                <img src="{{ $event['image'] }}" alt="{{ $event['title'] }}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out">
+                                
+                                <!-- Badge/Tag -->
+                                <span class="absolute top-3 left-3 bg-[#e8a394]/95 backdrop-blur-xs text-[#782819] text-[11px] font-bold tracking-wider px-3 py-1 rounded-full uppercase shadow-xs transition-transform duration-300 group-hover:scale-105">
+                                    {{ $event['tag'] }}
+                                </span>
+                            </div>
+
+                            <!-- Content Details -->
+                            <div class="px-2">
+                                <!-- Date & Time -->
+                                <div class="flex items-center text-xs font-semibold text-[#c86d5c] mb-2 space-x-1.5">
+                                    <svg class="w-4 h-4 inline-block -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span>{{ $event['date'] }} &bull; {{ $event['time'] }}</span>
+                                </div>
+
+                                <!-- Title -->
+                                <h3 class="text-lg font-bold text-[#3D2B2B] mb-2 leading-tight group-hover:text-[#80382D] transition-colors duration-200">
+                                    {{ $event['title'] }}
+                                </h3>
+
+                                <!-- Description -->
+                                <p class="text-neutral-500 text-sm leading-relaxed mb-5 line-clamp-2">
+                                    {{ $event['description'] }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="px-2 pb-1 pt-2">
+                            <a href="{{ $event['link'] }}" class="block w-full text-center py-2.5 px-4 bg-[#f0c2b8] group-hover:bg-[#e8a89b] hover:!bg-[#C27A6F] text-[#782819] hover:!text-white font-bold text-sm rounded-2xl transition-all duration-300 shadow-xs hover:shadow-md transform active:scale-95">
+                                View Detail
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
 
     <!-- FLOATING WHATSAPP BUTTON -->
     <div class="fixed bottom-6 right-6 z-50">

@@ -24,25 +24,22 @@
     <!-- Right Side: Conditional Auth State & Ajukan Event -->
     <div class="flex items-center space-x-3 md:space-x-4">
         
-        <!-- Tombol Ajukan Event (WhatsApp / Mitra) -->
-        <a href="https://wa.me/" target="_blank" 
-           class="bg-[#6B8E78] hover:bg-[#587663] text-white text-xs md:text-sm font-semibold px-4 py-2 rounded-full border border-white/60 shadow-sm transition flex items-center space-x-1.5 transform hover:scale-[1.02]">
-            <span>Ajukan Event</span>
-        </a>
-
         @guest
             <!-- TAMPILAN SEBELUM LOGIN (GUEST) -->
             <a href="{{ route('login') }}" class="font-semibold text-[#2D1E1E] hover:underline px-2 text-sm">
                 Login
             </a>
             <a href="{{ route('register') }}" class="bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium px-4 py-2 rounded-full text-sm transition shadow-sm">
-                Join Membership
+                Ajukan Event
             </a>
         @endguest
 
         @auth
             <!-- TAMPILAN SETELAH LOGIN (USER AUTHENTICATED) -->
-            
+            <a href="{{ route('events') }}" class="bg-[#7A9E7E] hover:bg-[#5a7a66] text-white font-medium px-4 py-2 rounded-full text-sm transition shadow-sm">
+                Ajukan Event
+            </a>
+
             <!-- Notification Icon dengan Badge Unread -->
             <div class="relative" x-data="{ openNavNotif: false }">
                 <button @click="openNavNotif = !openNavNotif" class="text-[#2D1E1E] p-2 hover:bg-black/5 rounded-full transition relative flex items-center justify-center">
