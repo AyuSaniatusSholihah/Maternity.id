@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('thumbnail_image', 255)->nullable();
             $table->longText('content');
             $table->enum('status', ['draft', 'published'])->default('draft');
-            $table->uuid('author_id');
             $table->timestamps();
 
             $table->foreignUuid('author_id')->references('account_id')->on('admins')->onDelete('restrict');

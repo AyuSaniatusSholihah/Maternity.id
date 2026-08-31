@@ -10,14 +10,12 @@ return new class extends Migration
     {
         Schema::create('materials', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('event_id');
             $table->string('title', 255);
             $table->string('slug', 260)->unique();
             $table->text('description');
             $table->string('thumbnail_image', 255)->nullable();
             $table->string('content_link', 255);
             $table->unsignedInteger('viewer_count')->default(0);
-            $table->uuid('uploaded_by');
             $table->timestamps();
 
             $table->foreignUuid('event_id')->references('id')->on('events')->onDelete('cascade');

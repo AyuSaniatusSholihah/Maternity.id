@@ -9,12 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->uuid('account_id')->primary();
             $table->date('assigned_at');
             $table->enum('position', ['maintainer', 'consultant']);
             $table->string('number_contact', 15);
 
-            $table->foreignUuid('account_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreignUuid('account_id')->primary()->references('id')->on('accounts')->onDelete('cascade');
         });
     }
 
