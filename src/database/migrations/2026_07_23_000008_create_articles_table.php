@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('title', 255);
             $table->string('keywords', 255)->nullable();
             $table->string('slug', 260)->unique();
-            $table->text('short_description', 255)->nullable();
+            $table->text('short_description')->nullable();
             $table->string('thumbnail_image', 255)->nullable();
             $table->longText('content');
             $table->enum('status', ['draft', 'published'])->default('draft');
