@@ -25,8 +25,6 @@ return new class extends Migration
             $table->boolean('is_available')->default(true);
             $table->decimal('price', 10, 2)->default(0);
             $table->text('gc_invitation_link');
-
-            $table->foreignUuid('created_by')->references('account_id')->on('admins')->onDelete('restrict');
             $table->timestamps();
         });
     }

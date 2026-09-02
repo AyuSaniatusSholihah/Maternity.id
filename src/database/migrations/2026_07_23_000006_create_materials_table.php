@@ -17,10 +17,7 @@ return new class extends Migration
             $table->string('content_link', 255);
             $table->unsignedInteger('viewer_count')->default(0);
             $table->timestamps();
-
-            $table->foreignUuid('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->foreignUuid('uploaded_by')->references('account_id')->on('admins')->onDelete('restrict');
-        });
+       });
     }
 
     public function down(): void

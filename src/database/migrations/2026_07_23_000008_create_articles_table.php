@@ -18,8 +18,6 @@ return new class extends Migration
             $table->longText('content');
             $table->enum('status', ['draft', 'published'])->default('draft');
             $table->timestamps();
-
-            $table->foreignUuid('author_id')->references('account_id')->on('admins')->onDelete('restrict');
         });
     }
 

@@ -17,9 +17,6 @@ return new class extends Migration
             $table->string('address');
             $table->integer('zip_code');
             $table->string('institution')->nullable();
-
-            $table->foreignUuid('account_id')->primary()->references('id')->on('accounts')->onDelete('cascade');
-            $table->foreignUuid('provision_by')->nullable()->references('account_id')->on('admins')->onDelete('restrict');
         });
     }
 
