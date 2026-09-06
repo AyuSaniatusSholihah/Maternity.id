@@ -15,12 +15,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Run seeders in dependency order
+        // AdminSeeder needs member accounts to exist first (selects random member to make admin)
         $this->call([
             AccountSeeder::class,
-            AdminSeeder::class,
             MemberSeeder::class,
-            EventSeeder::class,
+            AdminSeeder::class,
             MaterialSeeder::class,
+            EventSeeder::class,
             ArticleSeeder::class,
         ]);
     }

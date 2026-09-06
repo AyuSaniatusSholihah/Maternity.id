@@ -30,4 +30,7 @@ class Admin extends Model
     public function articleWritten(): HasMany {
         return $this->hasMany(Article::class, 'author_id', 'account_id');
     }
+    public function materialsUploaded(): HasMany {
+        return $this->hasMany(Material::class, 'uploaded_by', 'account_id');
+    }
 }
