@@ -2,104 +2,83 @@
 
 namespace Database\Seeders;
 
-use App\Models\Material;
 use App\Models\Admin;
+use App\Models\Event;
+use App\Models\Material;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class MaterialSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
-     * Run the database seeds.
+     * Seed the materials table.
      */
     public function run(): void
     {
-        // Get the admin (should be created by AdminSeeder)
         $admin = Admin::first();
-        $adminId = $admin ? $admin->account_id : null;
+        $event = Event::first();
 
-        // Generate 10 dummy materials
-        $materials = [];
-
-        $titles = [
-            'Panduan Mindful Motherhood',
-            'Hormone Balance Guide',
-            'Panduan Yoga Prenatal',
-            'Newborn Care Manual',
-            'Hypnobirthing untuk Persalinan Tenang',
-            'Meal Prep Trimester Ketiga',
-            'Panduan Laktasi Lengkap',
-            'Kesehatan Mental Ibu Hamil',
-            'Panduan Persalinan Alami',
-            'Tips Menyusui yang Benar',
-        ];
-
-        $slugs = [
-            'panduan-mindful-motherhood',
-            'hormone-balance-guide',
-            'panduan-yoga-prenatal',
-            'newborn-care-manual',
-            'hypnobirthing-untuk-persalinan-tenang',
-            'meal-prep-trimester-ketiga',
-            'panduan-laktasi-lengkap',
-            'kesehatan-mental-ibu-hamil',
-            'panduan-persalinan-alami',
-            'tips-menyusui-yang-benar',
-        ];
-
-        $descriptions = [
-            'E-book lengkap tentang mindfulness untuk ibu hamil dan ibu muda.',
-            'Panduan menyeimbangkan hormon kehamilan secara alami.',
-            'Gerakan yoga aman untuk ibu hamil di setiap trimester.',
-            'Panduan lengkap perawatan bayi baru lahir dan pijat bayi.',
-            'Teknik pernapasan dan relaksasi untuk persalinan yang lebih mudah.',
-            'Resep-resep sehat untuk persiapan persalinan dan menyusui.',
-            'Panduan lengkap menyusui dan perawatan payudara.',
-            'Panduan menjaga kesehatan mental selama kehamilan.',
-            'Panduan komprehensif untuk persalinan alami yang aman.',
-            'Tips dan trik menyusui yang benar untuk ibu baru.',
-        ];
-
-        $thumbnails = [
-            'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=400',
-            'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=400',
-            'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=400',
-            'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=400',
-            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400',
-            'https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&q=80&w=400',
-            'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=400',
-            'https://images.unsplash.com/photo-1516979137511-6b836815e097?auto=format&fit=crop&q=80&w=400',
-            'https://images.unsplash.com/photo-1522312346375-d1a52e2b93b1?auto=format&fit=crop&q=80&w=400',
-            'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=400',
-        ];
-
-        $contentLinks = [
-            'https://drive.google.com/file/d/1mindful_ebook/view',
-            'https://drive.google.com/file/d/1hormone_ebook/view',
-            'https://drive.google.com/file/d/1yoga_ebook/view',
-            'https://drive.google.com/file/d/1newborn_ebook/view',
-            'https://drive.google.com/file/d/1hypno_ebook/view',
-            'https://drive.google.com/file/d/1meal_ebook/view',
-            'https://drive.google.com/file/d/1laktasi_ebook/view',
-            'https://drive.google.com/file/d/1mental_ebook/view',
-            'https://drive.google.com/file/d/1persalinan_ebook/view',
-            'https://drive.google.com/file/d/1menyusui_ebook/view',
-        ];
-
-        for ($i = 0; $i < 10; $i++) {
-            $materials[] = [
-                'id' => 'm0000000-0000-0000-0000-00000000000' . ($i + 1),
-                'title' => $titles[$i],
-                'slug' => $slugs[$i],
-                'description' => $descriptions[$i],
-                'thumbnail_image' => $thumbnails[$i],
-                'content_link' => $contentLinks[$i],
-                'viewer_count' => random_int(100, 300),
-                'uploaded_by' => $adminId,
-            ];
+        if (!$admin || !$event) {
+            return;
         }
 
-        foreach ($materials as $material) {
-            Material::create($material);
+        $materials = [
+            [
+                'title' => 'Panduan Lengkap Kehamilan Trimester Pertama',
+                'description' => 'E-book komprehensif yang mencakup semua informasi penting untuk trimester pertama kehamilan Anda.',
+                'content_link' => 'https://example.com/ebooks/trimester-pertama.pdf',
+            ],
+            [
+                'title' => 'Nutrisi Ibu Hamil: Resep dan Panduan Lengkap',
+                'description' => 'Koleksi resep bergizi khusus untuk ibu hamil dengan panduan nutrisi yang detail.',
+                'content_link' => 'https://example.com/ebooks/nutrisi-ibu-hamil.pdf',
+            ],
+            [
+                'title' => 'Persiapan Persalinan Normal: Teknik dan Meditasi',
+                'description' => 'Panduan praktis tentang teknik pernapasan, meditasi, dan persiapan mental untuk persalinan normal.',
+                'content_link' => 'https://example.com/ebooks/persiapan-persalinan.pdf',
+            ],
+            [
+                'title' => 'Perawatan Bayi Baru Lahir: Panduan Orang Tua Baru',
+                'description' => 'Panduan lengkap untuk memahami dan merawat bayi baru lahir di minggu-minggu pertama.',
+                'content_link' => 'https://example.com/ebooks/perawatan-bayi.pdf',
+            ],
+            [
+                'title' => 'Menyusui: Panduan Praktis dan Solusi Masalah',
+                'description' => 'E-book berisi teknik menyusui yang benar, tips, dan solusi untuk masalah umum menyusui.',
+                'content_link' => 'https://example.com/ebooks/panduan-menyusui.pdf',
+            ],
+            [
+                'title' => 'Kesehatan Mental Ibu Hamil dan Postpartum',
+                'description' => 'Informasi penting tentang kesehatan mental selama kehamilan dan masa postpartum.',
+                'content_link' => 'https://example.com/ebooks/kesehatan-mental-ibu.pdf',
+            ],
+            [
+                'title' => 'Olahraga dan Fitness Selama Kehamilan',
+                'description' => 'Program latihan yang aman dan efektif untuk ibu hamil dengan video tutorial.',
+                'content_link' => 'https://example.com/ebooks/olahraga-hamil.pdf',
+            ],
+            [
+                'title' => 'Panduan Pemeriksaan Kehamilan dan USG',
+                'description' => 'Penjelasan lengkap tentang pemeriksaan kehamilan rutin dan interpretasi hasil USG.',
+                'content_link' => 'https://example.com/ebooks/pemeriksaan-kehamilan.pdf',
+            ],
+        ];
+
+        foreach ($materials as $index => $material) {
+            Material::create([
+                'title' => $material['title'],
+                'slug' => Str::slug($material['title']),
+                'description' => $material['description'],
+                'content_link' => $material['content_link'],
+                'thumbnail_image' => null,
+                'viewer_count' => rand(10, 500),
+                'event_id' => $event->id,
+                'uploaded_by' => $admin->account_id,
+            ]);
         }
     }
 }

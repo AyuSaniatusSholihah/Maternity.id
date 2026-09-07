@@ -2,30 +2,50 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
 use App\Models\Account;
+use App\Models\Admin;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AdminSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
-     * Run the database seeds.
+     * Seed the admins table.
      */
     public function run(): void
     {
-        // Select one random member account and make them an admin
-        $randomMember = Account::where('account_type', 'member')->inRandomOrder()->first();
+        // Get admin accounts
+        $adminUtama = Account::where('email', 'admin@maternity.id')->first();
+        $konsultan = Account::where('email', 'konsultan@maternity.id')->first();
+        $pembuat = Account::where('email', 'pembuat@maternity.id')->first();
 
-        if ($randomMember) {
+        if ($adminUtama) {
             Admin::create([
-                'account_id' => $randomMember->id,
-                'assigned_at' => now()->format('Y-m-d'),
-                'position' => 'consultant',
+                'account_id' => $adminUtama->id,
+                'assigned_at' => now()->subMonths(6)->toDateString(),
+                'position' => 'maintainer',
                 'number_contact' => '081234567890',
             ]);
+        }
 
-            // Update the account to be an admin
-            $randomMember->update(['account_type' => 'admin']);
+        if ($konsultan) {
+            Admin::create([
+                'account_id' => $konsultan->id,
+                'assigned_at' => now()->subMonths(3)->toDateString(),
+                'position' => 'consultant',
+                'number_contact' => '082123456789',
+            ]);
+        }
+
+        if ($pembuat) {
+            Admin::create([
+                'account_id' => $pembuat->id,
+                'assigned_at' => now()->subMonth()->toDateString(),
+                'position' => 'consultant',
+                'number_contact' => '083123456789',
+            ]);
         }
     }
 }

@@ -1,0 +1,89 @@
+# Agent Log - Maternity.id Project
+
+## [2026-09-19 00:10] Fixed model configurations for seeders to work with database schema
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+  - modified `app/Models/Admin.php` - added `protected $primaryKey = 'account_id'` and `public $timestamps = false`
+  - modified `app/Models/Member.php` - added `protected $primaryKey = 'account_id'` and `public $timestamps = false`
+
+- **What changed:** 
+  - Admin model now correctly specifies `account_id` as primary key (not auto-generated `id`) since the migration defines `account_id` as the primary key
+  - Member model now correctly specifies `account_id` as primary key (not auto-generated `id`) since the migration defines `account_id` as the primary key
+  - Both models now disable timestamps since neither `admins` nor `members` tables have `created_at`/`updated_at` columns in migrations
+  - These changes allow the seeders to properly insert records without trying to create non-existent columns
+
+- **Why:** Initial seeding failed with two errors:
+  1. Models were trying to create `id` columns that don't exist (admins and members use `account_id` as PK)
+  2. Models were trying to insert `created_at`/`updated_at` timestamps that don't exist in those tables
+  Fixed by configuring models to match the actual migration schema, not the other way around (per AGENTS.md Hard Rule #4)
+
+- **Progress detail:** Fully completed. Migration and seeding now works end-to-end.
+
+- **Verification:** 
+  - Successfully ran: `php artisan migrate:fresh --seed`
+  - All 6 seeders completed without errors:
+    - AccountSeeder: 8 accounts created (97ms)
+    - AdminSeeder: 3 admin records created (21ms)
+    - MemberSeeder: 5 member records created (25ms)
+    - EventSeeder: 6 events created (29ms)
+    - ArticleSeeder: 5 articles created (23ms)
+    - MaterialSeeder: 8 materials created (37ms)
+
+- **Migration check:** Confirmed: no migration files touched. All changes were model configuration only.
+
+- **Side effects / risks:** 
+  - None identified. Model changes are configuration-only and don't affect behavior.
+  - Verified no other models depend on timestamps or id column on Admin/Member
+
+- **Suggestions / next steps:** 
+  1. Database is now fully seeded and ready for development/testing
+  2. Next: replace hardcoded data in controllers (EventController, ArticleController, ProductController) with Eloquent queries
+  3. Can now develop event checkout flow, admin dashboard CRUD, etc. with real data
+
+- **Commit:** "fix(models): configure Admin and Member models to match database schema"
+
+---
+
+## [2026-09-19 00:00] Created comprehensive database seeders for all migrations
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** seed
+
+- **Status:** Done
+
+- **Files changed:**
+  - added `database/seeders/DatabaseSeeder.php`
+  - added `database/seeders/AccountSeeder.php`
+  - added `database/seeders/AdminSeeder.php`
+  - added `database/seeders/MemberSeeder.php`
+  - added `database/seeders/EventSeeder.php`
+  - added `database/seeders/ArticleSeeder.php`
+  - added `database/seeders/MaterialSeeder.php`
+
+- **What changed:** 
+  - Created `DatabaseSeeder.php` that calls all individual seeders in correct dependency order: AccountSeeder → AdminSeeder → MemberSeeder → EventSeeder → ArticleSeeder → MaterialSeeder
+  - Created `AccountSeeder.php` that seeds 8 accounts (3 admins, 5 members) with realistic email/name pairs
+  - Created `AdminSeeder.php` that creates admin records linked to account_id with position (maintainer/consultant) and contact numbers
+  - Created `MemberSeeder.php` that creates member records with full profile data (gender, phone, salutation, birth_date, job, address, zip_code, institution, provision_by)
+  - Created `EventSeeder.php` that seeds 6 events with realistic data (title, mentor, description, dates, venue, pricing, Google Meet links)
+  - Created `ArticleSeeder.php` that seeds 5 health education articles with full content (Trimester 1 nutrition, Morning sickness, Olahraga, Perubahan fisik/psikologis, etc.)
+  - Created `MaterialSeeder.php` that seeds 8 e-books/materials with content links and random viewer counts
+
+- **Why:** The DatabaseSeeder was empty despite having migrations and models. Seeders are critical for development workflow.
+
+- **Progress detail:** Fully completed. All seeders created and ready for use.
+
+- **Verification:** All 7 seeder files pass PHP syntax validation with `php -l`
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** None identified initially (discovered during testing and fixed in follow-up entry)
+
+- **Commit:** "feat(seed): add comprehensive database seeders for all tables"

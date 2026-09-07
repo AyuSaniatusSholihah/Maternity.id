@@ -2,131 +2,70 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account;
+use App\Models\Admin;
 use App\Models\Member;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MemberSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
-     * Run the database seeds.
+     * Seed the members table.
      */
     public function run(): void
     {
-        $members = [
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000001',
-                'salutation' => 'Ibu',
-                'gender' => 'female',
-                'birth_date' => '1992-05-15',
-                'date_of_pregnancy' => '2026-12-25',
-                'phone_number' => '081234567890',
-                'address' => 'Jl. Merdeka No. 123, Surakarta',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000001',
-            ],
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000002',
-                'salutation' => 'Bunda',
-                'gender' => 'female',
-                'birth_date' => '1990-08-22',
-                'date_of_pregnancy' => '2026-11-10',
-                'phone_number' => '081234567891',
-                'address' => 'Jl. Ahmad Yani No. 45, Jogja',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000002',
-            ],
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000003',
-                'salutation' => 'Mbak',
-                'gender' => 'female',
-                'birth_date' => '1995-03-10',
-                'date_of_pregnancy' => null,
-                'phone_number' => '081234567892',
-                'address' => 'Jl. Pahlawan No. 67, Surakarta',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000001',
-            ],
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000004',
-                'salutation' => 'Ibu',
-                'gender' => 'female',
-                'birth_date' => '1988-11-05',
-                'date_of_pregnancy' => '2026-10-15',
-                'phone_number' => '081234567893',
-                'address' => 'Jl. Slamet Riyadi No. 89, Solo',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000003',
-            ],
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000005',
-                'salutation' => 'Ibu',
-                'gender' => 'female',
-                'birth_date' => '1993-07-30',
-                'date_of_pregnancy' => '2026-09-20',
-                'phone_number' => '081234567894',
-                'address' => 'Jl. Diponegoro No. 101, Jogja',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000002',
-            ],
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000006',
-                'salutation' => 'Mbak',
-                'gender' => 'female',
-                'birth_date' => '1997-01-18',
-                'date_of_pregnancy' => null,
-                'phone_number' => '081234567895',
-                'address' => 'Jl. Pakuwon No. 22, Surakarta',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000004',
-            ],
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000007',
-                'salutation' => 'Ibu',
-                'gender' => 'female',
-                'birth_date' => '1991-04-25',
-                'date_of_pregnancy' => '2026-08-30',
-                'phone_number' => '081234567896',
-                'address' => 'Jl. Kebangkitan No. 55, Jogja',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000005',
-            ],
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000008',
-                'salutation' => 'Bunda',
-                'gender' => 'female',
-                'birth_date' => '1994-09-12',
-                'date_of_pregnancy' => '2026-12-01',
-                'phone_number' => '081234567897',
-                'address' => 'Jl. Magelang No. 78, Solo',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000001',
-            ],
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000009',
-                'salutation' => 'Ibu',
-                'gender' => 'female',
-                'birth_date' => '1996-06-08',
-                'date_of_pregnancy' => '2026-11-25',
-                'phone_number' => '081234567898',
-                'address' => 'Jl. Prawirotaman No. 33, Jogja',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000003',
-            ],
-            [
-                'account_id' => 'm0000000-0000-0000-0000-000000000010',
-                'salutation' => 'Mbak',
-                'gender' => 'female',
-                'birth_date' => '1992-12-20',
-                'date_of_pregnancy' => null,
-                'phone_number' => '081234567899',
-                'address' => 'Jl. Lawu No. 44, Solo',
-                'is_profile_complete' => true,
-                'provision_by' => 'a0000000-0000-0000-0000-000000000002',
-            ],
+        $memberEmails = [
+            'ibu.siti@email.com',
+            'ibu.dina@email.com',
+            'ibu.eka@email.com',
+            'ibu.rini@email.com',
+            'ibu.lestari@email.com',
         ];
 
-        foreach ($members as $member) {
-            Member::create($member);
+        // Get a consultant admin for provisioning
+        $provisioner = Admin::where('position', 'consultant')->first();
+
+        foreach ($memberEmails as $index => $email) {
+            $account = Account::where('email', $email)->first();
+
+            if ($account) {
+                Member::create([
+                    'account_id' => $account->id,
+                    'gender' => 'female',
+                    'phone_number' => 6281200000000 + $index,
+                    'salutation' => 'Ibu',
+                    'birth_date' => now()->subYears(25 + $index)->toDateString(),
+                    'job' => match($index) {
+                        0 => 'Karyawan Swasta',
+                        1 => 'Guru',
+                        2 => 'Konsultan',
+                        3 => 'Wiraswasta',
+                        4 => 'Ibu Rumah Tangga',
+                        default => 'Profesi Lainnya',
+                    },
+                    'address' => match($index) {
+                        0 => 'Jl. Merdeka No. 123, Jakarta',
+                        1 => 'Jl. Sudirman No. 45, Bandung',
+                        2 => 'Jl. Gatot Subroto No. 67, Surabaya',
+                        3 => 'Jl. Ahmad Yani No. 89, Medan',
+                        4 => 'Jl. Diponegoro No. 101, Yogyakarta',
+                        default => 'Alamat Tidak Tersedia',
+                    },
+                    'zip_code' => 12000 + $index * 1000,
+                    'institution' => match($index) {
+                        0 => 'RSIA Bunda Jakarta',
+                        1 => 'RSIA Citra Bandung',
+                        2 => 'RSIA Mitra Surabaya',
+                        3 => 'RSIA Murni Medan',
+                        4 => 'RSIA Cakti Yogyakarta',
+                        default => null,
+                    },
+                    'provision_by' => $provisioner?->account_id,
+                ]);
+            }
         }
     }
 }
