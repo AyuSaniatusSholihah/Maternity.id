@@ -23,6 +23,8 @@ Route::get('/', function () {
 // Guest & Member Journey Routes
 Route::get('/events', [EventController::class, 'index'])->name('events');
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{slug}/verification', [EventController::class, 'verification'])->name('events.verification');
+Route::get('/events/{slug}/approved', [EventController::class, 'approved'])->name('events.approved');
 
 Route::get('/seminars', function () {
     return view('landing');
@@ -42,6 +44,41 @@ Route::get('/product', [ProductController::class, 'index'])->name('product');
 Route::get('/mitra', function () {
     return view('landing');
 })->name('mitra.index');
+
+// Admin Knowledge & Portal Routes
+Route::prefix('admin')->group(function () {
+    Route::get('/', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    Route::get('/login', function () {
+        return view('admin.login');
+    })->name('admin.login');
+
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.home');
+
+    Route::get('/approvals', function () {
+        return view('admin.dashboard');
+    })->name('admin.approvals');
+
+    Route::get('/articles', function () {
+        return view('admin.dashboard');
+    })->name('admin.articles');
+
+    Route::get('/events', function () {
+        return view('admin.dashboard');
+    })->name('admin.events');
+
+    Route::get('/library', function () {
+        return view('admin.dashboard');
+    })->name('admin.library');
+
+    Route::get('/content-library', function () {
+        return view('admin.dashboard');
+    })->name('admin.content-library');
+});
 
 // Member Protected Routes
 Route::middleware(['auth'])->group(function () {
