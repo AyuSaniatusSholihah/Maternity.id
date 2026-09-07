@@ -164,7 +164,7 @@
 
                                 <!-- Event Title -->
                                 <h3 class="text-xs min-[400px]:text-sm sm:text-base font-bold text-[#2A1614] leading-snug group-hover:text-[#8C433C] transition line-clamp-2" style="font-family: 'DM Serif Display', serif;">
-                                    <a href="#">
+                                    <a href="{{ route('events.show', $event['slug']) }}">
                                         {{ $event['title'] }}
                                     </a>
                                 </h3>
@@ -187,11 +187,10 @@
                                     </span>
                                 </div>
 
-                                <button type="button" 
-                                        onclick="alert('Pendaftaran untuk event {{ $event['title'] }} akan segera dibuka!')"
-                                        class="w-full min-[480px]:w-auto text-center px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#FAF0EE] hover:bg-[#8C433C] text-[#8C433C] hover:text-white text-[10px] min-[400px]:text-xs font-bold transition duration-200 border border-[#DEA69E]/50">
+                                <a href="{{ route('events.show', $event['slug']) }}" 
+                                   class="w-full min-[480px]:w-auto text-center px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#FAF0EE] hover:bg-[#8C433C] text-[#8C433C] hover:text-white text-[10px] min-[400px]:text-xs font-bold transition duration-200 border border-[#DEA69E]/50">
                                     Lihat Detail
-                                </button>
+                                </a>
                             </div>
                         </div>
 

@@ -198,7 +198,7 @@ class EventController extends Controller
     }
 
     /**
-     * Tampilkan Detail Event / Workshop
+     * Tampilkan Detail Event / Checkout Pelatihan (Public Display)
      */
     public function show($slug)
     {
@@ -213,12 +213,75 @@ class EventController extends Controller
         }
 
         if (!$event) {
-            abort(404, 'Event tidak ditemukan.');
+            $event = $allEvents[0] ?? [
+                'id' => '1',
+                'slug' => 'mindful-motherhood',
+                'title' => 'Pelatihan Yoga',
+                'price' => 'Rp60.000',
+            ];
         }
 
         return view('events.show', [
             'event' => (object) $event,
-            'relatedEvents' => array_slice(array_values(array_filter($allEvents, fn($e) => $e['slug'] !== $slug)), 0, 3)
+            'relatedEvents' => array_slice(array_values(array_filter($allEvents, fn($e) => ($e['slug'] ?? '') !== $slug)), 0, 3)
+        ]);
+    }
+
+    /**
+     * Tampilkan Halaman Status Verifikasi Pembayaran
+     */
+    public function verification($slug = 'mindful-motherhood')
+    {
+        $allEvents = $this->getCuratedEvents();
+        $event = null;
+
+        foreach ($allEvents as $item) {
+            if ($item['slug'] === $slug) {
+                $event = $item;
+                break;
+            }
+        }
+
+        if (!$event) {
+            $event = $allEvents[0] ?? [
+                'id' => '1',
+                'slug' => 'mindful-motherhood',
+                'title' => 'Pelatihan Yoga',
+                'price' => 'Rp60.000',
+            ];
+        }
+
+        return view('events.verification', [
+            'event' => (object) $event,
+        ]);
+    }
+
+    /**
+     * Tampilkan Halaman Pendaftaran Diterima / Terverifikasi Admin
+     */
+    public function approved($slug = 'mindful-motherhood')
+    {
+        $allEvents = $this->getCuratedEvents();
+        $event = null;
+
+        foreach ($allEvents as $item) {
+            if ($item['slug'] === $slug) {
+                $event = $item;
+                break;
+            }
+        }
+
+        if (!$event) {
+            $event = $allEvents[0] ?? [
+                'id' => '1',
+                'slug' => 'mindful-motherhood',
+                'title' => 'Pelatihan Yoga',
+                'price' => 'Rp60.000',
+            ];
+        }
+
+        return view('events.approved', [
+            'event' => (object) $event,
         ]);
     }
 }
