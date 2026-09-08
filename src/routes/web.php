@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\EbookController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\MyController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,38 +21,70 @@ Route::get('/', function () {
 })->name('home');
 
 // Guest & Member Journey Routes
-Route::get('/events', function () {
-    return view('landing');
-})->name('events');
+Route::get('/events', [EventController::class, 'index'])->name('events');
+Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{slug}/verification', [EventController::class, 'verification'])->name('events.verification');
+Route::get('/events/{slug}/approved', [EventController::class, 'approved'])->name('events.approved');
 
 Route::get('/seminars', function () {
     return view('landing');
 })->name('seminars.index');
 
-Route::get('/library', function () {
-    return view('landing');
-})->name('library');
+Route::get('/library', [EbookController::class, 'index'])->name('library');
 
-Route::get('/articles', function () {
-    return view('landing');
-})->name('articles.index');
+Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 
 Route::get('/consult', function () {
     return view('landing');
 })->name('consult');
 
+Route::get('/product', [ProductController::class, 'index'])->name('product');
+
 Route::get('/mitra', function () {
     return view('landing');
 })->name('mitra.index');
 
+// Admin Knowledge & Portal Routes
+Route::prefix('admin')->group(function () {
+    Route::get('/', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    Route::get('/login', function () {
+        return view('admin.login');
+    })->name('admin.login');
+
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.home');
+
+    Route::get('/approvals', function () {
+        return view('admin.dashboard');
+    })->name('admin.approvals');
+
+    Route::get('/articles', function () {
+        return view('admin.dashboard');
+    })->name('admin.articles');
+
+    Route::get('/events', function () {
+        return view('admin.dashboard');
+    })->name('admin.events');
+
+    Route::get('/library', function () {
+        return view('admin.dashboard');
+    })->name('admin.library');
+
+    Route::get('/content-library', function () {
+        return view('admin.dashboard');
+    })->name('admin.content-library');
+});
+
 // Member Protected Routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', function () {
-        return view('landing');
-    })->name('profile.edit');
-
-    Route::get('/my/account', [App\Http\Controllers\MyController::class, 'viewAccount'])->name('my.account');
-    Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
+    Route::get('/profile', [MyController::class, 'viewAccount'])->name('profile.edit');
+    Route::get('/my/account', [MyController::class, 'viewAccount'])->name('my.account');
+    Route::match(['get', 'post'], '/logout', [LogoutController::class, 'logout'])->name('logout');
 
     Route::get('/my-subscriptions', function () {
         return view('landing');

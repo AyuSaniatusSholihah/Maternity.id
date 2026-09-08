@@ -1,104 +1,231 @@
 # 7. Data Dictionary
 Data dictionary berikut mendefinisikan entitas utama pada basis data Maternity.id beserta atribut, tipe data, dan deskripsinya, mengacu pada kebutuhan fungsional di bagian SRS.
+> Diperbarui: Penambahan tabel `orders` dan field baru di tabel `member` sesuai alur pembayaran manual.
 
 ## 7.1 Entity Relationship Overview
-Entitas inti: `users`, `seminars`, `partners`, `subscriptions`, `payments`, `content_library`, `articles`, dan `bookmarks`. Relasi utama: satu user diautentikasi via Google OAuth dan dapat memiliki banyak subscriptions (kategori `ebook_all_access` dan/atau `seminar_access`) serta banyak bookmark; satu seminar dimiliki oleh satu partner dan dapat memiliki banyak subscriptions (`seminar_access`); konten pada `content_library` dapat dikaitkan ke seminar tertentu untuk menentukan hak akses otomatis. Layanan Fasilitator Mitra/Tour Guide Event sengaja tidak memiliki tabel tersendiri karena berupa tautan langsung ke WhatsApp CP Tim Maternity.id tanpa formulir maupun penyimpanan data di sisi aplikasi.
+Entitas inti: `account`, `member`, `admin`, `workshop`, `material`, `orders`, `membership`, `workshop_booking`, `article`, `testimonial`, dan `bookmark`.
 
-## 7.2 Tabel: users
+Relasi utama:
+- Satu `account` diautentikasi via Google OAuth dan dapat menjadi `member` atau `admin`.
+- Setelah login, sistem mengecek `member.is_profile_complete`. Jika `false`, user diarahkan ke `/complete-profile` untuk mengisi `phone_number`, `address`, dan data diri lainnya.
+- Setelah profil lengkap, `member` dapat membuat `orders` yang bersifat polymorphic ke `membership` (langganan ebook) atau `workshop_booking` (langganan seminar).
+- `orders` menyimpan `payment_proof` (bukti transfer) dan `status` alur pembayaran manual.
+- Admin memverifikasi `orders` via panel `admin/orders`, lalu mengaktifkan hak akses melalui `membership` atau `workshop_booking`.
+- Layanan Fasilitator Mitra tidak memiliki tabel — berupa direct link WhatsApp tanpa formulir.
+
+---
+
+## 7.2 Tabel: account
+Identitas utama semua pengguna. Semua aktor berasal dari sini via Google OAuth.
+
 | Field | Tipe Data | Deskripsi | Constraint |
 |---|---|---|---|
-| user_id | BIGINT | Identifier unik pengguna | PK, Auto Increment |
-| google_id | VARCHAR(100) | ID unik akun Google (sub claim) dari hasil OAuth | NOT NULL, UNIQUE |
-| full_name | VARCHAR(150) | Nama lengkap pengguna (dari profil Google) | NOT NULL |
-| email | VARCHAR(150) | Alamat email akun Google pengguna | NOT NULL, UNIQUE |
-| profile_picture_url | VARCHAR(255) | URL foto profil dari akun Google | NULLABLE |
-| phone_number | VARCHAR(20) | Nomor HP/WhatsApp pengguna (diisi manual di profil) | NULLABLE |
-| role | ENUM | guest, member, admin | NOT NULL, Default: member |
-| created_at | TIMESTAMP | Waktu akun pertama kali login | NOT NULL |
-| updated_at | TIMESTAMP | Waktu terakhir data diperbarui | NOT NULL |
+| `id` | CHAR(36) | UUID identitas unik pengguna | PK, UNIQUE, NOT NULL |
+| `email` | VARCHAR(255) | Alamat email akun Google | NOT NULL, UNIQUE |
+| `name` | VARCHAR(255) | Nama dari profil Google | NOT NULL |
+| `profile_img` | VARCHAR(255) | URL foto profil dari Google | NULLABLE |
 
-## 7.3 Tabel: partners
+---
+
+## 7.3 Tabel: user_session
+Menyimpan riwayat sesi login. Digunakan untuk validasi token dan tracking device.
+
 | Field | Tipe Data | Deskripsi | Constraint |
 |---|---|---|---|
-| partner_id | BIGINT | Identifier unik mitra/owner seminar | PK, Auto Increment |
-| owner_name | VARCHAR(150) | Nama pemilik seminar/pelatihan | NOT NULL |
-| phone_number | VARCHAR(20) | Nomor WhatsApp mitra (untuk koordinasi internal Admin) | NOT NULL |
-| submission_status | ENUM | menunggu_konfirmasi, terkonfirmasi, ditolak | Default: menunggu_konfirmasi |
-| submitted_at | TIMESTAMP | Waktu pengajuan kolaborasi | NOT NULL |
+| `id` | CHAR(36) | UUID sesi | PK, UNIQUE |
+| `account_id` | CHAR(36) | Relasi ke `account` | FK → account.id, NOT NULL |
+| `device_type` | VARCHAR | Mobile / Desktop | NULLABLE |
+| `os_name` | VARCHAR | Sistem operasi | NULLABLE |
+| `os_version` | VARCHAR | Versi OS | NULLABLE |
+| `browser_name` | VARCHAR | Nama browser | NULLABLE |
+| `browser_version` | VARCHAR | Versi browser | NULLABLE |
+| `token` | TEXT | Sesi token | NOT NULL |
+| `logged_in_at` | DATETIME | Waktu login | NOT NULL |
+| `logged_out_at` | DATETIME | Waktu logout (null = aktif) | NULLABLE |
 
-## 7.4 Tabel: seminars
+---
+
+## 7.4 Tabel: member
+Data profil member. Dilengkapi melalui halaman `/complete-profile` setelah login Google pertama kali.
+
 | Field | Tipe Data | Deskripsi | Constraint |
 |---|---|---|---|
-| seminar_id | BIGINT | Identifier unik seminar/pelatihan | PK, Auto Increment |
-| partner_id | BIGINT | Relasi ke tabel partners | FK → partners.partner_id |
-| seminar_name | VARCHAR(200) | Nama seminar/pelatihan | NOT NULL |
-| topic | VARCHAR(150) | Topik/kategori seminar | NOT NULL |
-| format | ENUM | online, offline, hybrid | NOT NULL |
-| price | DECIMAL(12,2) | Harga langganan akses seminar ini | NOT NULL |
-| location_or_link | VARCHAR(255) | Alamat maps (offline) atau tautan online meeting | NOT NULL |
-| benefit_info | TEXT | Informasi benefit/nilai tambah seminar | NULLABLE |
-| poster_url | VARCHAR(255) | URL poster seminar | NULLABLE |
-| schedule_date | DATE | Tanggal pelaksanaan seminar | NOT NULL |
-| schedule_time | TIME | Waktu pelaksanaan seminar | NOT NULL |
-| status | ENUM | draft, published, closed | Default: draft |
+| `account_id` | CHAR(36) | Relasi ke `account` | PK, FK → account.id |
+| `salutation` | ENUM | Sapaan: Ibu / Bunda / Mbak / dsb. | NOT NULL |
+| `gender` | ENUM | Jenis kelamin | NOT NULL |
+| `birth_date` | DATE | Tanggal lahir | NOT NULL |
+| `date_of_pregnancy` | DATE | Perkiraan hari lahir (HPL) | NULLABLE |
+| `phone_number` | VARCHAR(20) | Nomor HP/WhatsApp aktif | NULLABLE |
+| `address` | TEXT | Alamat domisili member | NULLABLE |
+| `is_profile_complete` | BOOLEAN | Flag: apakah data diri sudah dilengkapi via `/complete-profile`. `false` = user akan diredirect sebelum checkout. Diset `true` setelah form berhasil disubmit. | NOT NULL, DEFAULT false |
+| `provision_by` | CHAR(36) | Admin yang mendaftarkan member | FK → admin.account_id, NULLABLE |
 
-## 7.5 Tabel: subscriptions
-Menggantikan konsep booking/registrasi checkout otomatis. Setiap baris mewakili satu langganan yang diajukan pengguna dan ditetapkan (diaktifkan) secara manual oleh Admin setelah pembayaran dikonfirmasi via WhatsApp — tanpa memerlukan kode akses dari pengguna.
+---
+
+## 7.5 Tabel: admin
+Data profil admin yang mengelola konten, verifikasi order, langganan, dan keuangan.
+
 | Field | Tipe Data | Deskripsi | Constraint |
 |---|---|---|---|
-| subscription_id | BIGINT | Identifier unik langganan | PK, Auto Increment |
-| user_id | BIGINT | Relasi ke tabel users | FK → users.user_id |
-| subscription_type | ENUM | ebook_all_access, seminar_access | NOT NULL |
-| seminar_id | BIGINT | Relasi ke tabel seminars; wajib diisi jika subscription_type = seminar_access, NULL jika ebook_all_access | FK → seminars.seminar_id, NULLABLE |
-| start_date | DATE | Tanggal mulai langganan | NULLABLE hingga diaktifkan Admin |
-| end_date | DATE | Tanggal berakhir langganan, sesuai rentang waktu yang diajukan saat pembayaran | NULLABLE hingga diaktifkan Admin |
-| status | ENUM | menunggu_pembayaran, aktif, kedaluwarsa, dibatalkan | Default: menunggu_pembayaran |
-| assigned_by_admin_id | BIGINT | Relasi ke tabel users (admin) yang menetapkan/mengaktifkan langganan ini | FK → users.user_id, NULLABLE |
-| created_at | TIMESTAMP | Waktu pengajuan langganan dibuat | NOT NULL |
+| `account_id` | CHAR(36) | Relasi ke `account` | PK, FK → account.id |
+| `assigned_at` | DATE | Tanggal ditugaskan sebagai admin | NOT NULL |
+| `position` | ENUM | `maintainer` atau `consultant` | NOT NULL |
+| `number_contact` | VARCHAR(15) | Nomor WA/HP admin | NOT NULL |
 
-## 7.6 Tabel: payments
-Mencatat konfirmasi pembayaran yang dilaporkan Admin setelah checkout via WhatsApp, digunakan sebagai sumber data dashboard keuangan.
+---
+
+## 7.6 Tabel: workshop
+Seminar/pelatihan maternitas yang tersedia di katalog.
+
 | Field | Tipe Data | Deskripsi | Constraint |
 |---|---|---|---|
-| payment_id | BIGINT | Identifier unik catatan pembayaran | PK, Auto Increment |
-| subscription_id | BIGINT | Relasi ke tabel subscriptions | FK → subscriptions.subscription_id |
-| method | ENUM | e_wallet, m_banking, atm, qris, tunai | NOT NULL |
-| amount | DECIMAL(12,2) | Jumlah pembayaran yang dikonfirmasi | NOT NULL |
-| status | ENUM | pending, confirmed, failed | Default: pending |
-| confirmed_by_admin_id | BIGINT | Relasi ke tabel users (admin) yang mengonfirmasi pembayaran | FK → users.user_id, NULLABLE |
-| confirmed_at | TIMESTAMP | Waktu pembayaran dikonfirmasi Admin | NULLABLE |
+| `id` | CHAR(36) | UUID seminar | PK, UNIQUE |
+| `name` | VARCHAR(255) | Nama seminar/workshop | NOT NULL |
+| `slug` | VARCHAR(260) | URL-friendly slug | UNIQUE, NOT NULL |
+| `description` | TEXT | Deskripsi lengkap | NOT NULL |
+| `topic` | VARCHAR(100) | Topik (Yoga, Laktasi, Nifas, dsb.) | NOT NULL |
+| `format` | ENUM | `online` / `offline` / `hybrid` | NOT NULL |
+| `date` | DATE | Tanggal pelaksanaan | NOT NULL |
+| `price` | DECIMAL(10,2) | Harga seminar | NOT NULL, DEFAULT 0 |
+| `location_string` | TEXT | Alamat teks (offline) | NULLABLE |
+| `location_maps` | TEXT | URL Google Maps embed | NULLABLE |
+| `thumbnail_image` | VARCHAR(255) | Gambar cover seminar | NULLABLE |
+| `status` | ENUM | `upcoming` / `ongoing` / `done` / `cancelled` | NOT NULL, DEFAULT 'upcoming' |
+| `created_by` | CHAR(36) | Admin yang membuat seminar | FK → admin.account_id, NOT NULL |
 
-## 7.7 Tabel: content_library
-`related_seminar_id` menentukan hak akses otomatis: jika NULL, materi termasuk kategori umum (hanya dapat diakses oleh langganan ebook_all_access); jika diisi, materi juga otomatis dapat diakses oleh pengguna dengan langganan seminar_access untuk seminar tersebut.
+---
+
+## 7.7 Tabel: material
+E-book dan materi edukatif yang tersedia di library.
+
 | Field | Tipe Data | Deskripsi | Constraint |
 |---|---|---|---|
-| content_id | BIGINT | Identifier unik konten/e-book | PK, Auto Increment |
-| title | VARCHAR(200) | Judul materi/e-book | NOT NULL |
-| file_url | VARCHAR(255) | URL/lokasi berkas materi | NOT NULL |
-| related_seminar_id | BIGINT | Relasi ke tabel seminars (jika materi khusus seminar tertentu) | FK → seminars.seminar_id, NULLABLE |
-| uploaded_by | BIGINT | Relasi ke tabel users (admin) | FK → users.user_id |
-| uploaded_at | TIMESTAMP | Waktu konten diunggah | NOT NULL |
+| `id` | CHAR(36) | UUID materi | PK, UNIQUE |
+| `name` | VARCHAR(255) | Judul e-book/materi | NOT NULL |
+| `slug` | VARCHAR(260) | URL-friendly slug | UNIQUE, NOT NULL |
+| `description` | TEXT | Deskripsi singkat | NULLABLE |
+| `thumbnail_image` | VARCHAR(255) | Gambar cover | NULLABLE |
+| `content_link` | TEXT | URL file (Google Drive, dsb.) | NOT NULL |
+| `viewer_count` | INT | Jumlah viewer | NOT NULL, DEFAULT 0 |
+| `uploaded_by` | CHAR(36) | Admin yang mengupload | FK → admin.account_id, NOT NULL |
 
-## 7.8 Tabel: articles
-Menyimpan artikel edukasi SEO (konsep serupa artikel Halodoc) yang tampil di halaman Artikel dan dapat ditemukan mesin pencari, masing-masing dapat ditautkan ke satu seminar untuk promosi di bagian akhir artikel.
+---
+
+## 7.8 Tabel: workshop_material
+Pivot many-to-many antara `workshop` dan `material`.
+
 | Field | Tipe Data | Deskripsi | Constraint |
 |---|---|---|---|
-| article_id | BIGINT | Identifier unik artikel | PK, Auto Increment |
-| title | VARCHAR(200) | Judul artikel | NOT NULL |
-| slug | VARCHAR(220) | URL slug deskriptif untuk SEO | NOT NULL, UNIQUE |
-| content_body | TEXT | Isi artikel (mendukung format rich text) | NOT NULL |
-| meta_description | VARCHAR(300) | Ringkasan untuk meta tag SEO | NULLABLE |
-| cover_image_url | VARCHAR(255) | URL gambar sampul artikel | NULLABLE |
-| related_seminar_id | BIGINT | Relasi ke tabel seminars untuk tautan promosi di akhir artikel | FK → seminars.seminar_id, NULLABLE |
-| author_admin_id | BIGINT | Relasi ke tabel users (admin penulis) | FK → users.user_id |
-| status | ENUM | draft, published | Default: draft |
-| published_at | TIMESTAMP | Waktu artikel dipublikasikan | NULLABLE |
+| `workshop_id` | CHAR(36) | Relasi ke `workshop` | PK (composite), FK → workshop.id |
+| `material_id` | CHAR(36) | Relasi ke `material` | PK (composite), FK → material.id |
 
-## 7.9 Tabel: bookmarks
+---
+
+## 7.9 Tabel: article
+Artikel edukasi SEO yang ditulis admin dan dapat mempromosikan seminar terkait.
+
 | Field | Tipe Data | Deskripsi | Constraint |
 |---|---|---|---|
-| bookmark_id | BIGINT | Identifier unik bookmark | PK, Auto Increment |
-| user_id | BIGINT | Relasi ke tabel users | FK → users.user_id |
-| item_type | ENUM | seminar, materi, artikel | NOT NULL |
-| item_id | BIGINT | ID item yang di-bookmark (seminar_id/content_id/article_id) | NOT NULL |
-| created_at | TIMESTAMP | Waktu item ditandai | NOT NULL |
+| `id` | CHAR(36) | UUID artikel | PK, UNIQUE |
+| `title` | VARCHAR(255) | Judul artikel | NOT NULL |
+| `slug` | VARCHAR(260) | Slug SEO | UNIQUE, NOT NULL |
+| `content` | LONGTEXT | Isi artikel (rich text/HTML) | NOT NULL |
+| `meta_title` | VARCHAR(255) | Meta title untuk SEO | NULLABLE |
+| `meta_description` | VARCHAR(160) | Meta description SEO (maks 160 karakter) | NULLABLE |
+| `thumbnail_image` | VARCHAR(255) | Gambar utama / OG image | NULLABLE |
+| `related_workshop_id` | CHAR(36) | Workshop yang dipromosikan di akhir artikel | FK → workshop.id, NULLABLE |
+| `author_id` | CHAR(36) | Admin penulis artikel | FK → admin.account_id, NOT NULL |
+| `status` | ENUM | `draft` / `published` | NOT NULL, DEFAULT 'draft' |
+| `published_at` | DATETIME | Waktu publish | NULLABLE |
+
+---
+
+## 7.10 Tabel: testimonial
+Testimoni member yang dikurasi admin. Ditampilkan di landing page dan/atau halaman checkout.
+
+| Field | Tipe Data | Deskripsi | Constraint |
+|---|---|---|---|
+| `id` | CHAR(36) | UUID testimoni | PK, UNIQUE |
+| `name` | VARCHAR(100) | Nama pemberi testimoni | NOT NULL |
+| `photo` | VARCHAR(255) | URL foto profil | NULLABLE |
+| `content` | TEXT | Isi testimoni | NOT NULL |
+| `role` | VARCHAR(100) | Peran/deskripsi (mis. "Peserta Seminar Laktasi") | NULLABLE |
+| `display_location` | ENUM | `landing` / `checkout` / `both` | NOT NULL |
+| `status` | ENUM | `published` / `hidden` | NOT NULL, DEFAULT 'hidden' |
+| `sort_order` | INT | Urutan tampil | NOT NULL, DEFAULT 0 |
+
+---
+
+## 7.11 Tabel: bookmark
+Bookmark seminar atau materi yang disimpan member.
+
+| Field | Tipe Data | Deskripsi | Constraint |
+|---|---|---|---|
+| `id` | CHAR(36) | UUID bookmark | PK, UNIQUE |
+| `member_id` | CHAR(36) | Relasi ke `member` | FK → member.account_id, NOT NULL |
+| `bookmarkable_id` | CHAR(36) | ID target (workshop.id / material.id) | NOT NULL |
+| `bookmarkable_type` | VARCHAR(50) | Jenis target: `workshop` atau `material` | NOT NULL |
+
+> Index UNIQUE pada `(member_id, bookmarkable_id, bookmarkable_type)` untuk mencegah duplikat bookmark.
+
+---
+
+## 7.12 Tabel: orders *(Baru)*
+Transaksi pemesanan dan bukti pembayaran manual per member. Dibuat saat member melakukan checkout, sebelum admin memverifikasi.
+
+| Field | Tipe Data | Deskripsi | Constraint |
+|---|---|---|---|
+| `id` | CHAR(36) | UUID order | PK |
+| `member_id` | CHAR(36) | Member yang melakukan order | FK → member.account_id, NOT NULL |
+| `orderable_type` | VARCHAR(50) | Polymorphic type: `membership` atau `workshop_booking` | NOT NULL |
+| `orderable_id` | CHAR(36) | ID entitas yang dipesan (ID dari `membership` / `workshop_booking`) | NOT NULL |
+| `amount` | DECIMAL(10,2) | Nominal yang harus dibayarkan | NOT NULL |
+| `payment_proof` | VARCHAR(255) | Path file bukti transfer (screenshot) | NULLABLE |
+| `status` | ENUM | Alur status order: `menunggu_pembayaran` → `menunggu_verifikasi` → `diverifikasi` / `ditolak` → `selesai` | NOT NULL, DEFAULT 'menunggu_pembayaran' |
+| `rejection_reason` | TEXT | Alasan penolakan dari admin (opsional, muncul jika status = `ditolak`) | NULLABLE |
+| `verified_by` | CHAR(36) | Admin yang memverifikasi | FK → admin.account_id, NULLABLE |
+| `verified_at` | DATETIME | Timestamp verifikasi | NULLABLE |
+| `created_at` | DATETIME | Timestamp order dibuat | NOT NULL |
+| `updated_at` | DATETIME | Timestamp order terakhir diperbarui | NOT NULL |
+
+### Alur Status `orders.status`
+```
+menunggu_pembayaran  →  (user upload bukti)  →  menunggu_verifikasi
+                                                       ↓
+                                         admin approve / reject
+                                          ↓                  ↓
+                                      diverifikasi         ditolak
+                                          ↓                  ↓
+                                    (akses dikirim)   (user re-upload)
+                                          ↓
+                                        selesai
+```
+
+---
+
+## 7.13 Tabel: membership
+Langganan Akses Ebook aktif untuk member. Diaktifkan setelah order `diverifikasi` admin.
+
+| Field | Tipe Data | Deskripsi | Constraint |
+|---|---|---|---|
+| `id` | CHAR(36) | UUID | PK |
+| `member_id` | CHAR(36) | Pemegang langganan | FK → member.account_id, NOT NULL |
+| `active_from` | DATE | Awal masa aktif | NOT NULL |
+| `active_until` | DATE | Akhir masa aktif | NOT NULL |
+| `amount_paid` | DECIMAL(10,2) | Nominal pembayaran | NOT NULL |
+| `provision_by` | CHAR(36) | Admin yang mengaktifkan | FK → admin.account_id, NOT NULL |
+| `booked_at` | DATETIME | Timestamp pencatatan oleh admin | NOT NULL |
+
+---
+
+## 7.14 Tabel: workshop_booking
+Langganan Akses Seminar aktif untuk member. Diaktifkan setelah order `diverifikasi` admin.
+
+| Field | Tipe Data | Deskripsi | Constraint |
+|---|---|---|---|
+| `id` | CHAR(36) | UUID | PK |
+| `member_id` | CHAR(36) | Member yang memesan | FK → member.account_id, NOT NULL |
+| `workshop_id` | CHAR(36) | Workshop yang dipesan | FK → workshop.id, NOT NULL |
+| `amount_paid` | DECIMAL(10,2) | Nominal pembayaran | NOT NULL |
+| `provision_by` | CHAR(36) | Admin yang mengaktifkan | FK → admin.account_id, NOT NULL |
+| `booked_at` | DATETIME | Timestamp pencatatan oleh admin | NOT NULL |
