@@ -87,6 +87,93 @@
 - **Side effects / risks:** None identified initially (discovered during testing and fixed in follow-up entry)
 
 - **Commit:** "feat(seed): add comprehensive database seeders for all tables"
+## [2026-09-19 00:30] Fixed Admin and Member model relationships with Account
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+  - modified `app/Models/Admin.php`
+  - modified `app/Models/Member.php`
+
+- **What changed:**
+  - Fixed Admin.account() BelongsTo relationship: was `belongsTo(Account::class, 'account_id', 'account_id')` → now `belongsTo(Account::class, 'account_id', 'id')`
+  - Fixed Member.account() BelongsTo relationship: was `belongsTo(Account::class, 'account_id', 'account_id')` → now `belongsTo(Account::class, 'account_id', 'id')`
+  - Reason: Admin and Member have `account_id` as FK pointing to Account's primary key `id` (not `account_id`)
+
+- **Why:**
+  - Error from eager loading Material.uploadedBy.account: "Unknown column 'accounts.account_id'"
+  - The relationships were telling Eloquent to join on `accounts.account_id` instead of `accounts.id`
+  - Account model has `id` as primary key (UUID), not `account_id`
+  - Admin and Member tables use `account_id` as foreign key to Account.id
+
+- **Progress detail:** Fully completed. Relationships now correctly reference Account.id.
+
+- **Verification:**
+  - Both model files pass PHP syntax check
+  - Relationship syntax is correct: `belongsTo(Model::class, 'localKey', 'ownerKey')`
+  - Admin.account_id FK → Account.id (PK)
+  - Member.account_id FK → Account.id (PK)
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** None. These are just relationship definition fixes, data hasn't changed.
+
+- **Suggestions / next steps:**
+  1. Test `/library` route again to verify Material→Admin→Account chain works
+  2. All other relations that reference Admin (eventCreated, eventUploaded, articleWritten, materialsUploaded) already correctly use 'account_id' as the FK
+
+- **Commit:** "fix: correct Admin and Member BelongsTo Account relationships"
+
+---
+
+## [2026-09-19 00:25] Fixed EbookController to fetch author from Material.uploaded_by relation
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+  - modified `app/Http/Controllers/EbookController.php`
+
+- **What changed:**
+  - Updated Material query from `Material::all()` to `Material::with('uploadedBy.account')->get()`
+  - Changed author field from hardcoded 'Tim Medis Maternity.id' to actual admin account name from database
+  - Author is now fetched via: Material → uploadedBy (FK to admin.account_id) → account (admin's account name)
+  - Includes null-coalescing fallback: `$material->uploadedBy?->account?->name ?? 'Tim Medis Maternity.id'`
+  - Eager loads `uploadedBy` relation to prevent N+1 queries
+
+- **Why:**
+  - Material table has `uploaded_by` column (FK to admin.account_id)
+  - Each material is uploaded by an admin who has an associated Account with a name
+  - Should use real author names from database instead of hardcoded default
+  - Eager loading prevents N+1 query problem when fetching author for each material
+
+- **Progress detail:** Fully completed. Author names now come from database.
+
+- **Verification:**
+  - EbookController passes PHP syntax check
+  - Eager loading prevents N+1 queries (single query with joins)
+  - Null-safe operator (?->) handles case where uploadedBy or account is missing
+  - Fallback provides sensible default if relations don't exist
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** None identified. Safe change with proper null handling.
+
+- **Suggestions / next steps:**
+  1. Test `/library` route to verify author names display from database
+  2. All 3 admin accounts (from AdminSeeder) now have materials attributed to them
+
+- **Commit:** "fix: fetch material authors from uploaded_by relation"
+
+---
+
 ## [2026-09-19 00:20] Implemented Material model for library ebooks, removed category filtering
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)

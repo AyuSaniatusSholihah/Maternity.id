@@ -9,12 +9,12 @@ class EbookController extends Controller
 {
     /**
      * Tampilkan Halaman Katalog E-book (Library)
-     * Menggunakan data dari model Material
+     * Menggunakan data dari model Material dengan author dari uploaded_by relation
      */
     public function index(Request $request)
     {
-        // Ambil semua materials dari database
-        $allMaterials = Material::all();
+        // Ambil semua materials dari database dengan eager loading uploadedBy relation
+        $allMaterials = Material::with('uploadedBy.account')->get();
 
         // Transform Material model ke format yang dipakai view
         $ebooks = $allMaterials->map(function ($material) {
@@ -24,7 +24,7 @@ class EbookController extends Controller
                 'book_title' => $material->title,
                 'description' => $material->description,
                 'cover' => $material->thumbnail_image ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80',
-                'author' => 'Tim Medis Maternity.id',
+                'author' => $material->uploadedBy?->account?->name ?? 'Tim Medis Maternity.id',
                 'price' => 'Gratis',
                 'link_text' => 'akses online',
                 'handle' => '@maternity.id',
