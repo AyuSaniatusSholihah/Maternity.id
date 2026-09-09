@@ -48,12 +48,9 @@
             </a>
         </header>
     @else
-        {{-- Sticky Dynamic Floating Header (Animasi Menciut & Melebar saat Scroll) --}}
-        <div class="sticky top-0 z-50 w-full px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-2 transition-all duration-500 ease-out"
-             x-data="{ isScrolled: false }"
-             @scroll.window="isScrolled = (window.pageYOffset > 40)">
-            <div class="mx-auto transition-all duration-500 ease-out"
-                 :class="isScrolled ? 'max-w-4xl' : 'max-w-7xl'">
+        {{-- Sticky Static Header (Stabil tanpa animasi menciut/getar) --}}
+        <div class="sticky top-0 z-50 w-full px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-2">
+            <div class="mx-auto max-w-7xl">
                 <x-header />
             </div>
         </div>
@@ -67,8 +64,10 @@
     {{-- ─── FOOTER ─────────────────────────────────────────── --}}
     <x-footer />
 
-    {{-- ─── FLOATING BOTTOM NAVIGATION ─────────────────────── --}}
-    <x-bottom_nav />
+    {{-- ─── MOBILE FLOATING BOTTOM NAVIGATION (md:hidden) ─── --}}
+    <div class="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-sm">
+        <x-bottom_nav />
+    </div>
 
 </body>
 

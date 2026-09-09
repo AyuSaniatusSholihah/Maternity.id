@@ -22,18 +22,35 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-2 sm:py-4 space-y-5 sm:space-y-6">
         
         <!-- ── 1. HERO BANNER (EBOOK UNTUK PERJALANANMU) ── -->
-        <div class="relative bg-gradient-to-r from-[#FCEBE7] via-[#FDF3F0] to-[#FAF0EE] rounded-3xl px-6 py-4 sm:px-8 sm:py-5 border border-[#DEA69E]/30 overflow-hidden shadow-xs">
-            <!-- Decorative Leaves on Left -->
-            <div class="absolute left-64 bottom-0 opacity-25 pointer-events-none select-none hidden lg:block">
-                <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 90C20 90 25 40 70 30C70 30 50 65 20 90Z" fill="#A8C4A0" />
-                    <path d="M10 65C10 65 30 35 60 40C60 40 40 60 10 65Z" fill="#8BB582" opacity="0.6"/>
-                </svg>
+        <div class="relative bg-gradient-to-r from-[#FCEBE7] via-[#FDF3F0] to-[#FAF0EE] rounded-2xl sm:rounded-3xl px-5 py-4 sm:px-8 sm:py-5 border border-[#DEA69E]/40 overflow-hidden shadow-xs">
+            <!-- Subtle Architectural Grid Pattern Background -->
+            <div class="absolute inset-0 -z-10 pointer-events-none opacity-30"
+                 style="background-size: 20px 20px;
+                        background-image: 
+                            linear-gradient(to right, rgba(222, 170, 161, 0.3) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(222, 170, 161, 0.3) 1px, transparent 1px);">
+            </div>
+
+            <!-- Corner Plus Markers -->
+            <div class="absolute top-2 left-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
+            </div>
+            <div class="absolute top-2 right-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
+            </div>
+            <div class="absolute bottom-2 left-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
+            </div>
+            <div class="absolute bottom-2 right-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
             </div>
 
             <!-- Content Area: Text on Left + Woman Reading & Book Doodle on Right -->
             <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="space-y-1 text-center sm:text-left max-w-lg">
+                    <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FAF0EE] text-[#8C433C] border border-[#DEA69E]/50 mb-1">
+                        📚 E-Library Digital
+                    </span>
                     <h1 class="text-2xl sm:text-3xl font-extrabold text-[#8C433C] tracking-tight leading-snug" style="font-family: 'DM Serif Display', serif;">
                         Ebook untuk Perjalananmu
                     </h1>
@@ -119,68 +136,7 @@
         @if(count($ebooks) > 0)
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
                 @foreach ($ebooks as $product)
-                    <div class="group flex flex-col bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm card-spring border border-[#DEA69E]/50 hover:border-[#DEA69E]">
-                        
-                        {{-- Top Header (Background transparan menyatu dengan card putih) --}}
-                        <div class="pt-4 sm:pt-7 pb-2.5 sm:pb-4 px-2 sm:px-4 text-center bg-transparent">
-                            <h2 class="font-serif italic font-extrabold text-sm min-[400px]:text-base sm:text-2xl text-[#8C433C] group-hover:text-[#782819] leading-tight group-hover:scale-105 transition-all duration-300" style="font-family: 'DM Serif Display', serif;">
-                                {!! nl2br(e($product['title'])) !!}
-                            </h2>
-                        </div>
-
-                        {{-- Arched Terracotta/Rose Body Section (Identik dengan Landing) --}}
-                        <div class="flex-1 bg-[#C27A6F] rounded-t-[45px] sm:rounded-t-[80px] pt-4 sm:pt-7 pb-4 sm:pb-6 px-2 sm:px-4 flex flex-col items-center justify-between text-center shadow-inner">
-                            
-                            {{-- Realistic Tablet Mockup --}}
-                            <div class="w-20 min-[400px]:w-24 sm:w-32 aspect-[3/4] bg-neutral-900 rounded-lg sm:rounded-xl p-1 sm:p-1.5 shadow-2xl border border-neutral-800 relative group-hover:scale-110 group-hover:-rotate-1.5 transition-all duration-500">
-                                {{-- Camera indicator --}}
-                                <div class="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-neutral-700 rounded-full mx-auto mb-0.5 sm:mb-1"></div>
-                                
-                                {{-- Screen Display --}}
-                                <div class="w-full h-[calc(100%-8px)] sm:h-[calc(100%-10px)] bg-white rounded-md sm:rounded-lg p-1.5 sm:p-2 flex flex-col items-center justify-between overflow-hidden shadow-inner text-left">
-                                    <img 
-                                        src="{{ $product['cover'] }}" 
-                                        alt="Cover" 
-                                        class="w-full h-10 min-[400px]:h-12 sm:h-16 object-cover rounded"
-                                    />
-                                    <div class="w-full mt-0.5 sm:mt-1">
-                                        <p class="text-[5px] min-[400px]:text-[5.5px] sm:text-[6.5px] font-bold text-neutral-800 leading-tight line-clamp-2 sm:line-clamp-3">
-                                            {{ $product['book_title'] }}
-                                        </p>
-                                        <p class="text-[4px] min-[400px]:text-[4.5px] sm:text-[5.5px] text-neutral-500 mt-0.5 truncate">
-                                            written by {{ $product['author'] }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Metadata & Price --}}
-                            <div class="mt-2.5 sm:mt-4 space-y-0.5 text-white">
-                                <p class="text-[10px] sm:text-xs font-bold tracking-tight">
-                                    Available for {{ $product['price'] }}
-                                </p>
-                                <p class="text-[8.5px] sm:text-[11px] font-medium text-pink-100/90 lowercase tracking-wide">
-                                    {{ $product['link_text'] }}
-                                </p>
-
-                                @if (!empty($product['handle']))
-                                    <div class="pt-1 sm:pt-2">
-                                        <span class="inline-block px-2 sm:px-3 py-0.5 rounded-full border border-white/40 bg-white/15 backdrop-blur-sm text-[7.5px] sm:text-[9px] text-white/95 font-mono group-hover:bg-white/25 transition-colors truncate max-w-full">
-                                            {{ $product['handle'] }}
-                                        </span>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-
-                        {{-- Bottom Action Button --}}
-                        <a 
-                            href="{{ $product['url'] }}" 
-                            onclick="alert('Membuka e-book {{ $product['book_title'] }}...')"
-                            class="w-full bg-[#FAF0EE] hover:bg-[#8C433C] text-[#782819] hover:text-white text-center font-bold py-2 sm:py-3.5 text-xs sm:text-sm transition-all duration-300 block border-t border-[#DEA69E]/40 shadow-xs">
-                            {{ $product['btn_text'] }}
-                        </a>
-                    </div>
+                    <x-ebook_card :ebook="$product" />
                 @endforeach
             </div>
         @else
@@ -198,6 +154,23 @@
                 </a>
             </div>
         @endif
+
+        <!-- ── 5. GRID HERO ARCHITECTURAL BANNER (E-LIBRARY & WRITERS) ── -->
+        <div class="pt-6 pb-2">
+            <x-grid_hero_banner 
+                badge="Koleksi E-Book & Modul Medis"
+                title="Punya Naskah atau Modul Edukasi Kehamilan?"
+                subtitle="Maternity.id membuka kesempatan bagi dokter spesialis, bidan, konselor laktasi, dan penulis kesehatan untuk mempublikasikan e-book edukasi kepada ribuan ibu di Indonesia."
+                primaryText="Kirim Naskah E-Book"
+                primaryUrl="https://wa.me/6281234567890?text=Halo%20Maternity.id,%20saya%20ingin%20mengajukan%20naskah%20ebook%20kesehatan"
+                primaryIcon="book-open"
+                secondaryText="Konsultasi Kurasi"
+                secondaryUrl="https://wa.me/6281234567890?text=Halo%20Maternity.id,%20tanya%20info%20kurasi%20modul"
+                avatarUrl="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=600"
+                avatarAlt="E-Book Maternity.id"
+                caption="Koleksi E-Book & Riset Medis Terbuka"
+            />
+        </div>
 
     </div>
 </x-layout>

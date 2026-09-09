@@ -22,18 +22,35 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-2 sm:py-4 space-y-4 sm:space-y-6">
         
         <!-- ── 1. COMPACT HERO BANNER (ARTIKEL & INFORMASI) ── -->
-        <div class="relative bg-gradient-to-r from-[#FCEBE7] via-[#FDF3F0] to-[#FAF0EE] rounded-3xl px-5 py-4 sm:px-8 sm:py-5 border border-[#DEA69E]/30 overflow-hidden shadow-xs">
-            <!-- Decorative Leaves on Right -->
-            <div class="absolute right-64 bottom-0 opacity-30 pointer-events-none select-none hidden lg:block">
-                <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 90C20 90 25 40 70 30C70 30 50 65 20 90Z" fill="#DEA69E" />
-                    <path d="M10 65C10 65 30 35 60 40C60 40 40 60 10 65Z" fill="#8C433C" opacity="0.6"/>
-                </svg>
+        <div class="relative bg-gradient-to-r from-[#FCEBE7] via-[#FDF3F0] to-[#FAF0EE] rounded-2xl sm:rounded-3xl px-5 py-4 sm:px-8 sm:py-5 border border-[#DEA69E]/40 overflow-hidden shadow-xs">
+            <!-- Subtle Architectural Grid Pattern Background -->
+            <div class="absolute inset-0 -z-10 pointer-events-none opacity-30"
+                 style="background-size: 20px 20px;
+                        background-image: 
+                            linear-gradient(to right, rgba(222, 170, 161, 0.3) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(222, 170, 161, 0.3) 1px, transparent 1px);">
+            </div>
+
+            <!-- Corner Plus Markers -->
+            <div class="absolute top-2 left-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
+            </div>
+            <div class="absolute top-2 right-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
+            </div>
+            <div class="absolute bottom-2 left-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
+            </div>
+            <div class="absolute bottom-2 right-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
             </div>
 
             <!-- Content Area: Text on Left + Compact Image on Right -->
             <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="space-y-1 text-center sm:text-left max-w-lg">
+                    <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#EBF5EE] text-[#4D7C59] border border-[#BDE0C6] mb-1">
+                        ✍️ Edukasi Terpercaya
+                    </span>
                     <h1 class="text-2xl sm:text-3xl font-extrabold text-[#8C433C] tracking-tight leading-snug" style="font-family: 'DM Serif Display', serif;">
                         Artikel & Informasi
                     </h1>
@@ -53,13 +70,13 @@
         </div>
 
         <!-- ── 2. CATEGORY PILL FILTER TABS ── -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+        <div class="flex items-center gap-2.5 overflow-x-auto pb-1 no-scrollbar">
             @foreach ($categories as $cat)
                 @php
                     $isActive = ($currentCategory === $cat['slug']);
                 @endphp
                 <a href="{{ route('articles.index', ['category' => $cat['slug'], 'q' => $searchQuery]) }}"
-                   class="shrink-0 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 {{ $isActive ? 'bg-[#8C433C] text-white shadow-xs' : 'bg-transparent border border-[#DEA69E]/80 text-[#8C433C] hover:bg-[#FAF0EE]' }}">
+                   class="shrink-0 px-4 sm:px-5 py-2 rounded-full text-xs font-semibold transition-all duration-200 {{ $isActive ? 'bg-[#5F8C72] text-white shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE]' }}">
                     {{ $cat['name'] }}
                 </a>
             @endforeach
@@ -138,39 +155,7 @@
                     <!-- 2-Column Article Card Grid on Mobile, 3-Column on Desktop -->
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
                         @foreach ($articles as $article)
-                            <article class="bg-white rounded-2xl sm:rounded-3xl border border-[#DEA69E]/30 p-2.5 sm:p-4 shadow-xs flex flex-col justify-between space-y-2 sm:space-y-3 card-spring">
-                                <!-- Card Image -->
-                                <div class="w-full h-28 min-[450px]:h-36 sm:h-40 rounded-xl sm:rounded-2xl overflow-hidden bg-neutral-100">
-                                    <img src="{{ $article['thumbnail_image'] }}" 
-                                         alt="{{ $article['title'] }}" 
-                                         class="w-full h-full object-cover">
-                                </div>
-
-                                <!-- Card Content -->
-                                <div class="space-y-1.5 sm:space-y-2 flex-1 flex flex-col justify-between">
-                                    <div class="space-y-1 sm:space-y-1.5">
-                                        <span class="inline-block px-2 sm:px-2.5 py-0.5 bg-[#FAF0EE] text-[#8C433C] text-[9px] min-[400px]:text-[10px] font-bold rounded-full">
-                                            {{ $article['category'] }}
-                                        </span>
-
-                                        <h3 class="text-xs min-[400px]:text-sm sm:text-sm font-bold text-[#2A1614] leading-snug line-clamp-2" style="font-family: 'DM Serif Display', serif;">
-                                            <a href="{{ route('articles.show', $article['slug']) }}" class="hover:text-[#8C433C] transition">
-                                                {{ $article['title'] }}
-                                            </a>
-                                        </h3>
-
-                                        <p class="hidden min-[480px]:block text-[11px] text-neutral-500 line-clamp-2 leading-relaxed">
-                                            {{ $article['excerpt'] }}
-                                        </p>
-                                    </div>
-
-                                    <!-- Read Time Footer -->
-                                    <div class="pt-1.5 sm:pt-2 border-t border-slate-50 flex items-center gap-1 text-[9px] min-[400px]:text-[10px] text-slate-400">
-                                        <i class="fa-regular fa-clock text-slate-400 text-[9px]"></i>
-                                        <span>{{ $article['read_time'] }}</span>
-                                    </div>
-                                </div>
-                            </article>
+                            <x-article_card :article="$article" />
                         @endforeach
                     </div>
                 </div>
@@ -239,6 +224,17 @@
             </aside>
 
         </div>
+
+        <!-- ── NEWSLETTER & KONSULTASI GRID BANNER ── -->
+        <x-grid_hero_banner 
+            badge="Informasi & Edukasi Medis"
+            title="Dapatkan Update Panduan Kesehatan Terbaru"
+            subtitle="Konsultasikan keraguan Anda seputar kehamilan dan nutrisi si kecil langsung bersama bidan berpengalaman dari Maternity.id."
+            primaryText="Lihat Topik Lainnya"
+            :primaryUrl="route('articles.index')"
+            secondaryText="Tanya Bidan via WhatsApp"
+            secondaryUrl="https://wa.me/"
+        />
 
     </div>
 </x-layout>
