@@ -22,26 +22,35 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-2 sm:py-4 space-y-4 sm:space-y-6">
         
         <!-- ── 1. HERO BANNER (EVENT & KELAS) ── -->
-        <div class="relative bg-gradient-to-r from-[#FCEBE7] via-[#FDF3F0] to-[#FAF0EE] rounded-3xl px-5 py-4 sm:px-8 sm:py-5 border border-[#DEA69E]/30 overflow-hidden shadow-xs">
-            <!-- Decorative Leaves on Right -->
-            <div class="absolute right-64 bottom-0 opacity-30 pointer-events-none select-none hidden lg:block">
-                <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 90C20 90 25 40 70 30C70 30 50 65 20 90Z" fill="#DEA69E" />
-                    <path d="M10 65C10 65 30 35 60 40C60 40 40 60 10 65Z" fill="#8C433C" opacity="0.6"/>
-                </svg>
+        <div class="relative bg-gradient-to-r from-[#FCEBE7] via-[#FDF3F0] to-[#FAF0EE] rounded-2xl sm:rounded-3xl px-5 py-4 sm:px-8 sm:py-5 border border-[#DEA69E]/40 overflow-hidden shadow-xs">
+            <!-- Subtle Architectural Grid Pattern Background -->
+            <div class="absolute inset-0 -z-10 pointer-events-none opacity-30"
+                 style="background-size: 20px 20px;
+                        background-image: 
+                            linear-gradient(to right, rgba(222, 170, 161, 0.3) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(222, 170, 161, 0.3) 1px, transparent 1px);">
             </div>
 
-            <!-- Decorative Calendar Heart Icon in Background -->
-            <div class="absolute top-2 right-64 opacity-25 pointer-events-none hidden md:block text-[#8C433C]">
-                <div class="w-14 h-14 bg-white/60 rounded-2xl border border-[#DEA69E] flex flex-col items-center justify-center p-1 shadow-xs">
-                    <div class="w-full h-2.5 bg-[#8C433C]/40 rounded-t-sm mb-1"></div>
-                    <i class="fa-solid fa-heart text-[#8C433C] text-sm"></i>
-                </div>
+            <!-- Corner Plus Markers -->
+            <div class="absolute top-2 left-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
+            </div>
+            <div class="absolute top-2 right-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
+            </div>
+            <div class="absolute bottom-2 left-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
+            </div>
+            <div class="absolute bottom-2 right-2 text-[#8C433C]/30 select-none pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5"/></svg>
             </div>
 
             <!-- Content Area: Text on Left + Mother & Baby on Right -->
             <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="space-y-1 text-center sm:text-left max-w-lg">
+                    <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#EBF5EE] text-[#4D7C59] border border-[#BDE0C6] mb-1">
+                        🗓 Jadwal Terbuka
+                    </span>
                     <h1 class="text-2xl sm:text-3xl font-extrabold text-[#8C433C] tracking-tight leading-snug" style="font-family: 'DM Serif Display', serif;">
                         Event & Kelas
                     </h1>
@@ -123,78 +132,7 @@
         @if(count($events) > 0)
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
                 @foreach ($events as $event)
-                    <div class="bg-white rounded-2xl sm:rounded-3xl border border-[#DEA69E]/30 p-2.5 sm:p-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-2.5 sm:space-y-3 card-spring group">
-                        
-                        <!-- Event Image Container -->
-                        <div class="relative w-full h-32 min-[450px]:h-40 sm:h-48 rounded-xl sm:rounded-2xl overflow-hidden bg-neutral-100">
-                            <img src="{{ $event['thumbnail_image'] }}" 
-                                 alt="{{ $event['title'] }}" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            
-                            <!-- Format Badge (Top Left) -->
-                            <div class="absolute top-2 left-2 sm:top-3 sm:left-3">
-                                @if($event['format_type'] === 'online')
-                                    <span class="px-2 sm:px-2.5 py-0.5 bg-white/95 backdrop-blur-md text-[#8C433C] text-[8px] min-[400px]:text-[10px] font-extrabold uppercase tracking-wider rounded-full shadow-2xs border border-[#DEA69E]/40">
-                                        {{ $event['format'] }}
-                                    </span>
-                                @else
-                                    <span class="px-2 sm:px-2.5 py-0.5 bg-white/95 backdrop-blur-md text-[#2A1614] text-[8px] min-[400px]:text-[10px] font-extrabold uppercase tracking-wider rounded-full shadow-2xs border border-gray-200">
-                                        {{ $event['format'] }}
-                                    </span>
-                                @endif
-                            </div>
-
-                            <!-- Bookmark Button (Top Right) -->
-                            <button type="button" 
-                                    onclick="alert('Event disimpan ke favorit!')"
-                                    class="absolute top-2 right-2 sm:top-3 sm:right-3 w-6 h-6 min-[400px]:w-8 min-[400px]:h-8 rounded-lg sm:rounded-xl bg-white/90 backdrop-blur-md text-[#8C433C] hover:bg-white shadow-2xs flex items-center justify-center transition"
-                                    title="Simpan Event">
-                                <i class="{{ !empty($event['is_bookmarked']) ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark' }} text-[10px] min-[400px]:text-xs"></i>
-                            </button>
-                        </div>
-
-                        <!-- Event Details Body -->
-                        <div class="space-y-1.5 sm:space-y-2 flex-1 flex flex-col justify-between">
-                            <div class="space-y-1 sm:space-y-1.5">
-                                <!-- Schedule Date & Time -->
-                                <div class="flex items-center gap-1 sm:gap-1.5 text-[9px] min-[400px]:text-[11px] font-bold text-[#8C433C]">
-                                    <i class="fa-regular fa-calendar text-[9px]"></i>
-                                    <span class="truncate">{{ $event['date_string'] }} • {{ $event['time_string'] }}</span>
-                                </div>
-
-                                <!-- Event Title -->
-                                <h3 class="text-xs min-[400px]:text-sm sm:text-base font-bold text-[#2A1614] leading-snug group-hover:text-[#8C433C] transition line-clamp-2" style="font-family: 'DM Serif Display', serif;">
-                                    <a href="{{ route('events.show', $event['slug']) }}">
-                                        {{ $event['title'] }}
-                                    </a>
-                                </h3>
-
-                                <!-- Event Excerpt (Ditampilkan di layar yang cukup) -->
-                                <p class="hidden min-[480px]:block text-[11px] sm:text-xs text-neutral-500 line-clamp-2 leading-relaxed">
-                                    {{ $event['description'] }}
-                                </p>
-                            </div>
-
-                            <!-- Card Footer: Tag, Duration, and Button -->
-                            <div class="pt-2 sm:pt-3 border-t border-slate-50 flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-1.5 sm:gap-2">
-                                <div class="flex items-center gap-1.5 text-[10px] text-neutral-500">
-                                    <span class="px-1.5 sm:px-2 py-0.5 bg-[#FAF0EE] text-[#8C433C] rounded-md font-semibold text-[9px] min-[400px]:text-[10px]">
-                                        {{ $event['category'] }}
-                                    </span>
-                                    <span class="hidden min-[400px]:flex items-center gap-1 text-[9px] min-[400px]:text-[10px]">
-                                        <i class="fa-regular fa-clock text-slate-400"></i>
-                                        <span>{{ $event['duration'] }}</span>
-                                    </span>
-                                </div>
-
-                                <a href="{{ route('events.show', $event['slug']) }}" 
-                                   class="w-full min-[480px]:w-auto text-center px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#FAF0EE] hover:bg-[#8C433C] text-[#8C433C] hover:text-white text-[10px] min-[400px]:text-xs font-bold transition duration-200 border border-[#DEA69E]/50">
-                                    Lihat Detail
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
+                    <x-event_card :event="$event" />
                 @endforeach
             </div>
         @else
@@ -212,6 +150,17 @@
                 </a>
             </div>
         @endif
+
+        <!-- ── AJUKAN EVENT & KELAS BARU BANNER ── -->
+        <x-grid_hero_banner 
+            badge="Kolaborasi & Workshop"
+            title="Punya Materi atau Ingin Menjadi Narasumber?"
+            subtitle="Ajukan topik webinar, kelas prenatal, atau workshop Anda bersama Maternity.id dan jangkau calon ibu di seluruh nusantara."
+            primaryText="Daftar Menjadi Pemateri"
+            :primaryUrl="route('events')"
+            secondaryText="Hubungi Tim Partnership"
+            secondaryUrl="https://wa.me/"
+        />
 
     </div>
 </x-layout>
