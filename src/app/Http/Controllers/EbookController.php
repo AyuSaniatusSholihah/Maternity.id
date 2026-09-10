@@ -13,8 +13,22 @@ class EbookController extends Controller
      */
     public function index(Request $request)
     {
-        // Ambil semua materials dari database dengan eager loading uploadedBy relation
-        $allMaterials = Material::with('uploadedBy.account')->get();
+        // Ambil sort parameter, default ke 'latest'
+        $sort = $request->input('sort', 'latest');
+
+        // Query materials dengan eager loading uploadedBy relation
+        $query = Material::with('uploadedBy.account');
+
+        // Apply sorting
+        if ($sort === 'popular') {
+            // Sort by viewer_count descending (most popular first)
+            $query->orderBy('viewer_count', 'desc');
+        } else {
+            // Default: sort by created_at descending (most recent first)
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $allMaterials = $query->get();
 
         // Transform Material model ke format yang dipakai view
         $ebooks = $allMaterials->map(function ($material) {
@@ -35,7 +49,7 @@ class EbookController extends Controller
 
         return view('library.index', [
             'ebooks' => $ebooks,
-            'currentSort' => $request->input('sort', 'latest'),
+            'currentSort' => $sort,
         ]);
     }
 }

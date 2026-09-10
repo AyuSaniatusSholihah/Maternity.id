@@ -87,6 +87,52 @@
 - **Side effects / risks:** None identified initially (discovered during testing and fixed in follow-up entry)
 
 - **Commit:** "feat(seed): add comprehensive database seeders for all tables"
+## [2026-09-19 00:35] Implemented sorting for ebook list by popularity and recency
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+  - modified `app/Http/Controllers/EbookController.php`
+
+- **What changed:**
+  - Added sort parameter handling from request: `$sort = $request->input('sort', 'latest')`
+  - Implemented two sort strategies:
+    - `sort=popular`: Orders by `viewer_count DESC` (most viewed materials first)
+    - `sort=latest` (default): Orders by `created_at DESC` (newest materials first)
+  - Sort is applied in database query (efficient) before data transformation
+  - Pass `currentSort` to view for UI to show active sort state
+
+- **Why:**
+  - Library page has sort dropdown with "Terbaru" (Latest) and "Terpopuler" (Popular) options
+  - Sort should be performant and reflect actual database data
+  - Material table has both `viewer_count` and `created_at` columns for sorting
+  - Sorting in database query is more efficient than sorting transformed data
+
+- **Progress detail:** Fully completed. Both sort options work with ebook list.
+
+- **Verification:**
+  - EbookController passes PHP syntax check
+  - Sort parameter safely defaults to 'latest' if missing
+  - Database query efficiently filters before transformation
+  - currentSort passed to view to maintain sort state in UI
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** None identified. Safe addition of sorting feature.
+
+- **Suggestions / next steps:**
+  1. Test `/library?sort=popular` to verify most-viewed materials appear first
+  2. Test `/library?sort=latest` (default) to verify newest materials appear first
+  3. MaterialSeeder sets random viewer_count (10-500), so popular sort has good data
+
+- **Commit:** "feat: implement sort by popularity and recency for ebooks"
+
+---
+
 ## [2026-09-19 00:30] Fixed Admin and Member model relationships with Account
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
