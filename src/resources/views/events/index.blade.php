@@ -128,12 +128,75 @@
             </div>
         </div>
 
-        <!-- ── 4. EVENT CARDS LISTING (RESPONSIF 2 KOLOM DI MOBILE, 3 KOLOM DI DESKTOP) ── -->
+        <!-- ── 4. EVENT CARDS LISTING ── -->
         @if(count($events) > 0)
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
-                @foreach ($events as $event)
-                    <x-event_card :event="$event" />
-                @endforeach
+            <div x-data="{
+                scrollEl: null,
+                canPrev: false,
+                canNext: true,
+                isDragging: false,
+                startX: 0,
+                scrollLeft: 0,
+                init() {
+                    this.scrollEl = this.$refs.carousel;
+                    this.scrollEl.addEventListener('scroll', () => this.updateNav());
+                    this.updateNav();
+                    // Mouse drag
+                    this.scrollEl.addEventListener('mousedown', (e) => {
+                        this.isDragging = true;
+                        this.startX = e.pageX - this.scrollEl.offsetLeft;
+                        this.scrollLeft = this.scrollEl.scrollLeft;
+                        this.scrollEl.style.cursor = 'grabbing';
+                    });
+                    window.addEventListener('mouseup', () => {
+                        this.isDragging = false;
+                        this.scrollEl.style.cursor = 'grab';
+                    });
+                    this.scrollEl.addEventListener('mousemove', (e) => {
+                        if (!this.isDragging) return;
+                        e.preventDefault();
+                        const x = e.pageX - this.scrollEl.offsetLeft;
+                        this.scrollEl.scrollLeft = this.scrollLeft - (x - this.startX);
+                    });
+                },
+                updateNav() {
+                    this.canPrev = this.scrollEl.scrollLeft > 10;
+                    this.canNext = this.scrollEl.scrollLeft < this.scrollEl.scrollWidth - this.scrollEl.clientWidth - 10;
+                },
+                scrollBy(dir) {
+                    const amount = this.scrollEl.clientWidth * 0.75;
+                    this.scrollEl.scrollBy({ left: dir * amount, behavior: 'smooth' });
+                }
+            }" class="relative">
+
+                <!-- Tombol Prev -->
+                <button type="button"
+                        x-show="canPrev"
+                        @click="scrollBy(-1)"
+                        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-10 w-9 h-9 bg-white border border-[#DEA69E]/50 rounded-full shadow-md flex items-center justify-center text-[#8C433C] hover:bg-[#FAF0EE] transition"
+                        style="display: none;">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+
+                <!-- Carousel Track -->
+                <div x-ref="carousel"
+                     class="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4 no-scrollbar snap-x snap-mandatory"
+                     style="cursor: grab;">
+                    @foreach ($events as $event)
+                        <div class="shrink-0 w-[75vw] sm:w-[44vw] md:w-[32vw] lg:w-[28vw] xl:w-[23vw] max-w-[300px] snap-start">
+                            <x-event_card :event="$event" />
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Tombol Next -->
+                <button type="button"
+                        x-show="canNext"
+                        @click="scrollBy(1)"
+                        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-10 w-9 h-9 bg-white border border-[#DEA69E]/50 rounded-full shadow-md flex items-center justify-center text-[#8C433C] hover:bg-[#FAF0EE] transition"
+                        style="display: none;">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
             </div>
         @else
             <!-- Empty State -->
@@ -163,4 +226,8 @@
         />
 
     </div>
+
+    {{-- Floating Social Media (Kanan Bawah) --}}
+    <x-floating_social />
+
 </x-layout>

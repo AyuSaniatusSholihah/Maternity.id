@@ -104,30 +104,188 @@
                 </a>
 
                 <!-- Notification Icon dengan Badge Unread -->
-                <div class="relative" x-data="{ openNavNotif: false }">
+                <div class="relative" x-data="{
+                    openNavNotif: false,
+                    activeTab: 'all',
+                    notifications: [
+                        {
+                            id: 1,
+                            type: 'payment',
+                            status: 'pending',
+                            title: 'Pembayaran Diverifikasi',
+                            message: 'Bukti transfer Prenatal Yoga for Calm & Strength sedang diverifikasi admin.',
+                            time: '5 menit lalu',
+                            read: false,
+                            url: '/events/prenatal-yoga-for-calm-and-strength/checkout?status=verifying',
+                            icon: 'fa-clock',
+                            iconBg: 'bg-amber-100',
+                            iconColor: 'text-amber-500',
+                            badge: 'Menunggu',
+                            badgeBg: 'bg-amber-100 text-amber-700',
+                        },
+                        {
+                            id: 2,
+                            type: 'payment',
+                            status: 'approved',
+                            title: 'Pembayaran Diterima! 🎉',
+                            message: 'Pendaftaran Holistic Hormone Health Anda telah disetujui. Cek email untuk detail.',
+                            time: '2 jam lalu',
+                            read: false,
+                            url: '/events/holistic-hormone-health/approved',
+                            icon: 'fa-circle-check',
+                            iconBg: 'bg-green-100',
+                            iconColor: 'text-green-600',
+                            badge: 'Disetujui',
+                            badgeBg: 'bg-green-100 text-green-700',
+                        },
+                        {
+                            id: 3,
+                            type: 'event',
+                            status: 'info',
+                            title: 'Seminar Dimulai 15 Menit Lagi',
+                            message: 'Sesi webinar Mindful Motherhood Anda akan segera dimulai.',
+                            time: 'Kemarin',
+                            read: true,
+                            url: '/events/mindful-motherhood',
+                            icon: 'fa-bell',
+                            iconBg: 'bg-[#FAF0EE]',
+                            iconColor: 'text-[#8C433C]',
+                            badge: null,
+                            badgeBg: '',
+                        },
+                        {
+                            id: 4,
+                            type: 'payment',
+                            status: 'rejected',
+                            title: 'Pembayaran Ditolak',
+                            message: 'Bukti transfer Newborn Care tidak valid. Harap upload ulang.',
+                            time: '3 hari lalu',
+                            read: true,
+                            url: '/events/newborn-gentle-care-and-massage/checkout',
+                            icon: 'fa-circle-xmark',
+                            iconBg: 'bg-red-100',
+                            iconColor: 'text-red-500',
+                            badge: 'Ditolak',
+                            badgeBg: 'bg-red-100 text-red-600',
+                        },
+                    ],
+                    get filtered() {
+                        if (this.activeTab === 'all') return this.notifications;
+                        if (this.activeTab === 'payment') return this.notifications.filter(n => n.type === 'payment');
+                        if (this.activeTab === 'event') return this.notifications.filter(n => n.type === 'event');
+                        return this.notifications;
+                    },
+                    get unreadCount() {
+                        return this.notifications.filter(n => !n.read).length;
+                    },
+                    markAllRead() {
+                        this.notifications.forEach(n => n.read = true);
+                    }
+                }">
                     <button @click="openNavNotif = !openNavNotif" class="text-[#2D1E1E] p-2 hover:bg-black/5 rounded-full transition relative flex items-center justify-center">
                         <i class="fa-regular fa-bell text-xl"></i>
-                        <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-[#DEA69E]"></span>
+                        <span x-show="unreadCount > 0"
+                              class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-[#DEA69E] flex items-center justify-center"
+                              style="display: none;"></span>
                     </button>
 
                     <!-- Dropdown Notification -->
-                    <div x-show="openNavNotif" 
-                         @click.away="openNavNotif = false" 
-                         x-transition
-                         class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl py-3 border border-gray-100 z-50 text-sm"
+                    <div x-show="openNavNotif"
+                         @click.away="openNavNotif = false"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 translate-y-1 scale-97"
+                         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                         x-transition:leave-end="opacity-0 translate-y-1 scale-97"
+                         class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden"
                          style="display: none;">
-                        <div class="px-4 py-2 border-b border-gray-100 font-bold text-gray-700 flex justify-between items-center">
-                            <span>Notifikasi</span>
-                            <span class="text-xs text-[#5F8A6E] font-normal">Tandai dibaca</span>
+
+                        <!-- Header -->
+                        <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-gray-800 text-sm">Notifikasi</span>
+                                <span x-show="unreadCount > 0"
+                                      class="inline-flex items-center justify-center w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full"
+                                      x-text="unreadCount"
+                                      style="display: none;"></span>
+                            </div>
+                            <button @click="markAllRead()"
+                                    class="text-xs text-[#5F8C72] font-semibold hover:text-[#3a5e44] transition cursor-pointer">
+                                Tandai semua dibaca
+                            </button>
                         </div>
-                        <div class="max-h-60 overflow-y-auto">
-                            <a href="#" class="block px-4 py-3 hover:bg-pink-50/50 transition border-b border-gray-50">
-                                <p class="text-xs font-semibold text-gray-800">Seminar Kehamilan Dimulai!</p>
-                                <p class="text-[11px] text-gray-500 mt-0.5">Sesi webinar Anda akan dimulai 15 menit lagi.</p>
+
+                        <!-- Tab Filter -->
+                        <div class="flex items-center gap-1 px-3 py-2 border-b border-gray-50 bg-gray-50/50">
+                            <button @click="activeTab = 'all'"
+                                    :class="activeTab === 'all' ? 'bg-white text-[#8C433C] shadow-xs border border-[#DEA69E]/40 font-bold' : 'text-neutral-500 hover:text-neutral-800'"
+                                    class="flex-1 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer">
+                                Semua
+                            </button>
+                            <button @click="activeTab = 'payment'"
+                                    :class="activeTab === 'payment' ? 'bg-white text-[#8C433C] shadow-xs border border-[#DEA69E]/40 font-bold' : 'text-neutral-500 hover:text-neutral-800'"
+                                    class="flex-1 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer">
+                                Pembayaran
+                            </button>
+                            <button @click="activeTab = 'event'"
+                                    :class="activeTab === 'event' ? 'bg-white text-[#8C433C] shadow-xs border border-[#DEA69E]/40 font-bold' : 'text-neutral-500 hover:text-neutral-800'"
+                                    class="flex-1 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer">
+                                Event
+                            </button>
+                        </div>
+
+                        <!-- Notification List -->
+                        <div class="max-h-72 overflow-y-auto divide-y divide-gray-50">
+                            <template x-for="notif in filtered" :key="notif.id">
+                                <a :href="notif.url"
+                                   @click="notif.read = true; openNavNotif = false"
+                                   :class="notif.read ? 'bg-white hover:bg-gray-50' : 'bg-[#FDF5F3] hover:bg-[#FAF0EE]'"
+                                   class="flex items-start gap-3 px-4 py-3 transition">
+
+                                    <!-- Icon -->
+                                    <div :class="notif.iconBg" class="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center mt-0.5">
+                                        <i :class="[notif.iconColor, 'fa-solid', notif.icon]" class="text-sm"></i>
+                                    </div>
+
+                                    <!-- Content -->
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-start justify-between gap-1 mb-0.5">
+                                            <p class="text-xs font-bold text-gray-800 leading-snug" x-text="notif.title"></p>
+                                            <span x-show="!notif.read"
+                                                  class="w-2 h-2 bg-red-500 rounded-full shrink-0 mt-1"
+                                                  style="display: none;"></span>
+                                        </div>
+                                        <p class="text-[11px] text-gray-500 leading-snug line-clamp-2" x-text="notif.message"></p>
+                                        <div class="flex items-center gap-2 mt-1.5">
+                                            <span class="text-[10px] text-gray-400" x-text="notif.time"></span>
+                                            <span x-show="notif.badge"
+                                                  :class="notif.badgeBg"
+                                                  class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                                                  x-text="notif.badge"
+                                                  style="display: none;"></span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </template>
+
+                            <!-- Empty state -->
+                            <div x-show="filtered.length === 0" class="py-8 text-center text-neutral-400">
+                                <i class="fa-regular fa-bell-slash text-2xl mb-2 block"></i>
+                                <p class="text-xs">Tidak ada notifikasi</p>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="px-4 py-2.5 border-t border-gray-100 bg-gray-50/50">
+                            <a href="{{ route('events') }}"
+                               class="block text-center text-xs text-[#5F8C72] font-semibold hover:text-[#3a5e44] transition">
+                                Lihat Semua Aktivitas →
                             </a>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Profile Dropdown Desktop -->
                 <div class="relative" x-data="{ openProfile: false }">

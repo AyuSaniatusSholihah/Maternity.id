@@ -237,4 +237,8 @@
         />
 
     </div>
+
+    {{-- Floating Social Media (Kanan Bawah) --}}
+    <x-floating_social />
+
 </x-layout>
