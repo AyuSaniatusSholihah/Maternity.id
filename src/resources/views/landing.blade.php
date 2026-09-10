@@ -283,12 +283,119 @@
         </div>
     </div>
 
-    <!-- ── WAVE DIVIDER: HERO TO UPCOMING EVENT ── -->
+    <!-- ── WAVE DIVIDER: HERO TO OFFERINGS ── -->
     <div class="w-full overflow-hidden leading-none select-none pointer-events-none -mb-0.5">
         <svg class="w-full h-4 sm:h-8 lg:h-10 block text-[#fcf5f3]" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <path d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,48C840,43,960,53,1080,64C1200,75,1320,85,1380,90.7L1440,96L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z" fill="currentColor"></path>
         </svg>
     </div>
+
+    <!-- ── SECTION: APA YANG MATERNITY.ID TAWARKAN ── -->
+    <section class="relative w-full bg-[#fcf5f3] pt-2 sm:pt-4 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+        <div class="relative max-w-7xl mx-auto z-10">
+            <!-- Header Section -->
+            <div class="text-center max-w-2xl mx-auto mb-5 sm:mb-7 reveal-on-scroll">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FAF0EE] text-[#C27A6F] border border-[#DEA69E]/40 mb-2">
+                    ✨ Layanan & Fitur Utama
+                </span>
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#2A1614] tracking-tight" style="font-family: 'DM Serif Display', serif;">
+                    Apa yang Bisa Kamu Temukan di Maternity.id?
+                </h2>
+                <p class="text-xs sm:text-sm text-[#6C5B57] mt-1.5 leading-relaxed">
+                    Platform edukasi dan pendampingan terpadu untuk ibu hamil, persiapan melahirkan, hingga tumbuh kembang si kecil.
+                </p>
+            </div>
+
+            <!-- Grid 4 Fitur Utama -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+                
+                <!-- Kartu 1: Webinar & Workshop -->
+                <a href="{{ route('events') }}" class="group reveal-on-scroll stagger-1 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#5F8C72] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#EDF5F0] rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#EDF5F0] text-[#5F8C72] flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-[#5F8C72] uppercase tracking-wider block mb-1">Edukasi Interaktif</span>
+                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#5F8C72] transition-colors mb-1.5">
+                            Event & Kelas Webinar
+                        </h3>
+                        <p class="text-xs text-neutral-500 leading-relaxed">
+                            Sesi belajar praktis & interaktif bersama dokter spesialis, bidan, dan praktisi kesehatan maternal.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#5F8C72]">
+                        <span>Jelajahi Event</span>
+                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Kartu 2: E-Book & Panduan Digital -->
+                <a href="{{ route('library') }}" class="group reveal-on-scroll stagger-2 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#8C433C] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#FAF0EE] rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0EE] text-[#8C433C] flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-[#8C433C] uppercase tracking-wider block mb-1">Panduan Digital</span>
+                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#8C433C] transition-colors mb-1.5">
+                            E-Book & Library PDF
+                        </h3>
+                        <p class="text-xs text-neutral-500 leading-relaxed">
+                            Koleksi e-book gratis & berbayar seputar nutrisi, persalinan, manajemen stres, dan perawatan bayi.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#8C433C]">
+                        <span>Unduh E-Book</span>
+                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Kartu 3: Artikel & Insight -->
+                <a href="{{ route('articles.index') }}" class="group reveal-on-scroll stagger-3 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#D97706] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-amber-50 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-newspaper"></i>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-amber-600 uppercase tracking-wider block mb-1">Bacaan Terpercaya</span>
+                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-amber-600 transition-colors mb-1.5">
+                            Artikel & Insight Ibu
+                        </h3>
+                        <p class="text-xs text-neutral-500 leading-relaxed">
+                            Informasi medis & tips praktis harian seputar kehamilan, laktasi, dan parenting yang mudah dipahami.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-amber-600">
+                        <span>Baca Artikel</span>
+                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Kartu 4: Produk & Rekomendasi Maternitas -->
+                <a href="{{ route('product') }}" class="group reveal-on-scroll stagger-4 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#C27A6F] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#FAF0EE] rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0EE] text-[#C27A6F] flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-[#C27A6F] uppercase tracking-wider block mb-1">Produk Terkurasi</span>
+                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#C27A6F] transition-colors mb-1.5">
+                            Rekomendasi Produk
+                        </h3>
+                        <p class="text-xs text-neutral-500 leading-relaxed">
+                            Peralatan dan perlengkapan ibu hamil, menyusui, serta perlengkapan bayi berkualitas dan aman.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#C27A6F]">
+                        <span>Lihat Produk</span>
+                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
 
     <!-- UPCOMING EVENT SECTION -->
     <section class="relative w-full bg-[#fcf5f3] pt-1 sm:pt-2 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden" style="font-family: 'Plus Jakarta Sans', sans-serif;">
