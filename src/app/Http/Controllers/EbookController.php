@@ -15,9 +15,16 @@ class EbookController extends Controller
     {
         // Ambil sort parameter, default ke 'latest'
         $sort = $request->input('sort', 'latest');
+        $dateStart = $request->input('dateStart');
+        $dateEnd = $request->input('dateEnd');
 
         // Query materials dengan eager loading uploadedBy relation
         $query = Material::with('uploadedBy.account');
+
+        // Apply date filtering jika ada
+        if ($dateStart && $dateEnd) {
+            $query->whereBetween('created_at', [$dateStart . ' 00:00:00', $dateEnd . ' 23:59:59']);
+        }
 
         // Apply sorting
         if ($sort === 'popular') {
@@ -50,6 +57,8 @@ class EbookController extends Controller
         return view('library.index', [
             'ebooks' => $ebooks,
             'currentSort' => $sort,
+            'dateStart' => $dateStart,
+            'dateEnd' => $dateEnd,
         ]);
     }
 }
