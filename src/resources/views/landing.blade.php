@@ -4,7 +4,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link
-            href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
             rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -66,38 +66,134 @@
             .card-spring:hover {
                 transform: translateY(-8px);
             }
+
+            /* ── Dynamic Floating & Organic Shapes for Hero ── */
+            @keyframes heroFloat1 {
+                0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+                50% { transform: translateY(-7px) rotate(1.2deg) scale(1.01); }
+            }
+            @keyframes heroFloat2 {
+                0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+                50% { transform: translateY(-9px) rotate(-1.5deg) scale(1.015); }
+            }
+            @keyframes heroFloat3 {
+                0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+                50% { transform: translateY(-6px) rotate(1deg) scale(1.01); }
+            }
+            @keyframes heroFloat4 {
+                0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+                50% { transform: translateY(-8px) rotate(-1.2deg) scale(1.02); }
+            }
+            @keyframes mobileFloatCenter {
+                0%, 100% { transform: translateY(0px) scale(1); }
+                50% { transform: translateY(-6px) scale(1.025); }
+            }
+            @keyframes mobileFloatLeft {
+                0%, 100% { transform: translateY(0px) rotate(-2deg); }
+                50% { transform: translateY(-5px) rotate(0.5deg); }
+            }
+            @keyframes mobileFloatRight {
+                0%, 100% { transform: translateY(0px) rotate(2deg); }
+                50% { transform: translateY(-5px) rotate(-0.5deg); }
+            }
+
+            .hero-mobile-1 {
+                border-radius: 28px 14px 24px 18px;
+                animation: mobileFloatLeft 4.2s ease-in-out infinite;
+                will-change: transform;
+            }
+            .hero-mobile-2 {
+                border-radius: 20px 20px 28px 28px;
+                animation: mobileFloatCenter 4.8s ease-in-out infinite 0.4s;
+                will-change: transform;
+            }
+            .hero-mobile-3 {
+                border-radius: 14px 28px 18px 24px;
+                animation: mobileFloatRight 4.4s ease-in-out infinite 0.8s;
+                will-change: transform;
+            }
+
+            .hero-desktop-float-1 {
+                animation: heroFloat1 6s ease-in-out infinite;
+                will-change: transform;
+            }
+            .hero-desktop-float-2 {
+                animation: heroFloat2 7s ease-in-out infinite 0.9s;
+                will-change: transform;
+            }
+            .hero-desktop-float-3 {
+                animation: heroFloat3 6.5s ease-in-out infinite 1.4s;
+                will-change: transform;
+            }
+            .hero-desktop-float-4 {
+                animation: heroFloat4 7.5s ease-in-out infinite 2s;
+                will-change: transform;
+            }
+
+            /* ── Decorative Background Accessories ── */
+            @keyframes spinSlow {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            @keyframes blobMorph {
+                0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(0, 0) scale(1); }
+                33% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(6px, -8px) scale(1.04); }
+                66% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 60%; transform: translate(-8px, 6px) scale(0.96); }
+            }
+            .animate-spin-slow {
+                animation: spinSlow 35s linear infinite;
+            }
+            .animate-blob-morph-1 {
+                animation: blobMorph 10s ease-in-out infinite;
+                will-change: transform, border-radius;
+            }
+            .animate-blob-morph-2 {
+                animation: blobMorph 12s ease-in-out infinite 2s;
+                will-change: transform, border-radius;
+            }
+            .bg-diagonal-lines {
+                background-image: repeating-linear-gradient(45deg, rgba(222, 166, 158, 0.08) 0, rgba(222, 166, 158, 0.08) 1px, transparent 0, transparent 18px);
+            }
         </style>
     </x-slot>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <!-- HERO SECTION -->
         <div
-            class="relative flex items-center justify-center min-h-[420px] sm:min-h-[480px] lg:min-h-[540px] pt-6 sm:pt-10 pb-8 sm:pb-12 overflow-hidden">
+            class="relative flex items-center justify-center min-h-[320px] sm:min-h-[480px] lg:min-h-[540px] pt-1 sm:pt-10 pb-4 sm:pb-12 overflow-hidden">
 
-            <!-- ── AMBIENT BACKGROUND FOTO UNTUK TAMPILAN HP / MOBILE (md:hidden) DENGAN SUDUT LENGKUNG UTUH ── -->
-            <div class="md:hidden absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
-                <!-- Foto 1: Kiri Atas (Slanted Left-Top dengan Rounded Corners Utuh) -->
-                <div class="absolute top-2 left-2 w-32 min-[400px]:w-36 h-36 min-[400px]:h-40 rounded-2xl overflow-hidden opacity-25 clip-slant-left-top bg-[#FAF0EE]/80 p-0.5 shadow-sm">
-                    <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=400"
-                        alt="Yoga" class="w-full h-full object-cover rounded-2xl">
-                </div>
-                <!-- Foto 2: Kiri Bawah (Slanted Left-Bottom dengan Rounded Corners Utuh) -->
-                <div class="absolute bottom-2 left-2 w-32 min-[400px]:w-36 h-36 min-[400px]:h-40 rounded-2xl overflow-hidden opacity-25 clip-slant-left-bottom bg-[#FAF0EE]/80 p-0.5 shadow-sm">
-                    <img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=400"
-                        alt="Mother and Baby" class="w-full h-full object-cover rounded-2xl">
-                </div>
-                <!-- Foto 3: Kanan Atas (Slanted Right-Bottom dengan Rounded Corners Utuh) -->
-                <div class="absolute top-2 right-2 w-32 min-[400px]:w-36 h-36 min-[400px]:h-40 rounded-2xl overflow-hidden opacity-25 clip-slant-right-bottom bg-[#FAF0EE]/80 p-0.5 shadow-sm">
-                    <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=400"
-                        alt="Prenatal Wellness" class="w-full h-full object-cover rounded-2xl">
-                </div>
-                <!-- Foto 4: Kanan Bawah (Slanted Right-Top dengan Rounded Corners Utuh) -->
-                <div class="absolute bottom-2 right-2 w-32 min-[400px]:w-36 h-36 min-[400px]:h-40 rounded-2xl overflow-hidden opacity-25 clip-slant-right-top bg-[#FAF0EE]/80 p-0.5 shadow-sm">
-                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=400"
-                        alt="Workshop" class="w-full h-full object-cover rounded-2xl">
-                </div>
-                <!-- Soft Gradient Veil -->
-                <div class="absolute inset-0 bg-gradient-to-b from-[#FAF0EE]/20 via-transparent to-[#FAF0EE]/40"></div>
+            <!-- ── HERO ACCESSORIES: LINGKARAN DASHED DI SUDUT KANAN ATAS ── -->
+            <div class="absolute -top-10 -right-10 sm:top-2 sm:right-6 w-32 h-32 sm:w-48 sm:h-48 rounded-full border-2 border-dashed border-[#DEAAA1]/55 animate-spin-slow pointer-events-none z-0"></div>
+
+            <!-- ── HERO ACCESSORIES: SQUARE GRID PATTERN DI KIRI BAWAH ── -->
+            <div class="absolute bottom-2 left-2 sm:bottom-6 sm:left-6 w-16 sm:w-24 h-16 sm:h-24 opacity-40 pointer-events-none z-0">
+                <svg width="80" height="80" fill="none" viewBox="0 0 80 80">
+                    <rect x="4" y="4" width="18" height="18" rx="4" stroke="#5F8C72" stroke-width="2" fill="#5F8C72" fill-opacity="0.15"/>
+                    <rect x="30" y="4" width="18" height="18" rx="4" stroke="#5F8C72" stroke-width="2" stroke-dasharray="3 3"/>
+                    <rect x="56" y="4" width="18" height="18" rx="4" stroke="#C27A6F" stroke-width="2" fill="#C27A6F" fill-opacity="0.2"/>
+                    
+                    <rect x="4" y="30" width="18" height="18" rx="4" stroke="#C27A6F" stroke-width="2" stroke-dasharray="3 3"/>
+                    <rect x="30" y="30" width="18" height="18" rx="4" stroke="#5F8C72" stroke-width="2" fill="#5F8C72" fill-opacity="0.25"/>
+                    <rect x="56" y="30" width="18" height="18" rx="4" stroke="#5F8C72" stroke-width="2"/>
+                    
+                    <rect x="4" y="56" width="18" height="18" rx="4" stroke="#5F8C72" stroke-width="2" fill="#5F8C72" fill-opacity="0.15"/>
+                    <rect x="30" y="56" width="18" height="18" rx="4" stroke="#C27A6F" stroke-width="2"/>
+                    <rect x="56" y="56" width="18" height="18" rx="4" stroke="#C27A6F" stroke-width="2" stroke-dasharray="3 3"/>
+                </svg>
+            </div>
+
+            <!-- ── HERO ACCESSORIES: DOT SCATTER MENGAMBANG ── -->
+            <div class="absolute top-1/4 right-1/4 w-24 h-24 opacity-30 pointer-events-none z-0 hidden sm:block">
+                <svg width="80" height="80" fill="none">
+                    <circle cx="10" cy="10" r="2.5" fill="#C27A6F"/>
+                    <circle cx="35" cy="15" r="3" fill="#5F8C72"/>
+                    <circle cx="60" cy="8" r="2" fill="#DEA69E"/>
+                    <circle cx="20" cy="45" r="3.5" fill="#DEAAA1"/>
+                    <circle cx="50" cy="40" r="2.5" fill="#8C433C"/>
+                    <circle cx="70" cy="55" r="3" fill="#5F8C72"/>
+                    <circle cx="30" cy="70" r="2" fill="#C27A6F"/>
+                    <circle cx="65" cy="75" r="3" fill="#DEAAA1"/>
+                </svg>
             </div>
 
             <!-- ── GAMBAR DEKORASI DESKTOP / TABLET - KIRI (hidden md:flex) ── -->
@@ -105,13 +201,13 @@
                 class="hidden md:flex flex-col justify-start gap-6 lg:gap-8 xl:gap-10 absolute left-0 top-2 bottom-0 w-36 lg:w-60 xl:w-72 pointer-events-none z-0">
                 <!-- Foto Kiri Atas (Yoga) -->
                 <div
-                    class="w-full h-36 lg:h-52 xl:h-60 rounded-2xl overflow-hidden shadow-lg opacity-90 hover:opacity-100 transition clip-slant-left-top bg-[#FAF0EE]/60 p-0.5">
+                    class="hero-desktop-float-1 w-full h-36 lg:h-52 xl:h-60 rounded-2xl overflow-hidden shadow-lg opacity-90 hover:opacity-100 transition clip-slant-left-top bg-[#FAF0EE]/60 p-0.5">
                     <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=600"
                         alt="Yoga Class" class="w-full h-full object-cover rounded-xl">
                 </div>
                 <!-- Foto Kiri Bawah (Ibu dan Bayi) -->
                 <div
-                    class="w-full h-36 lg:h-52 xl:h-60 rounded-2xl overflow-hidden shadow-lg opacity-90 hover:opacity-100 transition clip-slant-left-bottom bg-[#FAF0EE]/60 p-0.5">
+                    class="hero-desktop-float-2 w-full h-36 lg:h-52 xl:h-60 rounded-2xl overflow-hidden shadow-lg opacity-90 hover:opacity-100 transition clip-slant-left-bottom bg-[#FAF0EE]/60 p-0.5">
                     <img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=600"
                         alt="Mother and Baby" class="w-full h-full object-cover rounded-xl">
                 </div>
@@ -122,46 +218,63 @@
                 class="hidden md:flex flex-col justify-start gap-6 lg:gap-8 xl:gap-10 absolute right-0 top-2 bottom-0 w-36 lg:w-60 xl:w-72 pointer-events-none z-0">
                 <!-- Foto Kanan Atas (Prenatal Exercise / Health) -->
                 <div
-                    class="w-full h-36 lg:h-52 xl:h-60 rounded-2xl overflow-hidden shadow-lg opacity-90 hover:opacity-100 transition clip-slant-right-bottom bg-[#FAF0EE]/60 p-0.5">
+                    class="hero-desktop-float-3 w-full h-36 lg:h-52 xl:h-60 rounded-2xl overflow-hidden shadow-lg opacity-90 hover:opacity-100 transition clip-slant-right-bottom bg-[#FAF0EE]/60 p-0.5">
                     <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=600"
                         alt="Prenatal Wellness" class="w-full h-full object-cover rounded-xl">
                 </div>
                 <!-- Foto Kanan Bawah (Seminar Event / Workshop) -->
                 <div
-                    class="w-full h-36 lg:h-52 xl:h-60 rounded-2xl overflow-hidden shadow-lg opacity-90 hover:opacity-100 transition clip-slant-right-top bg-[#FAF0EE]/60 p-0.5">
+                    class="hero-desktop-float-4 w-full h-36 lg:h-52 xl:h-60 rounded-2xl overflow-hidden shadow-lg opacity-90 hover:opacity-100 transition clip-slant-right-top bg-[#FAF0EE]/60 p-0.5">
                     <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=600"
                         alt="Seminar Event" class="w-full h-full object-cover rounded-xl">
                 </div>
             </div>
 
             <!-- CONTENT UTAMA (Tengah, Rapi, & Jernih di Depan Background) -->
-            <div class="max-w-2xl text-center z-10 px-4 sm:px-6">
+            <div class="max-w-2xl text-center z-10 px-3 sm:px-6 w-full flex flex-col items-center">
+                <!-- ── 3 ORGANIC DYNAMIC CAPSULE IMAGES UNTUK MOBILE (md:hidden) ── -->
+                <div class="md:hidden flex items-center justify-center gap-2 min-[380px]:gap-2.5 mb-3.5 w-full max-w-[270px] min-[380px]:max-w-[310px] mx-auto pt-0.5">
+                    <!-- Foto 1: Kiri (Yoga) -->
+                    <div class="hero-mobile-1 w-1/3 aspect-[4/5] overflow-hidden shadow-md border-2 border-white/95 bg-[#FAF0EE] flex-shrink-0">
+                        <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=400"
+                            alt="Yoga Wellness" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Foto 2: Tengah (Ibu dan Bayi) -->
+                    <div class="hero-mobile-2 w-1/3 aspect-[4/5] overflow-hidden shadow-lg border-2 border-white/95 bg-[#FAF0EE] flex-shrink-0">
+                        <img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=400"
+                            alt="Mother and Baby" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Foto 3: Kanan (Prenatal Health) -->
+                    <div class="hero-mobile-3 w-1/3 aspect-[4/5] overflow-hidden shadow-md border-2 border-white/95 bg-[#FAF0EE] flex-shrink-0">
+                        <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=400"
+                            alt="Prenatal Health" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
                 <h1
-                    class="text-3xl sm:text-5xl lg:text-6xl font-semibold text-[#3D2B2B] tracking-tight leading-tight mb-2"
-                    style="font-family: 'Lexend', sans-serif;">
+                    class="text-2xl min-[380px]:text-[28px] sm:text-6xl lg:text-7xl font-normal text-[#2E1D1B] tracking-tight leading-none mb-0.5 sm:mb-2"
+                    style="font-family: 'DM Serif Display', serif;">
                     Empowering Women's
                 </h1>
-                <p class="font-handwriting text-3xl sm:text-5xl lg:text-6xl text-[#5F8A6E] font-bold mb-4 sm:mb-8">
+                <p class="font-handwriting text-2xl min-[380px]:text-[32px] sm:text-6xl lg:text-7xl text-[#5F8C72] font-semibold mb-2.5 sm:mb-7 leading-tight">
                     Health Awareness
                 </p>
 
-                <p class="text-gray-600 text-xs sm:text-base leading-relaxed sm:leading-loose mb-6 sm:mb-10 max-w-xl mx-auto font-medium" style="font-family: 'Lexend', sans-serif;">
-                    Temukan seminar, pelatihan, konsultasi, dan e-book terpercaya untuk mendampingi perjalanan Anda, mulai dari persiapan<br
-                        class="hidden sm:block">
-                    kehamilan hingga tumbuh kembang buah hati.
+                <p class="text-[#554846] text-xs min-[380px]:text-sm sm:text-base lg:text-lg leading-relaxed sm:leading-relaxed mb-4 sm:mb-9 max-w-xs min-[380px]:max-w-md sm:max-w-xl mx-auto font-normal">
+                    Seminar, e-book, dan artikel terpercaya untuk mendampingi perjalanan dari kehamilan hingga tumbuh kembang buah hati.
                 </p>
 
                 <!-- Action Buttons -->
-                <div class="flex flex-row items-center justify-center gap-3 sm:gap-5 mt-2 sm:mt-4">
+                <div class="flex flex-row items-center justify-center gap-2.5 sm:gap-5 mt-1 sm:mt-2">
                     <!-- Akses Ebook Button -->
                     <a href="{{ url('/library') }}"
-                        class="bg-transparent hover:bg-[#C27A6F] border-2 border-[#C27A6F] text-[#C27A6F] hover:text-white font-bold px-6 sm:px-10 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 text-xs sm:text-base text-center transform hover:scale-[1.02] active:scale-95 whitespace-nowrap">
+                        class="bg-[#DEAAA1] hover:bg-[#d0998f] text-[#2D1E1E] font-bold px-5 sm:px-9 py-2.5 sm:py-3.5 rounded-full shadow-xs hover:shadow-md transition-all duration-200 text-xs sm:text-base text-center transform hover:scale-[1.03] active:scale-95 whitespace-nowrap">
                         Akses Ebook
                     </a>
                     
                     <!-- Akses Seminar Button -->
-                    <a href="{{ url('/seminars') }}"
-                        class="bg-transparent hover:bg-[#C27A6F] border-2 border-[#C27A6F] text-[#C27A6F] hover:text-white font-bold px-6 sm:px-10 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 text-xs sm:text-base text-center transform hover:scale-[1.02] active:scale-95 whitespace-nowrap">
+                    <a href="{{ url('/events') }}"
+                        class="bg-[#5F8C72] hover:bg-[#4f755e] text-white font-bold px-5 sm:px-9 py-2.5 sm:py-3.5 rounded-full shadow-xs hover:shadow-md transition-all duration-200 text-xs sm:text-base text-center transform hover:scale-[1.03] active:scale-95 whitespace-nowrap">
                         Akses Seminar
                     </a>
                 </div>
@@ -170,101 +283,193 @@
         </div>
     </div>
 
-    <!-- UPCOMING EVENT SECTION -->
-    <section class="w-full bg-[#fcf5f3] pt-4 sm:pt-6 pb-16 px-4 sm:px-6 lg:px-8" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-        <div class="max-w-7xl mx-auto">
+    <!-- ── WAVE DIVIDER: HERO TO OFFERINGS ── -->
+    <div class="w-full overflow-hidden leading-none select-none pointer-events-none -mb-0.5">
+        <svg class="w-full h-4 sm:h-8 lg:h-10 block text-[#fcf5f3]" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,48C840,43,960,53,1080,64C1200,75,1320,85,1380,90.7L1440,96L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z" fill="currentColor"></path>
+        </svg>
+    </div>
+
+    <!-- ── SECTION: APA YANG MATERNITY.ID TAWARKAN ── -->
+    <section class="relative w-full bg-[#fcf5f3] pt-2 sm:pt-4 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+        <div class="relative max-w-7xl mx-auto z-10">
             <!-- Header Section -->
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 reveal-on-scroll">
-                <div>
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#3D2B2B] tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                        Upcoming Event
-                    </h2>
-                    <p class="mt-2 text-sm sm:text-base text-neutral-600 font-medium" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                        Join our expert-led sessions designed to empower and inform
-                    </p>
-                </div>
-                <a href="{{ route('events') }}" class="group inline-flex items-center gap-1.5 text-sm font-bold text-[#7A9E7E] hover:text-[#5a7a66] transition-all duration-200" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                    <span>View All Calendar</span>
+            <div class="text-center max-w-2xl mx-auto mb-5 sm:mb-7 reveal-on-scroll">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FAF0EE] text-[#C27A6F] border border-[#DEA69E]/40 mb-2">
+                    ✨ Layanan & Fitur Utama
+                </span>
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#2A1614] tracking-tight" style="font-family: 'DM Serif Display', serif;">
+                    Apa yang Bisa Kamu Temukan di Maternity.id?
+                </h2>
+                <p class="text-xs sm:text-sm text-[#6C5B57] mt-1.5 leading-relaxed">
+                    Platform edukasi dan pendampingan terpadu untuk ibu hamil, persiapan melahirkan, hingga tumbuh kembang si kecil.
+                </p>
+            </div>
+
+            <!-- Grid 4 Fitur Utama -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+                
+                <!-- Kartu 1: Webinar & Workshop -->
+                <a href="{{ route('events') }}" class="group reveal-on-scroll stagger-1 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#5F8C72] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#EDF5F0] rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#EDF5F0] text-[#5F8C72] flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-[#5F8C72] uppercase tracking-wider block mb-1">Edukasi Interaktif</span>
+                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#5F8C72] transition-colors mb-1.5">
+                            Event & Kelas Webinar
+                        </h3>
+                        <p class="text-xs text-neutral-500 leading-relaxed">
+                            Sesi belajar praktis & interaktif bersama dokter spesialis, bidan, dan praktisi kesehatan maternal.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#5F8C72]">
+                        <span>Jelajahi Event</span>
+                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Kartu 2: E-Book & Panduan Digital -->
+                <a href="{{ route('library') }}" class="group reveal-on-scroll stagger-2 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#8C433C] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#FAF0EE] rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0EE] text-[#8C433C] flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-[#8C433C] uppercase tracking-wider block mb-1">Panduan Digital</span>
+                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#8C433C] transition-colors mb-1.5">
+                            E-Book & Library PDF
+                        </h3>
+                        <p class="text-xs text-neutral-500 leading-relaxed">
+                            Koleksi e-book gratis & berbayar seputar nutrisi, persalinan, manajemen stres, dan perawatan bayi.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#8C433C]">
+                        <span>Unduh E-Book</span>
+                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Kartu 3: Artikel & Insight -->
+                <a href="{{ route('articles.index') }}" class="group reveal-on-scroll stagger-3 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#D97706] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-amber-50 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-newspaper"></i>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-amber-600 uppercase tracking-wider block mb-1">Bacaan Terpercaya</span>
+                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-amber-600 transition-colors mb-1.5">
+                            Artikel & Insight Ibu
+                        </h3>
+                        <p class="text-xs text-neutral-500 leading-relaxed">
+                            Informasi medis & tips praktis harian seputar kehamilan, laktasi, dan parenting yang mudah dipahami.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-amber-600">
+                        <span>Baca Artikel</span>
+                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Kartu 4: Produk & Rekomendasi Maternitas -->
+                <a href="{{ route('product') }}" class="group reveal-on-scroll stagger-4 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#C27A6F] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#FAF0EE] rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0EE] text-[#C27A6F] flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-[#C27A6F] uppercase tracking-wider block mb-1">Produk Terkurasi</span>
+                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#C27A6F] transition-colors mb-1.5">
+                            Rekomendasi Produk
+                        </h3>
+                        <p class="text-xs text-neutral-500 leading-relaxed">
+                            Peralatan dan perlengkapan ibu hamil, menyusui, serta perlengkapan bayi berkualitas dan aman.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#C27A6F]">
+                        <span>Lihat Produk</span>
+                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- UPCOMING EVENT SECTION -->
+    <section class="relative w-full bg-[#fcf5f3] pt-1 sm:pt-2 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+        <!-- ── EVENTS ACCESSORIES: BLOB ORGANIK KANAN ATAS & KIRI BAWAH ── -->
+        <div class="absolute -top-16 -right-16 w-52 sm:w-80 h-52 sm:h-80 bg-[#EBF5EE] opacity-75 blur-2xl rounded-full animate-blob-morph-1 pointer-events-none z-0"></div>
+        <div class="absolute -bottom-16 -left-16 w-56 sm:w-80 h-56 sm:h-80 bg-[#F5E6E3] opacity-80 blur-2xl rounded-full animate-blob-morph-2 pointer-events-none z-0"></div>
+
+        <div class="relative max-w-7xl mx-auto space-y-3.5 sm:space-y-4 z-10">
+            <!-- Header Section (Title on left, Lihat Semua on right) -->
+            <div class="flex items-center justify-between gap-4 reveal-on-scroll">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#2A1614] tracking-tight" style="font-family: 'DM Serif Display', serif;">
+                    Upcoming Event
+                </h2>
+                <a href="{{ route('events') }}" class="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#4D7C59] hover:text-[#3D6347] transition-colors">
+                    <span>Lihat Semua</span>
                     <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
 
-            <!-- Cards Grid (2 Kolom berdampingan di mobile, 3 Kolom di desktop) -->
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6 lg:gap-8">
+            <!-- Category Filter Badges -->
+            @php
+                $eventCategories = ['Semua', 'Webinar', 'Workshop', 'Kelas Prenatal', 'Kesehatan Anak'];
+            @endphp
+            <div class="flex items-center gap-2 sm:gap-2.5 overflow-x-auto pb-1 no-scrollbar reveal-on-scroll">
+                @foreach ($eventCategories as $idx => $cat)
+                    <button type="button" class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap {{ $idx === 0 ? 'bg-[#4D7C59] text-white font-bold shadow-xs' : 'bg-white text-[#5C4542] hover:text-[#2A1614] border border-gray-200 shadow-2xs' }}">
+                        {{ $cat }}
+                    </button>
+                @endforeach
+            </div>
+
+            <!-- Cards Container -->
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 pt-0.5">
                 @php
-                    // Data dummy event (dapat diganti dengan data dari Controller/Database)
                     $events = [
                         [
-                            'tag' => 'ONLINE',
-                            'image' => 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
-                            'date' => 'Oct 12, 2024',
-                            'time' => '10:00 AM',
-                            'title' => 'Mindful Motherhood',
-                            'description' => 'Building mental resilience and community during early parenting stages',
+                            'tag' => 'OFFLINE · JKT',
+                            'tag_type' => 'offline',
+                            'image' => 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=800&q=80',
+                            'date' => '22 Sep · 13.00 WIB',
+                            'title' => 'Workshop Pijat Bayi untuk Ibu Baru',
+                            'price' => 'Rp 150.000',
+                            'category' => 'Workshop',
+                            'is_free' => false,
                             'link' => route('events')
                         ],
                         [
-                            'tag' => 'OFFLINE-UNS',
+                            'tag' => 'ONLINE',
+                            'tag_type' => 'online',
                             'image' => 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80',
-                            'date' => 'Oct 12, 2024',
-                            'time' => '10:00 AM',
-                            'title' => 'Holistic Hormone Health',
-                            'description' => 'A deep dive into balancing your cycle naturally with Dr. Jenkins',
+                            'date' => '30 Sep · 19.00 WIB',
+                            'title' => 'Nutrisi Ibu Hamil Trimester 3',
+                            'price' => 'Gratis',
+                            'category' => 'Webinar',
+                            'is_free' => true,
                             'link' => route('events')
                         ],
                         [
                             'tag' => 'ONLINE',
+                            'tag_type' => 'online',
                             'image' => 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
-                            'date' => 'Oct 12, 2024',
-                            'time' => '10:00 AM',
-                            'title' => 'Mindful Motherhood',
-                            'description' => 'Building mental resilience and community during early parenting stages',
+                            'date' => '12 Oct · 10.00 WIB',
+                            'title' => 'Mindful Motherhood & Relaksasi',
+                            'price' => 'Rp 75.000',
+                            'category' => 'Kelas Prenatal',
+                            'is_free' => false,
                             'link' => route('events')
                         ],
                     ];
                 @endphp
 
                 @foreach ($events as $index => $event)
-                    <div class="group bg-[#FAF0EE] rounded-2xl sm:rounded-3xl border border-[#DEA69E]/50 hover:border-[#DEA69E] p-2.5 sm:p-4 flex flex-col justify-between shadow-sm card-spring reveal-on-scroll stagger-{{ $loop->iteration }}">
-                        <div>
-                            <!-- Image Container -->
-                            <div class="relative w-full h-32 sm:h-48 lg:h-52 rounded-xl sm:rounded-2xl overflow-hidden mb-2.5 sm:mb-4 bg-gray-100">
-                                <img src="{{ $event['image'] }}" alt="{{ $event['title'] }}" class="w-full h-full object-cover transform group-hover:scale-108 transition-transform duration-700 ease-out">
-                                
-                                <!-- Badge/Tag -->
-                                <span class="absolute top-2 sm:top-3 left-2 sm:left-3 bg-[#e8a394]/95 backdrop-blur-xs text-[#782819] text-[9px] sm:text-[11px] font-bold tracking-wider px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase shadow-xs transition-all duration-300 group-hover:scale-105 group-hover:bg-[#DEA69E]">
-                                    {{ $event['tag'] }}
-                                </span>
-                            </div>
-
-                            <!-- Content Details -->
-                            <div class="px-1 sm:px-2">
-                                <!-- Date & Time -->
-                                <div class="flex items-center text-[10px] sm:text-xs font-semibold text-[#c86d5c] mb-1 sm:mb-2 space-x-1 sm:space-x-1.5">
-                                    <svg class="w-3 h-3 sm:w-4 sm:h-4 inline-block -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <span class="truncate">{{ $event['date'] }} &bull; {{ $event['time'] }}</span>
-                                </div>
-
-                                <!-- Title -->
-                                <h3 class="text-xs sm:text-lg font-bold text-[#3D2B2B] mb-1 sm:mb-2 leading-snug group-hover:text-[#80382D] transition-colors duration-200 line-clamp-2">
-                                    {{ $event['title'] }}
-                                </h3>
-
-                                <!-- Description -->
-                                <p class="text-neutral-500 text-[11px] sm:text-sm leading-relaxed mb-2.5 sm:mb-5 line-clamp-2">
-                                    {{ $event['description'] }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Action Button -->
-                        <div class="px-0.5 sm:px-2 pb-0.5 sm:pb-1 pt-1 sm:pt-2">
-                            <a href="{{ $event['link'] }}" class="block w-full text-center py-2 sm:py-2.5 px-2 sm:px-4 bg-[#f0c2b8] group-hover:bg-[#e8a89b] hover:!bg-[#C27A6F] text-[#782819] hover:!text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition-all duration-300 shadow-xs hover:shadow-md transform active:scale-95">
-                                View Detail
-                            </a>
-                        </div>
+                    <div class="reveal-on-scroll stagger-{{ $loop->iteration }} {{ $loop->iteration === 3 ? 'col-span-2 lg:col-span-1' : '' }}">
+                        <x-event_card :event="$event" />
                     </div>
                 @endforeach
             </div>
@@ -272,47 +477,49 @@
     </section>
 
     <!-- EBOOK SECTION (Tepat di bawah Upcoming Event) -->
-    <section class="w-full bg-[#fcf5f3] pt-4 sm:pt-6 pb-16 px-4 sm:px-6 lg:px-8" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-        <div class="max-w-7xl mx-auto space-y-8">
+    <section class="relative w-full bg-[#fcf5f3] pt-2 sm:pt-4 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+        <!-- ── EBOOKS ACCESSORIES: 2 LINGKARAN DASHED BERTUMPUK DI KANAN ATAS & BLOB TERRACOTTA DI KIRI BAWAH ── -->
+        <div class="absolute -top-6 right-4 sm:top-2 sm:right-16 pointer-events-none z-0 select-none opacity-40">
+            <div class="relative w-32 h-32 sm:w-44 sm:h-44">
+                <div class="absolute inset-0 rounded-full border-2 border-dashed border-[#DEAAA1] animate-spin-slow"></div>
+                <div class="absolute top-3 left-3 w-26 h-26 sm:w-38 sm:h-38 rounded-full border-2 border-dashed border-[#8C433C]/60 animate-spin-slow" style="animation-direction: reverse; animation-duration: 25s;"></div>
+            </div>
+        </div>
+        <div class="absolute -bottom-12 -left-12 w-48 sm:w-72 h-48 sm:h-72 bg-[#DEAAA1]/20 blur-2xl rounded-full animate-blob-morph-1 pointer-events-none z-0"></div>
+
+        <div class="relative max-w-7xl mx-auto space-y-3.5 sm:space-y-4 z-10">
             
-            {{-- Header Section (Disamakan dengan Upcoming Event) --}}
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 reveal-on-scroll">
-                <div>
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#3D2B2B] tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                        Ebook
-                    </h2>
-                    <p class="mt-2 text-sm sm:text-base text-neutral-600 font-medium" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                        Access our curated collection of expert-approved health resources.
-                    </p>
-                </div>
-                
-                <a href="{{ route('library') }}" class="group inline-flex items-center gap-1.5 text-sm font-bold text-[#7A9E7E] hover:text-[#5a7a66] transition-all duration-200" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                    <span>View All Ebooks</span>
+            {{-- Header Section (Title on left, Lihat Semua on right) --}}
+            <div class="flex items-center justify-between gap-4 reveal-on-scroll">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#2A1614] tracking-tight" style="font-family: 'DM Serif Display', serif;">
+                    E-Book Library
+                </h2>
+                <a href="{{ route('library') }}" class="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#4D7C59] hover:text-[#3D6347] transition-colors">
+                    <span>Lihat Semua</span>
                     <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
 
             {{-- Filter / Category Badges --}}
             @php
-                $activeCategory = 'Parenting';
-                $categories = [
+                $ebookCategories = [
+                    'Semua',
                     'Parenting',
                     'Mental Health',
-                    'Nutrition Guide',
-                    'Self Growth',
+                    'Nutrisi',
+                    'Self Care',
                     'Mindfulness'
                 ];
             @endphp
 
-            <div class="flex items-center gap-2.5 sm:gap-3 overflow-x-auto pb-2 no-scrollbar reveal-on-scroll">
-                @foreach ($categories as $category)
-                    @php $isActive = $category === $activeCategory; @endphp
+            <div class="flex items-center gap-2 sm:gap-2.5 overflow-x-auto pb-1 no-scrollbar reveal-on-scroll">
+                @foreach ($ebookCategories as $idx => $category)
                     <button 
                         type="button"
-                        class="px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95
-                        {{ $isActive 
-                            ? 'bg-[#F2C4BA] text-[#782819] font-bold border border-[#C27A6F] shadow-xs' 
-                            : 'bg-white/60 text-[#782819] hover:bg-[#F2C4BA]/50 border border-[#C27A6F]/50' 
+                        class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer
+                        {{ $idx === 0 
+                            ? 'bg-[#4D7C59] text-white font-bold shadow-xs' 
+                            : 'bg-white text-[#5C4542] hover:text-[#2A1614] border border-gray-200 shadow-2xs' 
                         }}">
                         {{ $category }}
                     </button>
@@ -324,117 +531,59 @@
                 $products = [
                     [
                         'id' => 1,
-                        'title' => "Download My New\nebook",
+                        'title' => "Panduan Nutrisi\nIbu Hamil",
                         'cover' => 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=400&auto=format&fit=crop&q=80',
-                        'book_title' => 'The Comprehensive Guide to Making $1000/month with Instagram Theme Pages',
-                        'author' => 'Pretty Girls Aesthetics',
-                        'price' => '$25',
-                        'link_text' => 'link in bio',
-                        'handle' => '@cute_prettygirlsaesthetics',
+                        'book_title' => 'Nutrisi Lengkap & Menu Sehat Trimester 1-3',
+                        'author' => 'Tim Ahli Gizi',
+                        'price' => 'Gratis',
+                        'link_text' => 'download pdf',
+                        'handle' => '@maternity.id',
                         'btn_text' => 'Baca Sekarang',
                         'url' => route('library')
                     ],
                     [
                         'id' => 2,
-                        'title' => "Download My New\nebook",
+                        'title' => "Mindful\nMotherhood",
                         'cover' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
-                        'book_title' => 'The Comprehensive Guide to Making $1000/month with Instagram Theme Pages',
-                        'author' => 'Pretty Girls Aesthetics',
-                        'price' => '$25',
-                        'link_text' => 'link in bio',
-                        'handle' => '@cute_prettygirlsaesthetics',
+                        'book_title' => 'Mengelola Emosi & Kecemasan Menjelang Persalinan',
+                        'author' => 'Psikolog Maternitas',
+                        'price' => 'Gratis',
+                        'link_text' => 'download pdf',
+                        'handle' => '@maternity.id',
                         'btn_text' => 'Baca Sekarang',
                         'url' => route('library')
                     ],
                     [
                         'id' => 3,
-                        'title' => "Download My New\nebook",
+                        'title' => "E-Book Pijat\nBayi Baru Lahir",
                         'cover' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80',
-                        'book_title' => 'The Comprehensive Guide to Making $1000/month with Instagram Theme Pages',
-                        'author' => 'Pretty Girls Aesthetics',
-                        'price' => '$25',
-                        'link_text' => 'link in bio',
-                        'handle' => '@cute_prettygirlsaesthetics',
+                        'book_title' => 'Langkah Praktis Stimulasi Motorik Bayi',
+                        'author' => 'Bidan Praktisi',
+                        'price' => 'Gratis',
+                        'link_text' => 'download pdf',
+                        'handle' => '@maternity.id',
                         'btn_text' => 'Baca Sekarang',
                         'url' => route('library')
                     ],
                     [
                         'id' => 4,
-                        'title' => "Download My New\nebook",
+                        'title' => "Panduan ASI &\nMenyusui Sukses",
                         'cover' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&auto=format&fit=crop&q=80',
-                        'book_title' => 'The Comprehensive Guide to Making $1000/month with Instagram Theme Pages',
-                        'author' => 'Pretty Girls Aesthetics',
-                        'price' => '$25',
-                        'link_text' => 'link in bio',
-                        'handle' => '@cute_prettygirlsaesthetics',
+                        'book_title' => 'Kiat Mengatasi Masalah Pelekatan & Produksi ASI',
+                        'author' => 'Konselor Laktasi',
+                        'price' => 'Gratis',
+                        'link_text' => 'download pdf',
+                        'handle' => '@maternity.id',
                         'btn_text' => 'Baca Sekarang',
                         'url' => route('library')
                     ],
                 ];
             @endphp
 
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 pt-0.5">
                 @foreach ($products as $product)
-                    <div class="group flex flex-col bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm card-spring reveal-on-scroll stagger-{{ $loop->iteration }} border border-[#DEA69E]/50 hover:border-[#DEA69E]">
-                        
-                        {{-- Top Header (Background transparan menyatu dengan card putih) --}}
-                        <div class="pt-4 sm:pt-7 pb-2.5 sm:pb-4 px-2 sm:px-4 text-center bg-transparent">
-                            <h2 class="font-serif italic font-extrabold text-sm min-[400px]:text-base sm:text-2xl text-[#8C433C] group-hover:text-[#782819] leading-tight group-hover:scale-105 transition-all duration-300">
-                                {!! nl2br(e($product['title'])) !!}
-                            </h2>
-                        </div>
-
-                        {{-- Arched Terracotta/Rose Body Section (Diselaraskan dari pink ke palet brand) --}}
-                        <div class="flex-1 bg-[#C27A6F] rounded-t-[45px] sm:rounded-t-[80px] pt-4 sm:pt-7 pb-4 sm:pb-6 px-2 sm:px-4 flex flex-col items-center justify-between text-center shadow-inner">
-                            
-                            {{-- Realistic Tablet Mockup --}}
-                            <div class="w-20 min-[400px]:w-24 sm:w-32 aspect-[3/4] bg-neutral-900 rounded-lg sm:rounded-xl p-1 sm:p-1.5 shadow-2xl border border-neutral-800 relative group-hover:scale-110 group-hover:-rotate-1.5 transition-all duration-500">
-                                {{-- Camera indicator --}}
-                                <div class="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-neutral-700 rounded-full mx-auto mb-0.5 sm:mb-1"></div>
-                                
-                                {{-- Screen Display --}}
-                                <div class="w-full h-[calc(100%-8px)] sm:h-[calc(100%-10px)] bg-white rounded-md sm:rounded-lg p-1.5 sm:p-2 flex flex-col items-center justify-between overflow-hidden shadow-inner text-left">
-                                    <img 
-                                        src="{{ $product['cover'] }}" 
-                                        alt="Cover" 
-                                        class="w-full h-10 min-[400px]:h-12 sm:h-16 object-cover rounded"
-                                    />
-                                    <div class="w-full mt-0.5 sm:mt-1">
-                                        <p class="text-[5px] min-[400px]:text-[5.5px] sm:text-[6.5px] font-bold text-neutral-800 leading-tight line-clamp-2 sm:line-clamp-3">
-                                            {{ $product['book_title'] }}
-                                        </p>
-                                        <p class="text-[4px] min-[400px]:text-[4.5px] sm:text-[5.5px] text-neutral-500 mt-0.5 truncate">
-                                            written by {{ $product['author'] }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Metadata & Price --}}
-                            <div class="mt-2.5 sm:mt-4 space-y-0.5 text-white">
-                                <p class="text-[10px] sm:text-xs font-bold tracking-tight">
-                                    Available for {{ $product['price'] }}
-                                </p>
-                                <p class="text-[8.5px] sm:text-[11px] font-medium text-pink-100/90 lowercase tracking-wide">
-                                    {{ $product['link_text'] }}
-                                </p>
-
-                                @if (!empty($product['handle']))
-                                    <div class="pt-1 sm:pt-2">
-                                        <span class="inline-block px-2 sm:px-3 py-0.5 rounded-full border border-white/40 bg-white/15 backdrop-blur-sm text-[7.5px] sm:text-[9px] text-white/95 font-mono group-hover:bg-white/25 transition-colors truncate max-w-full">
-                                            {{ $product['handle'] }}
-                                        </span>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-
-                        {{-- Bottom Action Button --}}
-                        <a 
-                            href="{{ $product['url'] }}" 
-                            class="w-full bg-[#FAF0EE] hover:bg-[#8C433C] text-[#782819] hover:text-white text-center font-bold py-2 sm:py-3.5 text-xs sm:text-sm transition-all duration-300 block border-t border-[#DEA69E]/40 shadow-xs">
-                            {{ $product['btn_text'] }}
-                        </a>
+                    <div class="reveal-on-scroll stagger-{{ $loop->iteration }}">
+                        <x-ebook_card :ebook="$product" />
                     </div>
                 @endforeach
             </div>
@@ -442,320 +591,329 @@
         </div>
     </section>
 
+    <!-- ── WAVE DIVIDER: E-BOOK TO ARTIKEL KESEHATAN ── -->
+    <div class="w-full overflow-hidden leading-none select-none pointer-events-none bg-[#fcf5f3] -mb-0.5">
+        <svg class="w-full h-4 sm:h-8 lg:h-10 block text-[#FAF0EE]" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,69.3C960,85,1056,107,1152,101.3C1248,96,1344,64,1392,48L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z" fill="currentColor"></path>
+        </svg>
+    </div>
+
     <!-- ARTIKEL KESEHATAN SECTION (SEO & GUEST DISCOVERY) -->
-    <section class="w-full bg-[#FAF0EE] pt-8 pb-20 px-4 sm:px-6 lg:px-8" style="font-family: 'Plus Jakarta Sans', sans-serif;" x-data="{ activeTab: 'all' }">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header Section -->
-            <div class="mb-8 reveal-on-scroll">
-                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#3D2B2B] tracking-tight">
-                    Eksplorasi Artikel Kesehatan Terbaru
+    <section class="relative w-full bg-[#FAF0EE] pt-2 sm:pt-4 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden" style="font-family: 'Plus Jakarta Sans', sans-serif;" x-data="{ activeTab: 'all' }">
+        <!-- ── ARTICLES ACCESSORIES: SQUARE PATTERNS KIRI ATAS & KANAN BAWAH, DOT GRID DI POJOK KANAN ── -->
+        <div class="absolute top-1 left-1 sm:top-3 sm:left-3 w-20 sm:w-28 h-20 sm:h-28 opacity-20 pointer-events-none z-0">
+            <svg width="88" height="88" fill="none" viewBox="0 0 88 88">
+                <pattern id="square-pattern-art-1" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+                    <rect x="2" y="2" width="18" height="18" rx="3.5" stroke="#5F8C72" stroke-width="1.5" fill="#5F8C72" fill-opacity="0.1"/>
+                </pattern>
+                <rect width="88" height="88" fill="url(#square-pattern-art-1)"/>
+            </svg>
+        </div>
+        <div class="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 w-24 sm:w-32 h-24 sm:h-32 opacity-25 pointer-events-none z-0">
+            <svg width="96" height="96" fill="none" viewBox="0 0 96 96">
+                <pattern id="square-pattern-art-2" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+                    <rect x="2" y="2" width="20" height="20" rx="4" stroke="#8C433C" stroke-width="1.5" stroke-dasharray="3 3" fill="#C27A6F" fill-opacity="0.08"/>
+                </pattern>
+                <rect width="96" height="96" fill="url(#square-pattern-art-2)"/>
+            </svg>
+        </div>
+        <div class="absolute top-1/2 right-4 w-16 h-16 opacity-20 pointer-events-none z-0 hidden md:block">
+            <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
+                <pattern id="dot-grid-art" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="1.5" fill="#8C433C"/>
+                </pattern>
+                <rect width="60" height="60" fill="url(#dot-grid-art)"/>
+            </svg>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto space-y-3.5 sm:space-y-4 z-10">
+            <!-- Header Section (Title on left, Lihat Semua on right) -->
+            <div class="flex items-center justify-between gap-4 reveal-on-scroll">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#2A1614] tracking-tight" style="font-family: 'DM Serif Display', serif;">
+                    Artikel Kesehatan
                 </h2>
-                <p class="mt-2 text-sm sm:text-base text-neutral-600 font-medium">
-                    Panduan &amp; tips medis tepercaya, tervalidasi oleh pakar kesehatan.
-                </p>
-            </div>
 
-            <!-- Categories Tabs & Lihat Semua Link -->
-            <div class="flex flex-wrap items-center justify-between gap-4 mb-8 reveal-on-scroll">
-                <!-- Filter Pills -->
-                <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
-                    <button type="button" @click="activeTab = 'all'"
-                        :class="activeTab === 'all' ? 'bg-[#F2C4BA] text-[#782819] font-bold border-[#C27A6F] shadow-xs' : 'bg-transparent text-[#782819] hover:bg-[#F2C4BA]/50 border-[#C27A6F]/60'"
-                        class="px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95">
-                        Terbaru
-                    </button>
-                    <button type="button" @click="activeTab = 'trimester'"
-                        :class="activeTab === 'trimester' ? 'bg-[#F2C4BA] text-[#782819] font-bold border-[#C27A6F] shadow-xs' : 'bg-transparent text-[#782819] hover:bg-[#F2C4BA]/50 border-[#C27A6F]/60'"
-                        class="px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95">
-                        Trisemester 1-3
-                    </button>
-                    <button type="button" @click="activeTab = 'nutrisi'"
-                        :class="activeTab === 'nutrisi' ? 'bg-[#F2C4BA] text-[#782819] font-bold border-[#C27A6F] shadow-xs' : 'bg-transparent text-[#782819] hover:bg-[#F2C4BA]/50 border-[#C27A6F]/60'"
-                        class="px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95">
-                        Nutrisi Ibu
-                    </button>
-                    <button type="button" @click="activeTab = 'persalinan'"
-                        :class="activeTab === 'persalinan' ? 'bg-[#F2C4BA] text-[#782819] font-bold border-[#C27A6F] shadow-xs' : 'bg-transparent text-[#782819] hover:bg-[#F2C4BA]/50 border-[#C27A6F]/60'"
-                        class="px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95">
-                        Persalinan
-                    </button>
-                    <button type="button" @click="activeTab = 'bayi'"
-                        :class="activeTab === 'bayi' ? 'bg-[#F2C4BA] text-[#782819] font-bold border-[#C27A6F] shadow-xs' : 'bg-transparent text-[#782819] hover:bg-[#F2C4BA]/50 border-[#C27A6F]/60'"
-                        class="px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95">
-                        Perawatan Bayi
-                    </button>
-                </div>
-
-                <!-- Link Lihat Semua Artikel -->
-                <a href="{{ route('articles.index') }}" class="inline-flex items-center gap-1.5 text-sm sm:text-base font-bold text-[#A8584B] hover:text-[#782819] transition-colors group">
-                    <span>Lihat Semua Artikel</span>
+                <a href="{{ route('articles.index') }}" class="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#4D7C59] hover:text-[#3D6347] transition-colors">
+                    <span>Lihat Semua</span>
                     <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
 
-            <!-- Articles Grid (2 Kolom sesuai mockup) -->
+            <!-- Categories Tabs -->
+            <div class="flex items-center gap-2 sm:gap-2.5 overflow-x-auto pb-1 no-scrollbar reveal-on-scroll">
+                <!-- 1. Semua -->
+                <button type="button" @click="activeTab = 'all'"
+                    :class="activeTab === 'all' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
+                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
+                    Semua
+                </button>
+
+                <!-- 2. Trimester 1 -->
+                <button type="button" @click="activeTab = 'trimester-1'"
+                    :class="activeTab === 'trimester-1' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
+                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
+                    Trimester 1
+                </button>
+
+                <!-- 3. Trimester 2 -->
+                <button type="button" @click="activeTab = 'trimester-2'"
+                    :class="activeTab === 'trimester-2' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
+                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
+                    Trimester 2
+                </button>
+
+                <!-- 4. Trimester 3 -->
+                <button type="button" @click="activeTab = 'trimester-3'"
+                    :class="activeTab === 'trimester-3' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
+                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
+                    Trimester 3
+                </button>
+
+                <!-- 5. Nutrisi Ibu -->
+                <button type="button" @click="activeTab = 'nutrisi'"
+                    :class="activeTab === 'nutrisi' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
+                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
+                    Nutrisi Ibu
+                </button>
+
+                <!-- 6. Persalinan -->
+                <button type="button" @click="activeTab = 'persalinan'"
+                    :class="activeTab === 'persalinan' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
+                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
+                    Persalinan
+                </button>
+
+                <!-- 7. Perawatan Bayi -->
+                <button type="button" @click="activeTab = 'bayi'"
+                    :class="activeTab === 'bayi' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
+                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
+                    Perawatan Bayi
+                </button>
+            </div>
+
+            <!-- Articles Grid (2 Kolom Bersih) -->
             @php
                 $articles = [
                     [
-                        'category' => 'trimester',
-                        'title' => 'Edukasi & Panduan Kehamilan Terkini',
-                        'description' => 'Tips kesehatan ibu dan janin tepercaya, ditinjau langsung oleh dokter spesialis kandungan',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80',
-                        'link' => route('articles.index'),
+                        'category_slug' => 'trimester-2',
+                        'category_name' => 'Trimester 2',
+                        'title' => '7 Gerakan Yoga Aman untuk Ibu Hamil di Trimester Kedua',
+                        'meta' => '5 Sep 2026 · 5 mnt baca',
+                        'image' => 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=500&q=80',
+                        'link' => route('articles.show', 'cara-mengelola-stres-pada-ibu-hamil'),
                     ],
                     [
-                        'category' => 'nutrisi',
-                        'title' => 'Edukasi & Panduan Kehamilan Terkini',
-                        'description' => 'Tips kesehatan ibu dan janin tepercaya, ditinjau langsung oleh dokter spesialis kandungan',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80',
-                        'link' => route('articles.index'),
+                        'category_slug' => 'nutrisi',
+                        'category_name' => 'Nutrisi Ibu',
+                        'title' => 'Asupan Zat Besi: Kunci Cegah Anemia Kehamilan',
+                        'meta' => '3 Sep 2026 · 7 mnt baca',
+                        'image' => 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=500&q=80',
+                        'link' => route('articles.show', 'nutrisi-seimbang-untuk-ibu-hamil'),
                     ],
                     [
-                        'category' => 'persalinan',
-                        'title' => 'Edukasi & Panduan Kehamilan Terkini',
-                        'description' => 'Tips kesehatan ibu dan janin tepercaya, ditinjau langsung oleh dokter spesialis kandungan',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80',
-                        'link' => route('articles.index'),
+                        'category_slug' => 'trimester-1',
+                        'category_name' => 'Trimester 1',
+                        'title' => 'Mengatasi Morning Sickness di Awal Masa Kehamilan',
+                        'meta' => '1 Sep 2026 · 4 mnt baca',
+                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=500&q=80',
+                        'link' => route('articles.show', 'nutrisi-seimbang-untuk-ibu-hamil'),
                     ],
                     [
-                        'category' => 'bayi',
-                        'title' => 'Edukasi & Panduan Kehamilan Terkini',
-                        'description' => 'Tips kesehatan ibu dan janin tepercaya, ditinjau langsung oleh dokter spesialis kandungan',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80',
-                        'link' => route('articles.index'),
+                        'category_slug' => 'trimester-3',
+                        'category_name' => 'Trimester 3',
+                        'title' => 'Tanda-Tanda Kontraksi Asli vs Palsu Menjelang HPL',
+                        'meta' => '28 Agu 2026 · 6 mnt baca',
+                        'image' => 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=500&q=80',
+                        'link' => route('articles.show', 'nutrisi-seimbang-untuk-ibu-hamil'),
                     ],
                     [
-                        'category' => 'trimester',
-                        'title' => 'Edukasi & Panduan Kehamilan Terkini',
-                        'description' => 'Tips kesehatan ibu dan janin tepercaya, ditinjau langsung oleh dokter spesialis kandungan',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80',
-                        'link' => route('articles.index'),
+                        'category_slug' => 'persalinan',
+                        'category_name' => 'Persalinan',
+                        'title' => 'Mengenal Metode Gentle Birth untuk Persalinan yang Tenang',
+                        'meta' => '25 Agu 2026 · 5 mnt baca',
+                        'image' => 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=500&q=80',
+                        'link' => route('articles.show', 'peran-suami-mendampingi-kehamilan'),
                     ],
                     [
-                        'category' => 'nutrisi',
-                        'title' => 'Edukasi & Panduan Kehamilan Terkini',
-                        'description' => 'Tips kesehatan ibu dan janin tepercaya, ditinjau langsung oleh dokter spesialis kandungan',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80',
-                        'link' => route('articles.index'),
-                    ],
-                    [
-                        'category' => 'persalinan',
-                        'title' => 'Edukasi & Panduan Kehamilan Terkini',
-                        'description' => 'Tips kesehatan ibu dan janin tepercaya, ditinjau langsung oleh dokter spesialis kandungan',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80',
-                        'link' => route('articles.index'),
-                    ],
-                    [
-                        'category' => 'bayi',
-                        'title' => 'Edukasi & Panduan Kehamilan Terkini',
-                        'description' => 'Tips kesehatan ibu dan janin tepercaya, ditinjau langsung oleh dokter spesialis kandungan',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80',
-                        'link' => route('articles.index'),
+                        'category_slug' => 'bayi',
+                        'category_name' => 'Perawatan Bayi',
+                        'title' => 'Panduan Membangun Pola Tidur Teratur pada Bayi Baru Lahir',
+                        'meta' => '22 Agu 2026 · 6 mnt baca',
+                        'image' => 'https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=500&q=80',
+                        'link' => route('articles.show', 'pola-tidur-bayi-baru-lahir'),
                     ],
                 ];
             @endphp
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                 @foreach ($articles as $article)
                     <a href="{{ $article['link'] }}" 
-                       x-show="activeTab === 'all' || activeTab === '{{ $article['category'] }}'"
+                       x-show="activeTab === 'all' || activeTab === '{{ $article['category_slug'] }}'"
                        x-transition
-                       class="group bg-[#FAF0EE] rounded-2xl sm:rounded-3xl border-2 border-[#2D1E1E]/80 hover:border-[#8C433C] p-3 sm:p-4 flex items-center justify-between gap-3 sm:gap-4 shadow-xs card-spring reveal-on-scroll stagger-{{ ($loop->iteration % 4) + 1 }}">
+                       class="group bg-white rounded-2xl sm:rounded-3xl border border-[#EADBDB]/60 hover:border-[#5F8C72]/60 p-2.5 sm:p-3.5 flex items-center justify-between gap-3 sm:gap-4 shadow-xs hover:shadow-md card-spring reveal-on-scroll stagger-{{ ($loop->iteration % 4) + 1 }}">
                         
-                        <!-- Left: Thumbnail & Text -->
-                        <div class="flex items-center gap-3 sm:gap-4 overflow-hidden min-w-0">
-                            <!-- Image Thumbnail -->
-                            <div class="w-20 h-16 sm:w-24 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden bg-gray-200 shrink-0">
-                                <img src="{{ $article['image'] }}" alt="{{ $article['title'] }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <!-- Left: Thumbnail & Text Info -->
+                        <div class="flex items-center gap-3 sm:gap-3.5 overflow-hidden min-w-0 flex-1">
+                            <!-- Image Thumbnail (Rounded Square) -->
+                            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl sm:rounded-2xl overflow-hidden bg-neutral-100 shrink-0">
+                                <img src="{{ $article['image'] }}" alt="{{ $article['title'] }}" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out" loading="lazy">
                             </div>
 
                             <!-- Text Content -->
-                            <div class="min-w-0">
-                                <h3 class="font-bold text-sm sm:text-base text-[#2D1E1E] leading-snug truncate group-hover:text-[#8C433C] transition-colors">
+                            <div class="min-w-0 space-y-1 sm:space-y-1.5">
+                                <!-- Category Badge -->
+                                <span class="inline-block px-2.5 py-0.5 bg-[#EDF5F0] text-[#5F8C72] text-[9px] sm:text-[10px] font-semibold rounded-full">
+                                    {{ $article['category_name'] }}
+                                </span>
+
+                                <!-- Title -->
+                                <h3 class="font-bold text-xs sm:text-sm text-[#2D1E1E] leading-snug line-clamp-2 group-hover:text-[#5F8C72] transition-colors">
                                     {{ $article['title'] }}
                                 </h3>
-                                <p class="text-xs sm:text-[13px] text-neutral-600 mt-1 leading-relaxed line-clamp-2">
-                                    {{ $article['description'] }}
+
+                                <!-- Date & Read Time -->
+                                <p class="text-[10px] sm:text-[11px] text-neutral-400 font-medium">
+                                    {{ $article['meta'] }}
                                 </p>
                             </div>
                         </div>
 
-                        <!-- Right: Arrow Action Button -->
+                        <!-- Right: Sage Green Arrow Button -->
                         <div class="shrink-0 pl-1">
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#2D1E1E] text-white flex items-center justify-center group-hover:bg-[#8C433C] group-hover:scale-110 group-hover:rotate-45 transition-all duration-300 shadow-sm">
-                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#5F8C72] group-hover:bg-[#4d725d] text-white flex items-center justify-center group-hover:scale-110 group-hover:translate-x-0.5 transition-all duration-300 shadow-xs">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                </svg>
                             </div>
                         </div>
                     </a>
                 @endforeach
             </div>
+
         </div>
     </section>
 
+    <!-- ── WAVE DIVIDER: ARTIKEL TO PRODUK PILIHAN ── -->
+    <div class="w-full overflow-hidden leading-none select-none pointer-events-none bg-[#FAF0EE] -mb-0.5">
+        <svg class="w-full h-4 sm:h-8 lg:h-10 block text-[#fcf5f3]" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,48L60,58.7C120,69,240,91,360,85.3C480,80,600,48,720,37.3C840,27,960,37,1080,53.3C1200,69,1320,91,1380,101.3L1440,112L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z" fill="currentColor"></path>
+        </svg>
+    </div>
+
     <!-- PHYSICAL PRODUCT / SHOP SECTION (Setelah Artikel) -->
-    <section class="w-full bg-[#fcf5f3] pt-6 pb-20 px-4 sm:px-6 lg:px-8" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-        <div class="max-w-7xl mx-auto space-y-8">
+    <section class="relative w-full bg-[#fcf5f3] bg-diagonal-lines pt-2 sm:pt-4 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+        <!-- ── PRODUCTS ACCESSORIES: BLOB ROSE DI KANAN ATAS ── -->
+        <div class="absolute -top-16 -right-16 w-56 sm:w-80 h-56 sm:h-80 bg-[#DEA69E]/25 blur-3xl rounded-full animate-blob-morph-1 pointer-events-none z-0"></div>
 
-            {{-- Header Section (Disamakan dengan Upcoming Event & Ebook) --}}
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 reveal-on-scroll">
-                <div>
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#3D2B2B] tracking-tight">
-                        Product
-                    </h2>
-                    <p class="mt-2 text-sm sm:text-base text-neutral-600 font-medium">
-                        Temukan berbagai barang pilihan yang siap mendukung aktivitasmu
-                    </p>
-                </div>
+        <div class="relative max-w-7xl mx-auto space-y-3.5 sm:space-y-4 z-10">
 
-                <a href="{{ route('product') }}" class="group inline-flex items-center gap-1.5 text-sm font-bold text-[#7A9E7E] hover:text-[#5a7a66] transition-all duration-200">
-                    <span>View All Products</span>
+            {{-- Header Section (Title on left, Lihat Semua on right) --}}
+            <div class="flex items-center justify-between gap-4 reveal-on-scroll">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#2A1614] tracking-tight" style="font-family: 'DM Serif Display', serif;">
+                    Produk Pilihan
+                </h2>
+
+                <a href="{{ route('product') }}" class="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#4D7C59] hover:text-[#3D6347] transition-colors">
+                    <span>Lihat Semua</span>
                     <i class="fa-solid fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
 
             {{-- Category Tabs --}}
             @php
-                $activeProductCat = 'Semua';
-                $productCategories = ['Semua', 'Perlengkapan Nakes', 'Kebutuhan Wanita'];
+                $productCategories = ['Semua', 'Perlengkapan Nakes', 'Kebutuhan Wanita', 'Herbal & Vitamin'];
             @endphp
 
-            <div class="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar reveal-on-scroll">
-                @foreach ($productCategories as $category)
-                    @php $isActive = $category === $activeProductCat; @endphp
+            <div class="flex items-center gap-2 sm:gap-2.5 overflow-x-auto pb-1 no-scrollbar reveal-on-scroll">
+                @foreach ($productCategories as $idx => $category)
                     <button 
                         type="button"
-                        class="px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95
-                        {{ $isActive 
-                            ? 'bg-[#F2C4BA] text-[#782819] font-bold border border-[#C27A6F] shadow-xs' 
-                            : 'bg-transparent text-[#782819] hover:bg-[#F2C4BA]/50 border border-[#C27A6F]/60' 
+                        class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer
+                        {{ $idx === 0 
+                            ? 'bg-[#4D7C59] text-white font-bold shadow-xs' 
+                            : 'bg-white text-[#5C4542] hover:text-[#2A1614] border border-gray-200 shadow-2xs' 
                         }}">
                         {{ $category }}
                     </button>
                 @endforeach
             </div>
 
-            {{-- Product Grid (5 Kolom di desktop) --}}
+            {{-- Product Grid --}}
             @php
                 $physicalProducts = [
                     [
                         'id' => 1,
-                        'title' => 'Set Baju Perawat Premium',
-                        'tag' => 'Perlengkapan Nakes',
+                        'title' => 'Seragam Bidan Premium',
+                        'tag' => 'Nakes',
                         'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&auto=format&fit=crop&q=80',
-                        'location' => 'Surakarta',
-                        'price' => 'Rp 30.000',
-                        'tiktok_url' => '#'
+                        'location' => 'Jakarta',
+                        'price' => 'Rp 285.000',
+                        'sold' => '120+',
+                        'tiktok_url' => route('product')
                     ],
                     [
                         'id' => 2,
-                        'title' => 'Set Baju Perawat Premium',
-                        'tag' => 'Perlengkapan Nakes',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&auto=format&fit=crop&q=80',
-                        'location' => 'Surakarta',
-                        'price' => 'Rp 30.000',
-                        'tiktok_url' => '#'
+                        'title' => 'Nursing Bra 2–Pack',
+                        'tag' => 'Wanita',
+                        'image' => 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&auto=format&fit=crop&q=80',
+                        'location' => 'Surabaya',
+                        'price' => 'Rp 179.000',
+                        'sold' => '85+',
+                        'tiktok_url' => route('product')
                     ],
                     [
                         'id' => 3,
-                        'title' => 'Set Baju Perawat Premium',
-                        'tag' => 'Perlengkapan Nakes',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&auto=format&fit=crop&q=80',
-                        'location' => 'Surakarta',
-                        'price' => 'Rp 30.000',
-                        'tiktok_url' => '#'
+                        'title' => 'Bantal Hamil Ergonomis U-Shape',
+                        'tag' => 'Ibu Hamil',
+                        'image' => 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&auto=format&fit=crop&q=80',
+                        'location' => 'Bandung',
+                        'price' => 'Rp 210.000',
+                        'sold' => '64+',
+                        'tiktok_url' => route('product')
                     ],
                     [
                         'id' => 4,
-                        'title' => 'Set Baju Perawat Premium',
-                        'tag' => 'Perlengkapan Nakes',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&auto=format&fit=crop&q=80',
-                        'location' => 'Surakarta',
-                        'price' => 'Rp 30.000',
-                        'tiktok_url' => '#'
-                    ],
-                    [
-                        'id' => 5,
-                        'title' => 'Set Baju Perawat Premium',
-                        'tag' => 'Perlengkapan Nakes',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&auto=format&fit=crop&q=80',
-                        'location' => 'Surakarta',
-                        'price' => 'Rp 30.000',
-                        'tiktok_url' => '#'
+                        'title' => 'Maternity Care Herbal Oil 100ml',
+                        'tag' => 'Herbal',
+                        'image' => 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&auto=format&fit=crop&q=80',
+                        'location' => 'Yogyakarta',
+                        'price' => 'Rp 125.000',
+                        'sold' => '210+',
+                        'tiktok_url' => route('product')
                     ],
                 ];
             @endphp
 
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
                 @foreach ($physicalProducts as $product)
-                    <div class="group flex flex-col justify-between bg-white rounded-3xl p-3 shadow-sm card-spring reveal-on-scroll stagger-{{ $loop->iteration }} border border-[#DEA69E]/40 hover:border-[#DEA69E]">
-                        
-                        {{-- Top Area: Image + Details --}}
-                        <div>
-                            {{-- Image Thumbnail with Overlay Badge --}}
-                            <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100">
-                                <img 
-                                    src="{{ $product['image'] }}" 
-                                    alt="{{ $product['title'] }}" 
-                                    class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
-                                    loading="lazy"
-                                />
-                                
-                                {{-- Floating Tag --}}
-                                @if (!empty($product['tag']))
-                                    <span class="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-[#F2C4BA]/95 backdrop-blur-sm text-[10px] font-bold text-[#782819] shadow-xs group-hover:bg-[#DEA69E] transition-colors">
-                                        {{ $product['tag'] }}
-                                    </span>
-                                @endif
-                            </div>
-
-                            {{-- Card Info --}}
-                            <div class="pt-3.5 pb-2 px-1 space-y-1.5">
-                                <h3 class="font-bold text-sm text-[#2D1E1E] line-clamp-1 group-hover:text-[#8C433C] transition-colors">
-                                    {{ $product['title'] }}
-                                </h3>
-
-                                {{-- Location --}}
-                                <div class="flex items-center gap-1 text-[#8C433C] text-xs font-medium">
-                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    <span class="text-neutral-500 text-[11px]">{{ $product['location'] }}</span>
-                                </div>
-
-                                {{-- Price --}}
-                                <div class="pt-1">
-                                    <span class="text-base font-extrabold text-[#3D2B2B] tracking-tight">
-                                        {{ $product['price'] }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Bottom Action: TikTok Button --}}
-                        <div class="pt-2">
-                            <a 
-                                href="{{ $product['tiktok_url'] }}" 
-                                class="w-full bg-[#FAF0EE] hover:bg-[#8C433C] text-[#782819] hover:text-white rounded-xl font-bold py-2.5 px-3 text-xs tracking-wide transition-all duration-300 flex items-center justify-between shadow-xs border border-[#DEA69E]/50 hover:border-[#8C433C] group/btn">
-                                <div class="flex items-center gap-1.5 mx-auto">
-                                    {{-- TikTok Icon --}}
-                                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.11V9.4a6.33 6.33 0 0 0-.85-.05A6.34 6.34 0 0 0 3 15.69a6.34 6.34 0 0 0 10.82 4.47 6.3 6.3 0 0 0 1.86-4.49v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.86-.1z"/>
-                                    </svg>
-                                    <span>Lihat di TikTok</span>
-                                </div>
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300 group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </a>
-                        </div>
-
+                    <div class="reveal-on-scroll stagger-{{ $loop->iteration }}">
+                        <x-product_card :product="$product" />
                     </div>
                 @endforeach
             </div>
 
         </div>
     </section>
+
+    <!-- ── WAVE DIVIDER: PRODUK PILIHAN TO BOTTOM ── -->
+    <div class="w-full overflow-hidden leading-none select-none pointer-events-none bg-[#fcf5f3] -mb-0.5">
+        <svg class="w-full h-4 sm:h-8 lg:h-10 block text-[#FAF0EE]" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,32L48,42.7C96,53,192,75,288,80C384,85,480,75,576,58.7C672,43,768,21,864,26.7C960,32,1056,64,1152,74.7C1248,85,1344,75,1392,69.3L1440,64L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z" fill="currentColor"></path>
+        </svg>
+    </div>
+
+    <!-- ── INTERACTIVE ARCHITECTURAL GRID BANNER (KOMUNITAS & KONSULTASI) ── -->
+    <div class="py-3 sm:py-5 bg-[#FAF0EE]">
+        <x-grid_hero_banner 
+            badge="Komunitas & Konsultasi Bidan"
+            title="Pendampingan Kesehatan Ibu & Bayi Terpadu"
+            subtitle="Bergabunglah dengan ribuan ibu di Indonesia untuk mendapatkan materi parenting, webinar eksklusif, serta bimbingan langsung dari bidan dan dokter terpercaya."
+            primaryText="Daftar Event Terdekat"
+            :primaryUrl="route('events')"
+            secondaryText="Tanya Bidan Sekarang"
+            secondaryUrl="https://wa.me/"
+        />
+    </div>
 
     <!-- ── SINGLE EXPANDABLE FLOATING ACTION BUTTON (Pojok Kanan Bawah: 1 Tombol Utama yang Menampilkan Menu saat Ditekan) ── -->
     <div x-data="{ openFab: false }" 

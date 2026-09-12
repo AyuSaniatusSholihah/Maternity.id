@@ -23,6 +23,7 @@ Route::get('/', function () {
 // Guest & Member Journey Routes
 Route::get('/events', [EventController::class, 'index'])->name('events');
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{slug}/checkout', [EventController::class, 'checkout'])->name('events.checkout');
 Route::get('/events/{slug}/verification', [EventController::class, 'verification'])->name('events.verification');
 Route::get('/events/{slug}/approved', [EventController::class, 'approved'])->name('events.approved');
 
