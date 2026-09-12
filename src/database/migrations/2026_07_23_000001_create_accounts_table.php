@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('email', 255)->unique();
             $table->string('name', 255);
             $table->string('profile_img', 255)->nullable();
+            $table->enum('account_type', ['member', 'admin'])->default('member');
             $table->timestamps();
         });
 
