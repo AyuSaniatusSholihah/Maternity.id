@@ -47,14 +47,10 @@ Route::get('/mitra', function () {
 })->name('mitra.index');
 
 // Admin Knowledge & Portal Routes
-Route::prefix('admin')->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admin')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
-
-    Route::get('/login', function () {
-        return view('admin.login');
-    })->name('admin.login');
 
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
@@ -79,6 +75,13 @@ Route::prefix('admin')->group(function () {
     Route::get('/content-library', function () {
         return view('admin.dashboard');
     })->name('admin.content-library');
+});
+
+// Admin Login (Guest only)
+Route::middleware(['guest'])->group(function () {
+    Route::get('/admin/login', function () {
+        return view('admin.login');
+    })->name('admin.login');
 });
 
 // Member Protected Routes

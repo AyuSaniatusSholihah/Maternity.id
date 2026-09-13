@@ -333,3 +333,59 @@
 
 ---
 
+## [2026-09-20 14:30] Implemented admin-only route protection with middleware and dynamic user profile display
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+  - added `app/Http/Middleware/EnsureUserIsAdmin.php` - new middleware
+  - modified `routes/web.php` - applied middleware to /admin routes, moved /admin/login to guest-only group
+  - modified `resources/views/admin/dashboard.blade.php` - replaced hardcoded user data with authenticated user data
+
+- **What changed:**
+  - **EnsureUserIsAdmin middleware**: Checks if user is authenticated and has `account_type === 'admin'`. Non-admins and guests are redirected to home route.
+  - **Routes**: All /admin/* routes now require `['auth', EnsureUserIsAdmin::class]` middleware. /admin/login moved to guest-only middleware group.
+  - **Dashboard view**: Admin user card in sidebar now displays:
+    - `auth()->user()->name` instead of hardcoded "Sarah Administrator"
+    - `auth()->user()->profile_img` (with fallback) instead of hardcoded unsplash URL
+    - `ucfirst(auth()->user()->account_type)` instead of hardcoded "Super Admin"
+
+- **Why:**
+  - Security: Only authenticated admin users can access /admin panel. Members and guests are blocked.
+  - Dynamic data: Admin profile section now reflects the actual logged-in user's information from the database.
+  - Route organization: /admin/login kept accessible to guests so they can still access the login form.
+
+- **Progress detail:** Fully completed. Admin route protection and dynamic profile display are working end-to-end.
+
+- **Verification:**
+  - Syntax checks: `php84 -l` passed on all modified files (middleware, routes, view)
+  - Route logic verified:
+    - All /admin/* routes have `['auth', EnsureUserIsAdmin::class]` middleware applied
+    - Middleware checks: `auth()->check() && auth()->user()->account_type === 'admin'`
+    - Unauthorized users redirected to `route('home')`
+  - Dashboard view verified:
+    - User card uses `auth()->user()->name`, `auth()->user()->profile_img`, `auth()->user()->account_type`
+    - Fallback image used if `profile_img` is null
+    - `ucfirst()` formatter applied to display account_type
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:**
+  - None identified. Middleware and view changes are safe and do not affect existing functionality.
+  - Admin users must be logged in with `account_type = 'admin'` to access /admin routes (expected behavior).
+
+- **Suggestions / next steps:**
+  1. Test admin panel access in browser:
+     - Access `/admin` with admin account → should display dashboard with correct user info
+     - Access `/admin` with member account → should redirect to home
+     - Access `/admin` without logging in → should redirect to home
+  2. Consider adding profile edit functionality to allow admins to update their own profile
+  3. Could add an admin-only navbar/dropdown for profile settings and logout in the dashboard header
+
+- **Commit:** "feat: implement admin-only route protection and dynamic user profile display"
+
+---
