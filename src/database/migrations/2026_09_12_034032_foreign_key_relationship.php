@@ -32,6 +32,12 @@ return new class extends Migration
         Schema::table('events', function (Blueprint $table) {
             $table->foreignUuid('created_by')->references('account_id')->on('admins')->onDelete('restrict');
         });
+
+        Schema::table('transcations', function (Blueprint $table) {
+            $table->foreignUuid('account_id')->references('account_id')->on('members')->onDelete('cascade');
+            $table->foreignUuid('verified_by')->references('account_id')->on('admins')->onDelete('cascade');
+            $table->foreignUuid('event_id')->references('id')->on('events')->onDelete('cascade');
+        });
     }
 
     /**
