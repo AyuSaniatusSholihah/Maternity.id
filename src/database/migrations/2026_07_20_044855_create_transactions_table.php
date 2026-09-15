@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transcations', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->dateTime('paid_at')->nullable();
             $table->dateTime('ordered_at');
-            $table->char('attendance_code', 12);
+            $table->char('attendance_code', 12)->nullable();
         });
     }
 

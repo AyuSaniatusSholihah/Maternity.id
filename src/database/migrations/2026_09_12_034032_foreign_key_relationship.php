@@ -38,6 +38,13 @@ return new class extends Migration
             $table->foreignUuid('verified_by')->references('account_id')->on('admins')->onDelete('cascade');
             $table->foreignUuid('event_id')->references('id')->on('events')->onDelete('cascade');
         });
+
+        Schema::create('article_categories', function (Blueprint $table) {
+            $table->foreignUuid('article_id')->references('id')->on('articles')->onDelete('restrict');
+            $table->foreignUuid('category_id')->references('id')->on('categories')->onDelete('restrict');
+
+            $table->primary(['article_id', 'category_id']);
+        });
     }
 
     /**
