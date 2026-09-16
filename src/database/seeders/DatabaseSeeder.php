@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,      // Depends on accounts
             MemberSeeder::class,     // Depends on accounts and admins
             EventSeeder::class,      // Depends on admins
-            ArticleSeeder::class,    // Depends on admins
+            CategorySeeder::class,   // Categories (no dependencies)
+            ArticleSeeder::class,    // Depends on admins and categories
             MaterialSeeder::class,   // Depends on events and admins
         ]);
     }
