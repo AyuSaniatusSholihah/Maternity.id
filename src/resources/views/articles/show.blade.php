@@ -38,7 +38,7 @@
                     <span class="text-slate-300">/</span>
                     <a href="{{ route('articles.index') }}" class="hover:text-[#8C433C] transition">Artikel</a>
                     <span class="text-slate-300">/</span>
-                    <span class="text-[#8C433C] font-bold truncate max-w-[200px] sm:max-w-xs">{{ $article->category->name ?? ($article->category ?? 'Kesehatan') }}</span>
+                    <span class="text-[#8C433C] font-bold truncate max-w-[200px] sm:max-w-xs">{{ $article->category ?? 'Kesehatan' }}</span>
                 </nav>
 
                 <a href="{{ url()->previous() != url()->current() ? url()->previous() : route('articles.index') }}" 
@@ -78,7 +78,7 @@
                     <div class="flex flex-wrap items-center gap-3">
                         <a href="{{ route('articles.index', ['category' => $article->category_slug ?? 'all']) }}" 
                            class="px-3.5 py-1 bg-[#FAF0EE] text-[#8C433C] text-xs font-bold rounded-full border border-[#DEA69E]/50 hover:bg-[#8C433C] hover:text-white transition">
-                            {{ $article->category->name ?? ($article->category ?? 'Kesehatan') }}
+                            {{ $article->category ?? 'Kesehatan' }}
                         </a>
                         <span class="text-slate-300">•</span>
                         <span class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
@@ -209,23 +209,21 @@
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3.5">Kategori Pilihan</h3>
                         <div class="flex flex-wrap gap-2">
                             @php
-                                $categoriesList = [
-                                    ['name' => 'Nutrisi Ibu', 'slug' => 'nutrisi-gaya-hidup'],
-                                    ['name' => 'Persalinan', 'slug' => 'persalinan-nifas'],
-                                    ['name' => 'Perawatan Bayi', 'slug' => 'menyusui-bayi'],
-                                    ['name' => 'Kesehatan Mental', 'slug' => 'kesehatan-mental'],
-                                ];
-                                $currSlug = $article->category_slug ?? ($article->category->slug ?? '');
+                                // Get all categories from database
+                                $dbCategories = \App\Models\Category::with('articles')->get()->toArray();
+                                $currSlug = $article->category_slug ?? 'umum';
                             @endphp
-                            @foreach($categoriesList as $index => $cat)
+                            @forelse($dbCategories as $index => $cat)
                                 @php
-                                    $isCurrent = ($currSlug === $cat['slug'] || ($index === 0 && empty($currSlug)));
+                                    $isCurrent = ($currSlug === $cat['slug'] || ($article->category === $cat['name']));
                                 @endphp
                                 <a href="{{ route('articles.index', ['category' => $cat['slug']]) }}" 
                                    class="px-3.5 py-1.5 text-xs font-semibold rounded-xl transition duration-200 {{ $isCurrent ? 'bg-[#8C433C] text-white shadow-xs' : 'bg-slate-50 text-slate-600 hover:bg-[#FAF0EE] hover:text-[#8C433C]' }}">
                                     {{ $cat['name'] }}
                                 </a>
-                            @endforeach
+                            @empty
+                                <p class="text-xs text-slate-500">Tidak ada kategori</p>
+                            @endforelse
                         </div>
                     </div>
 

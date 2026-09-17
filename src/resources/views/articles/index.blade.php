@@ -69,8 +69,8 @@
             </div>
         </div>
 
-        <!-- ── 2. CATEGORY PILL FILTER TABS ── -->
-        <div class="flex items-center gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+        <!-- ── 2. CATEGORY PILL FILTER TABS (HIDDEN) ── -->
+        <div class="hidden flex items-center gap-2.5 overflow-x-auto pb-1 no-scrollbar">
             @foreach ($categories as $cat)
                 @php
                     $isActive = ($currentCategory === $cat['slug']);
@@ -93,7 +93,7 @@
                     <div class="bg-white rounded-3xl p-3.5 sm:p-5 border border-[#DEA69E]/30 shadow-xs grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-5 items-center card-spring">
                         <!-- Image Side -->
                         <div class="md:col-span-6 h-44 sm:h-56 rounded-2xl overflow-hidden bg-neutral-100">
-                            <img src="{{ $featuredArticle['thumbnail_image'] }}" 
+                            <img src="{{ $featuredArticle['thumbnail_image'] ?? 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=600' }}" 
                                  alt="{{ $featuredArticle['title'] }}" 
                                  class="w-full h-full object-cover">
                         </div>
@@ -116,8 +116,8 @@
 
                             <div class="flex items-center gap-3 text-[10px] sm:text-[11px] text-neutral-500 pt-0.5">
                                 <span class="flex items-center gap-1">
-                                    <i class="fa-regular fa-clock text-slate-400 text-[10px]"></i>
-                                    <span>{{ $featuredArticle['read_time'] }}</span>
+                                    <i class="fa-regular fa-user text-slate-400 text-[10px]"></i>
+                                    <span>{{ $featuredArticle['author'] }}</span>
                                 </span>
                                 <span class="flex items-center gap-1">
                                     <i class="fa-regular fa-calendar text-slate-400 text-[10px]"></i>
@@ -178,7 +178,7 @@
                         @foreach ($popularArticles as $pop)
                             <a href="{{ route('articles.show', $pop['slug']) }}" class="flex items-center gap-3 group p-1 -mx-1 rounded-2xl hover:bg-[#FAF0EE]/60 transition">
                                 <div class="w-16 h-13 sm:w-20 sm:h-15 flex-shrink-0 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-100">
-                                    <img src="{{ $pop['thumbnail_image'] }}" 
+                                    <img src="{{ $pop['thumbnail_image'] ?? 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=600' }}" 
                                          alt="{{ $pop['title'] }}" 
                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 </div>
@@ -187,7 +187,7 @@
                                         {{ $pop['title'] }}
                                     </h3>
                                     <div class="flex items-center gap-1.5 text-[10px] text-slate-400">
-                                        <i class="fa-regular fa-clock text-[9px]"></i>
+                                        <i class="fa-regular fa-user text-[9px]"></i>
                                         <span>{{ $pop['read_time'] }}</span>
                                     </div>
                                 </div>
