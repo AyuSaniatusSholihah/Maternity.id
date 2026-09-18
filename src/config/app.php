@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Fallback Image URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL is used as a fallback image for articles and other content
+    | when a primary image is not available.
+    |
+    */
+
+    'fallback_image_url' => env('FALLBACK_IMAGE_URL', 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80'),
+
 ];

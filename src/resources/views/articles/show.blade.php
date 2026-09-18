@@ -76,14 +76,21 @@
                     
                     {{-- Category & Meta Pill --}}
                     <div class="flex flex-wrap items-center gap-3">
-                        <a href="{{ route('articles.index', ['category' => $article->category_slug ?? 'all']) }}" 
-                           class="px-3.5 py-1 bg-[#FAF0EE] text-[#8C433C] text-xs font-bold rounded-full border border-[#DEA69E]/50 hover:bg-[#8C433C] hover:text-white transition">
-                            {{ $article->category ?? 'Kesehatan' }}
-                        </a>
+                        @forelse($article->categories as $cat)
+                            <a href="{{ route('articles.index', ['category' => $cat->slug ?? 'all']) }}" 
+                               class="px-3.5 py-1 bg-[#FAF0EE] text-[#8C433C] text-xs font-bold rounded-full border border-[#DEA69E]/50 hover:bg-[#8C433C] hover:text-white transition">
+                                {{ $cat->name }}
+                            </a>
+                        @empty
+                            <a href="{{ route('articles.index', ['category' => 'all']) }}" 
+                               class="px-3.5 py-1 bg-[#FAF0EE] text-[#8C433C] text-xs font-bold rounded-full border border-[#DEA69E]/50 hover:bg-[#8C433C] hover:text-white transition">
+                                Kesehatan
+                            </a>
+                        @endforelse
                         <span class="text-slate-300">•</span>
                         <span class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                            <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
-                            <span>{{ $article->read_time ?? '5 menit membaca' }}</span>
+                            <i class="fa-regular fa-user text-slate-400 text-xs"></i>
+                            <span>{{ $article->author->name ?? 'Tim Medis Maternity.id' }}</span>
                         </span>
                         <span class="text-slate-300">•</span>
                         <span class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
@@ -206,20 +213,12 @@
 
                     {{-- Categories Section --}}
                     <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-[#DEA69E]/30">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3.5">Kategori Pilihan</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3.5">Kategori Artikel</h3>
                         <div class="flex flex-wrap gap-2">
-                            @php
-                                // Get all categories from database
-                                $dbCategories = \App\Models\Category::with('articles')->get()->toArray();
-                                $currSlug = $article->category_slug ?? 'umum';
-                            @endphp
-                            @forelse($dbCategories as $index => $cat)
-                                @php
-                                    $isCurrent = ($currSlug === $cat['slug'] || ($article->category === $cat['name']));
-                                @endphp
-                                <a href="{{ route('articles.index', ['category' => $cat['slug']]) }}" 
-                                   class="px-3.5 py-1.5 text-xs font-semibold rounded-xl transition duration-200 {{ $isCurrent ? 'bg-[#8C433C] text-white shadow-xs' : 'bg-slate-50 text-slate-600 hover:bg-[#FAF0EE] hover:text-[#8C433C]' }}">
-                                    {{ $cat['name'] }}
+                            @forelse($article->categories as $cat)
+                                <a href="{{ route('articles.index', ['category' => $cat->slug]) }}" 
+                                   class="px-3.5 py-1.5 text-xs font-semibold rounded-xl transition duration-200 bg-[#8C433C] text-white shadow-xs">
+                                    {{ $cat->name }}
                                 </a>
                             @empty
                                 <p class="text-xs text-slate-500">Tidak ada kategori</p>
@@ -240,7 +239,7 @@
                                     $itemSlug = is_object($item) ? $item->slug : $item['slug'];
                                     $itemTitle = is_object($item) ? $item->title : $item['title'];
                                     $itemImage = is_object($item) ? ($item->image_url ?? $item->thumbnail_image) : ($item['thumbnail_image'] ?? '');
-                                    $itemReadTime = is_object($item) ? $item->read_time : $item['read_time'];
+                                    $itemAuthor = is_object($item) && isset($item->author) ? (is_object($item->author) ? $item->author->name : $item->author) : 'Tim Medis';
                                 @endphp
                                 <a href="{{ route('articles.show', $itemSlug) }}" class="flex items-start gap-3.5 group p-2 -mx-2 rounded-2xl hover:bg-[#FAF0EE]/60 transition">
                                     <div class="w-20 h-16 sm:w-22 sm:h-16 flex-shrink-0 rounded-2xl overflow-hidden bg-slate-100 relative">
@@ -255,8 +254,8 @@
                                             {{ $itemTitle }}
                                         </h3>
                                         <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mt-1.5">
-                                            <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
-                                            <span>{{ $itemReadTime ?? '5 menit membaca' }}</span>
+                                            <i class="fa-regular fa-user text-slate-400 text-xs"></i>
+                                            <span>{{ $itemAuthor }}</span>
                                         </div>
                                     </div>
                                 </a>

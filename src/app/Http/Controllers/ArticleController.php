@@ -13,6 +13,8 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
+        $fallbackImage = config('app.fallback_image_url');
+        
         // Get all published articles from database, sorted by updated_at (latest first)
         $articlesQuery = Article::where('status', 'published')
             ->with(['author', 'categories'])
@@ -47,7 +49,7 @@ class ArticleController extends Controller
         $articles = $articlesQuery->paginate(12);
 
         // Transform articles for view
-        $transformedArticles = $articles->map(function ($article) {
+        $transformedArticles = $articles->map(function ($article) use ($fallbackImage) {
             return [
                 'id' => $article->id,
                 'slug' => $article->slug,
@@ -58,7 +60,7 @@ class ArticleController extends Controller
                 'content' => $article->content,
                 'author' => $article->author?->account?->name ?? 'Tim Medis Maternity.id',
                 'author_role' => 'Praktisi Medis',
-                'thumbnail_image' => $article->thumbnail_image,
+                'thumbnail_image' => $article->thumbnail_image ?? $fallbackImage,
                 'read_time' => $article->author?->account?->name ?? 'Tim Medis Maternity.id',
                 'published_at' => $article->updated_at->format('d M Y'),
                 'views' => $article->views_count,
@@ -83,7 +85,7 @@ class ArticleController extends Controller
                     'excerpt' => $featuredArticleQuery->short_description,
                     'content' => $featuredArticleQuery->content,
                     'author' => $featuredArticleQuery->author?->account?->name ?? 'Tim Medis Maternity.id',
-                    'thumbnail_image' => $featuredArticleQuery->thumbnail_image,
+                    'thumbnail_image' => $featuredArticleQuery->thumbnail_image ?? $fallbackImage,
                     'read_time' => $featuredArticleQuery->author?->account?->name ?? 'Tim Medis Maternity.id',
                     'published_at' => $featuredArticleQuery->updated_at->format('d M Y'),
                     'views' => $featuredArticleQuery->views_count,
@@ -101,12 +103,12 @@ class ArticleController extends Controller
             ->orderBy('views_count', 'desc')
             ->limit(3)
             ->get()
-            ->map(function ($article) {
+            ->map(function ($article) use ($fallbackImage) {
                 return [
                     'slug' => $article->slug,
                     'title' => $article->title,
                     'read_time' => $article->author?->account?->name ?? 'Tim Medis Maternity.id',
-                    'thumbnail_image' => $article->thumbnail_image,
+                    'thumbnail_image' => $article->thumbnail_image ?? $fallbackImage,
                 ];
             })->toArray();
 
@@ -158,6 +160,8 @@ class ArticleController extends Controller
      */
     public function show($slug)
     {
+        $fallbackImage = config('app.fallback_image_url');
+        
         $article = Article::where('slug', $slug)
             ->where('status', 'published')
             ->with(['author', 'author.account', 'categories'])
@@ -168,8 +172,12 @@ class ArticleController extends Controller
             'id' => $article->id,
             'slug' => $article->slug,
             'title' => $article->title,
-            'category' => $article->categories->first()?->name ?? 'Umum',
-            'category_slug' => $article->categories->first()?->slug ?? 'umum',
+            'categories' => $article->categories->map(function ($cat) {
+                return (object) [
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
+                ];
+            }),
             'excerpt' => $article->short_description,
             'content' => $article->content,
             'author' => (object) [
@@ -177,10 +185,9 @@ class ArticleController extends Controller
                 'role' => 'Praktisi Medis',
                 'avatar' => null,
             ],
-            'image_url' => $article->thumbnail_image ?? 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80',
-            'thumbnail_image' => $article->thumbnail_image ?? 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80',
+            'image_url' => $article->thumbnail_image ?? $fallbackImage,
+            'thumbnail_image' => $article->thumbnail_image ?? $fallbackImage,
             'views' => $article->views_count,
-            'read_time' => $this->calculateReadTime($article->content),
             'published_at' => $article->updated_at,
             'tags' => array_filter(array_map('trim', explode(',', $article->keywords ?? ''))),
         ];
@@ -191,20 +198,20 @@ class ArticleController extends Controller
             ->whereHas('categories', function ($q) use ($article) {
                 $q->whereIn('categories.id', $article->categories->pluck('id'));
             })
-            ->with(['author', 'categories'])
+            ->with(['author', 'author.account', 'categories'])
             ->limit(4)
             ->get()
-            ->map(function ($art) {
+            ->map(function ($art) use ($fallbackImage) {
                 return (object) [
                     'id' => $art->id,
                     'slug' => $art->slug,
                     'title' => $art->title,
-                    'category' => $art->categories->first()?->name ?? 'Umum',
-                    'category_slug' => $art->categories->first()?->slug ?? 'umum',
                     'excerpt' => $art->short_description,
-                    'image_url' => $art->thumbnail_image ?? 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80',
-                    'thumbnail_image' => $art->thumbnail_image ?? 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80',
-                    'read_time' => $this->calculateReadTime($art->content),
+                    'image_url' => $art->thumbnail_image ?? $fallbackImage,
+                    'thumbnail_image' => $art->thumbnail_image ?? $fallbackImage,
+                    'author' => (object) [
+                        'name' => $art->author?->account?->name ?? 'Tim Medis Maternity.id',
+                    ],
                 ];
             });
 
