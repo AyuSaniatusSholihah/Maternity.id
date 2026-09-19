@@ -57,7 +57,7 @@
                 {{ $linkText }}
             </p>
 
-            @if (!empty($handle))
+            @if (!empty($author))
                 <div class="pt-1">
                     <span class="inline-block px-2 sm:px-2.5 py-0.5 rounded-full border border-white/40 bg-white/15 backdrop-blur-sm text-[7.5px] sm:text-[8.5px] text-white/95 font-mono group-hover:bg-white/25 transition-colors truncate max-w-full">
                         {{ $author }}

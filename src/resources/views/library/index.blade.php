@@ -128,12 +128,81 @@
                     </div>
                 </div>
 
-                <!-- Date Filter Button -->
-                <button type="button" 
-                        class="flex items-center gap-1.5 px-3.5 py-1.5 bg-white rounded-xl border border-[#DEA69E]/40 text-xs font-semibold text-[#2A1614] shadow-2xs hover:border-[#8C433C] transition">
-                    <i class="fa-regular fa-calendar text-[#8C433C]"></i>
-                    <span>Semua Waktu</span>
-                </button>
+                <!-- Date Filter Button with Popup -->
+                <div class="relative" x-data="{ openDateFilter: false }" @load.window="
+                    // If dates are in URL, update the label
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const dateStart = urlParams.get('dateStart');
+                    const dateEnd = urlParams.get('dateEnd');
+                    if (dateStart && dateEnd) {
+                        document.getElementById('dateFilterLabel').textContent = dateStart + ' - ' + dateEnd;
+                        document.getElementById('dateFilterStart').value = dateStart;
+                        document.getElementById('dateFilterEnd').value = dateEnd;
+                    }
+                ">
+                    <button @click="openDateFilter = !openDateFilter" 
+                            type="button"
+                            class="flex items-center gap-1.5 px-3.5 py-1.5 bg-white rounded-xl border border-[#DEA69E]/40 text-xs font-semibold text-[#2A1614] shadow-2xs hover:border-[#8C433C] transition">
+                        <i class="fa-regular fa-calendar text-[#8C433C]"></i>
+                        <span id="dateFilterLabel">Semua Waktu</span>
+                    </button>
+
+                    <!-- Date Range Picker Popup -->
+                    <div x-show="openDateFilter" 
+                         @click.away="openDateFilter = false"
+                         x-transition
+                         class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-lg border border-[#DEA69E]/40 p-4 z-30"
+                         style="display: none;">
+                        
+                        <!-- Popup Header -->
+                        <div class="mb-3">
+                            <h3 class="text-sm font-bold text-[#2A1614]">Filter Berdasarkan Tanggal</h3>
+                            <p class="text-[10px] text-neutral-500 mt-0.5">Pilih rentang tanggal untuk melihat ebook dari periode tertentu</p>
+                        </div>
+
+                        <!-- Date Inputs -->
+                        <div class="space-y-3">
+                            <!-- Start Date -->
+                            <div>
+                                <label class="text-[10px] font-semibold text-[#5C4542] mb-1 block">Dari Tanggal</label>
+                                <input type="date" 
+                                       id="dateFilterStart" 
+                                       class="w-full px-3 py-1.5 border border-[#DEA69E]/40 rounded-lg text-xs text-[#2A1614] focus:outline-none focus:border-[#8C433C] focus:ring-1 focus:ring-[#8C433C]">
+                            </div>
+
+                            <!-- End Date -->
+                            <div>
+                                <label class="text-[10px] font-semibold text-[#5C4542] mb-1 block">Sampai Tanggal</label>
+                                <input type="date" 
+                                       id="dateFilterEnd" 
+                                       class="w-full px-3 py-1.5 border border-[#DEA69E]/40 rounded-lg text-xs text-[#2A1614] focus:outline-none focus:border-[#8C433C] focus:ring-1 focus:ring-[#8C433C]">
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex gap-2 mt-4 pt-3 border-t border-[#DEA69E]/30">
+                            <!-- Apply Button -->
+                            <button @click="
+                                const startDate = document.getElementById('dateFilterStart').value;
+                                const endDate = document.getElementById('dateFilterEnd').value;
+                                if (startDate && endDate) {
+                                    window.location.href = '{{ route('library', ['sort' => $currentSort]) }}' + '&dateStart=' + startDate + '&dateEnd=' + endDate;
+                                } else {
+                                    alert('Silakan masukkan kedua tanggal');
+                                }
+                            "
+                                    class="flex-1 px-3 py-1.5 bg-[#8C433C] text-white text-xs font-semibold rounded-lg hover:bg-[#782819] transition">
+                                Terapkan
+                            </button>
+
+                            <!-- Reset Button -->
+                            <a href="{{ route('library', ['sort' => $currentSort]) }}"
+                               class="flex-1 px-3 py-1.5 bg-[#FAF0EE] text-[#8C433C] text-xs font-semibold rounded-lg hover:bg-[#F5E5E0] border border-[#DEA69E]/40 transition text-center">
+                                Reset
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

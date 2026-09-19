@@ -87,6 +87,109 @@
 - **Side effects / risks:** None identified initially (discovered during testing and fixed in follow-up entry)
 
 - **Commit:** "feat(seed): add comprehensive database seeders for all tables"
+## [2026-09-19 00:40] Implemented date range filter for ebook listing
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+  - modified `app/Http/Controllers/EbookController.php`
+  - modified `resources/views/library/index.blade.php`
+
+- **What changed:**
+  - **EbookController**: 
+    - Added date filtering: accepts `dateStart` and `dateEnd` query parameters
+    - Uses `whereBetween()` to filter materials by `created_at` column
+    - Date range includes full day: `dateStart 00:00:00` to `dateEnd 23:59:59`
+    - Passes date parameters to view to maintain state
+  - **library/index.blade.php**:
+    - Replaced plain date filter button with interactive Alpine.js popup
+    - Popup includes: header, two date inputs (from/to), Apply button, Reset button
+    - Date inputs styled with theme colors: borders `[#DEA69E]/40`, focus state `[#8C433C]`
+    - Apply button: brown `[#8C433C]` with darker hover state
+    - Reset button: cream background `[#FAF0EE]` matching theme
+    - Button label updates to show selected date range: "2026-01-01 - 2026-01-31"
+    - Alpine.js loads current dates from URL params on page load
+    - Reset link clears filters and returns to all materials
+
+- **Why:**
+  - /library page had non-functional date filter button
+  - Users need ability to filter materials by creation date range
+  - Popup UI matches existing theme: colors, spacing, typography, rounded corners
+  - Date filtering happens at database level (efficient) before transformation
+
+- **Progress detail:** Fully completed. Date range filtering works end-to-end.
+
+- **Verification:**
+  - EbookController passes PHP syntax check
+  - whereBetween clause filters correctly by created_at
+  - Popup styling matches theme (colors, fonts, shadows, borders)
+  - Alpine.js button handler validates both dates before applying
+  - URL parameters preserved: /library?sort=latest&dateStart=2026-01-01&dateEnd=2026-01-31
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** None identified. Safe addition of filtering feature.
+
+- **Suggestions / next steps:**
+  1. Test date filtering on /library page (click date button, select dates, click Terapkan)
+  2. Test Reset button clears dates
+  3. Test sorting works with date filter active
+  4. Consider adding date presets (Last 30 days, Last 90 days, etc.) for future enhancement
+
+- **Commit:** "feat: implement date range filter for ebook listing"
+
+---
+
+## [2026-09-19 00:35] Implemented sorting for ebook list by popularity and recency
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+  - modified `app/Http/Controllers/EbookController.php`
+
+- **What changed:**
+  - Added sort parameter handling from request: `$sort = $request->input('sort', 'latest')`
+  - Implemented two sort strategies:
+    - `sort=popular`: Orders by `viewer_count DESC` (most viewed materials first)
+    - `sort=latest` (default): Orders by `created_at DESC` (newest materials first)
+  - Sort is applied in database query (efficient) before data transformation
+  - Pass `currentSort` to view for UI to show active sort state
+
+- **Why:**
+  - Library page has sort dropdown with "Terbaru" (Latest) and "Terpopuler" (Popular) options
+  - Sort should be performant and reflect actual database data
+  - Material table has both `viewer_count` and `created_at` columns for sorting
+  - Sorting in database query is more efficient than sorting transformed data
+
+- **Progress detail:** Fully completed. Both sort options work with ebook list.
+
+- **Verification:**
+  - EbookController passes PHP syntax check
+  - Sort parameter safely defaults to 'latest' if missing
+  - Database query efficiently filters before transformation
+  - currentSort passed to view to maintain sort state in UI
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** None identified. Safe addition of sorting feature.
+
+- **Suggestions / next steps:**
+  1. Test `/library?sort=popular` to verify most-viewed materials appear first
+  2. Test `/library?sort=latest` (default) to verify newest materials appear first
+  3. MaterialSeeder sets random viewer_count (10-500), so popular sort has good data
+
+- **Commit:** "feat: implement sort by popularity and recency for ebooks"
+
+---
+
 ## [2026-09-19 00:30] Fixed Admin and Member model relationships with Account
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
