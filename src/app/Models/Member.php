@@ -19,6 +19,6 @@ class Member extends Model
     public $timestamps = false;
 
     public function account(): BelongsTo {
-        return $this->belongsTo(Account::class, 'account_id', 'account_id');
+        return $this->belongsTo(Account::class, 'account_id', 'id');
     }
 }

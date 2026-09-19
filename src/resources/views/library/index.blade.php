@@ -81,7 +81,8 @@
 
 
         {{-- ── 2. CATEGORY FILTER TABS (PILLS) ── --}}
-
+        {{-- COMMENTED OUT: Category filter not in database schema --}}
+        {{-- 
         <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
             @foreach ($categories as $cat)
                 @php
@@ -94,6 +95,7 @@
                 </a>
             @endforeach
         </div>
+        --}}
 
         <!-- ── 3. SECTION HEADER & SORT / DATE CONTROLS ── -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
@@ -121,8 +123,8 @@
                          x-transition
                          class="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-30 text-xs"
                          style="display: none;">
-                        <a href="{{ route('library', ['sort' => 'latest', 'category' => $currentCategory]) }}" class="block px-3 py-1.5 hover:bg-[#FAF0EE] hover:text-[#8C433C] font-medium">Terbaru</a>
-                        <a href="{{ route('library', ['sort' => 'popular', 'category' => $currentCategory]) }}" class="block px-3 py-1.5 hover:bg-[#FAF0EE] hover:text-[#8C433C] font-medium">Terpopuler</a>
+                        <a href="{{ route('library', ['sort' => 'latest']) }}" class="block px-3 py-1.5 hover:bg-[#FAF0EE] hover:text-[#8C433C] font-medium">Terbaru</a>
+                        <a href="{{ route('library', ['sort' => 'popular']) }}" class="block px-3 py-1.5 hover:bg-[#FAF0EE] hover:text-[#8C433C] font-medium">Terpopuler</a>
                     </div>
                 </div>
 
