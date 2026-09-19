@@ -14,8 +14,10 @@ class Admin extends Model
     use HasUuids;
 
     protected $table = 'admins';
+    protected $primaryKey = 'account_id';
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     public function account(): BelongsTo {
         return $this->belongsTo(Account::class, 'account_id', 'account_id');
@@ -29,5 +31,8 @@ class Admin extends Model
     }
     public function articleWritten(): HasMany {
         return $this->hasMany(Article::class, 'author_id', 'account_id');
+    }
+    public function materialsUploaded(): HasMany {
+        return $this->hasMany(Material::class, 'uploaded_by', 'account_id');
     }
 }
