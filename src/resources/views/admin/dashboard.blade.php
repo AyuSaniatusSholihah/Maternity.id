@@ -391,13 +391,13 @@
 
                 {{-- Admin User Card --}}
                 <div class="bg-[#FAF5F2] rounded-2xl p-3.5 flex items-center gap-3 mb-6 border border-[#EFE8E3]">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" 
+                    <img src="{{ auth()->user()->profile_img ?? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop' }}" 
                          alt="Admin Profile" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-xs shrink-0">
                     <div class="min-w-0">
-                        <h4 class="text-xs font-bold text-neutral-900 truncate">Sarah Administrator</h4>
+                        <h4 class="text-xs font-bold text-neutral-900 truncate">{{ auth()->user()->name }}</h4>
                         <div class="flex items-center gap-1.5 mt-0.5">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <p class="text-[10px] text-neutral-500 font-medium truncate">Super Admin</p>
+                            <p class="text-[10px] text-neutral-500 font-medium truncate">{{ ucfirst(auth()->user()->account_type) }}</p>
                         </div>
                     </div>
                 </div>
