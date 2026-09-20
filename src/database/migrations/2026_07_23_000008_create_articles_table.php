@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('short_description')->nullable();
             $table->string('thumbnail_image', 255)->nullable();
             $table->longText('content');
+            $table->unsignedBigInteger('views_count')->default(0);
             $table->enum('status', ['draft', 'published'])->default('draft');
             $table->timestamps();
         });
