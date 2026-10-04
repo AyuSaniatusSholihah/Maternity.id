@@ -125,6 +125,13 @@
                         {{ $m['name'] }}
                     </a>
                 @endforeach
+                
+                <!-- Clear Button -->
+                <a href="{{ route('events', ['month' => 'all', 'tab' => $currentTab, 'category' => $currentCategory]) }}"
+                   class="shrink-0 px-3 sm:px-3.5 py-1 rounded-full text-xs font-semibold transition-all bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 border border-slate-200 hover:border-red-300">
+                    <i class="fa-solid fa-times text-[9px] mr-1"></i>
+                    Bersihkan
+                </a>
             </div>
         </div>
 
@@ -222,11 +229,23 @@
                 </div>
                 <h3 class="text-base font-bold text-[#2A1614]">Belum Ada Event di Bulan Ini</h3>
                 <p class="text-xs text-neutral-500">
-                    Silakan pilih bulan lain atau kembali ke bulan Juli untuk melihat jadwal kelas dan seminar aktif.
+                    @if($currentMonth !== 'all' && $currentMonth !== 'Jul')
+                        Silakan pilih bulan lain atau hapus filter untuk melihat semua jadwal kelas dan seminar aktif.
+                    @else
+                        Silakan pilih bulan lain atau kembali ke bulan Juli untuk melihat jadwal kelas dan seminar aktif.
+                    @endif
                 </p>
-                <a href="{{ route('events', ['month' => 'Jul']) }}" class="inline-block px-4 py-2 bg-[#8C433C] text-white text-xs font-bold rounded-full hover:bg-[#782819] transition">
-                    Lihat Event Bulan Juli
-                </a>
+                @if($currentMonth !== 'all')
+                    <a href="{{ route('events', ['month' => 'all', 'tab' => $currentTab, 'category' => $currentCategory]) }}" 
+                       class="inline-block px-4 py-2 bg-[#8C433C] text-white text-xs font-bold rounded-full hover:bg-[#782819] transition">
+                        <i class="fa-solid fa-times mr-1.5"></i>Hapus Filter
+                    </a>
+                @else
+                    <a href="{{ route('events', ['month' => 'Jul']) }}" 
+                       class="inline-block px-4 py-2 bg-[#8C433C] text-white text-xs font-bold rounded-full hover:bg-[#782819] transition">
+                        Lihat Event Bulan Juli
+                    </a>
+                @endif
             </div>
         @endif
 
