@@ -128,14 +128,11 @@ class EventController extends Controller
     {
         $fallbackImage = config('app.fallback_image_url');
         
-        $event = Event::where('slug', $slug)->first();
+        $event = Event::where('slug', $slug)->where('status', 'published')->first();
 
+        // If event not found, return a 404 view with redirect
         if (!$event) {
-            $event = Event::where('status', 'published')->first() ?? Event::first();
-        }
-
-        if (!$event) {
-            return redirect()->route('events');
+            return view('events.not-found', ['slug' => $slug]);
         }
 
         $eventData = [
@@ -143,12 +140,26 @@ class EventController extends Controller
             'slug' => $event->slug,
             'title' => $event->name,
             'description' => $event->description,
+            'long_description' => $event->description,
+            'date_string' => $event->date ? $event->date->format('d M Y') : 'Jadwal Terbuka',
+            'time_string' => '',
             'price' => $event->price > 0 ? 'Rp' . number_format($event->price, 0, ',', '.') : 'Gratis',
             'price_numeric' => $event->price,
             'thumbnail_image' => $event->poster_img ?? $fallbackImage,
             'location' => $event->location,
             'date' => $event->date,
             'venue' => $event->venue,
+            'format_type' => $event->venue,
+            'format' => $event->venue === 'online' ? 'ONLINE' : 'OFFLINE',
+            'mentor_name' => $event->mentor_name,
+            'speaker' => $event->mentor_name,
+            'speaker_bio' => null, // Only name, no bio/description
+            'is_verified' => true,
+            'badge' => $event->is_available ? 'Tersedia' : 'Penuh',
+            'rating' => '4.8',
+            'total_participants' => $event->slots ?? $event->slot ?? 0,
+            'max_participants' => $event->slots ?? $event->slot ?? 0,
+            'maps_url' => null,
         ];
 
         $relatedEvents = Event::where('status', 'published')
@@ -162,6 +173,10 @@ class EventController extends Controller
                     'description' => $e->description,
                     'price' => $e->price > 0 ? 'Rp' . number_format($e->price, 0, ',', '.') : 'Gratis',
                     'thumbnail_image' => $e->poster_img ?? $fallbackImage,
+                    'format_type' => $e->venue,
+                    'date_string' => $e->date ? $e->date->format('d M Y') : 'Jadwal Terbuka',
+                    'format' => $e->venue === 'online' ? 'ONLINE' : 'OFFLINE',
+                    'category' => 'Event',
                 ];
             })->toArray();
 
