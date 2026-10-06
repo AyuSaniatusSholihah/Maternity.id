@@ -12,19 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name', 255);
-            $table->string('slug', 260)->unique();
-            $table->string('mentor_name', 255)->nullable();
+            $table->id();
+            $table->unsignedBigInteger('categories');
+            $table->string('title', 255);
+            $table->string('slug', 255)->unique();
             $table->text('description');
-            $table->string('poster_img', 255)->nullable();
-            $table->date('date');
-            $table->string('location', 355);
-            $table->enum('venue', ['online', 'offline']);
-            $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->date('event_date');
+            $table->date('open_registration_date');
+            $table->date('close_registration_date');
+            $table->string('location', 255);
+            $table->string('image_url', 255)->nullable();
+            $table->unsignedBigInteger('materials')->nullable();
+            $table->unsignedInteger('slot');
             $table->boolean('is_available')->default(true);
-            $table->decimal('price', 10, 2)->default(0);
-            $table->text('gc_invitation_link');
             $table->timestamps();
         });
     }

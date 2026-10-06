@@ -9,15 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('articles', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
+            $table->unsignedBigInteger('categories');
             $table->string('title', 255);
-            $table->string('keywords', 255)->nullable();
-            $table->string('slug', 260)->unique();
-            $table->text('short_description')->nullable();
-            $table->string('thumbnail_image', 255)->nullable();
-            $table->longText('content');
-            $table->unsignedBigInteger('views_count')->default(0);
-            $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->string('slug', 255)->unique();
+            $table->text('description');
+            $table->text('content');
+            $table->string('image_url', 255)->nullable();
+            $table->string('author', 255)->nullable();
             $table->timestamps();
         });
     }

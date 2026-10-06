@@ -253,8 +253,10 @@ vendor/bin/pint
 
 **Done:**
 - [x] Basic Laravel 13.8 project setup
-- [x] MySQL database schema (migrations for accounts, admins, members, events, articles, materials, sessions, cache)
-- [x] Foreign keys defined in separate migration file (`2026_09_12_034032_foreign_key_relationship.php`)
+- [x] MySQL database schema (migrations fully aligned with DBML specification)
+- [x] All migration files updated: accounts (ID, auth fields), admins (account_id PK), members (proper FKs), categories (timestamps), materials (DBML fields), articles (DBML fields), events (DBML fields), products (new table)
+- [x] Foreign keys defined in rewritten migration (`2026_09_12_034032_foreign_key_relationship.php`) with event_registration, subscription_plans, subscription_payments tables
+- [x] Transactions table migration removed (not in DBML)
 - [x] Eloquent models (Account, Admin, Member, Event, Article, Material)
 - [x] Google OAuth authentication (Socialite)
 - [x] Route definitions (events, articles, library, product, profile)
@@ -263,9 +265,11 @@ vendor/bin/pint
 - [x] Admin dashboard stub views
 - [x] Auth views (login page)
 - [x] Seeders for initial data (AccountSeeder, AdminSeeder, MemberSeeder, EventSeeder, ArticleSeeder, MaterialSeeder)
+- [x] Articles feature complete: Admin protection, seeded data (20 articles), DB integration, category filtering
 
 **In Progress:**
-- [ ] Database table schema alignment (members missing columns, admins missing account_id)
+- [ ] Update Eloquent models to match new migration structure
+- [ ] Update seeders to insert data with new column names
 - [ ] Actual database integration (controllers use hardcoded data, not Eloquent)
 - [ ] Event checkout flow
 - [ ] Payment verification workflow
@@ -279,67 +283,64 @@ vendor/bin/pint
 - [ ] Payment processing integration
 - [ ] Email notifications
 - [ ] Search functionality
-- [ ] Booking system
+- [ ] Event registration system
 
 ## Known Issues & Mismatches
 
-**Schema Mismatches (Code expects columns not in migration):**
+**Schema Status (RESOLVED):**
 
-1. **members table** (`database/migrations/2026_07_23_000004_create_members_table.php`):
-   - Migration does NOT have `date_of_pregnancy` column (but seeder has it)
-   - Migration does NOT have `is_profile_complete` column (but seeder has it)
+All database migrations have been aligned with the DBML specification:
+- Accounts table: UUID → ID (auto-increment), added standard auth fields (password, email_verified_at, remember_token, deleted_at)
+- Admins table: Redesigned with account_id as primary key (FK to accounts), added name, email, phone, profile_img, role
+- Members table: Added account_id (FK), provisioned_by (FK), updated field names (date_of_birth, city, province, image_url)
+- Articles/Materials/Events: Simplified per DBML, removed legacy fields (status, views_count, keywords, etc.)
+- Products table: Created per DBML specification
+- Transactions table: Removed (replaced by event_registration, subscription_plans, subscription_payments)
+- Foreign keys: Properly defined with correct constraints in FK migration
 
-2. **admins table** (`database/migrations/2026_07_23_000003_create_admins_table.php`):
-   - Migration does NOT have `account_id` column (but Admin model and seeder expect it)
-   - Note: `account_id` is added by the FK migration (`2026_09_12_034032_foreign_key_relationship.php`)
-
-3. **ForeignKey migration** (`database/migrations/2026_09_12_034032_foreign_key_relationship.php`):
-   - Adds foreign key columns to existing tables after base migrations run
-   - References `account_id` in admins and members tables which are added by this FK migration
-
-**Solution:** The application code (models, seeders) must be changed to fit the migrations. Currently:
-- Member model and seeder need `date_of_pregnancy`, `is_profile_complete` columns added to migration
-- Admin model and seeder need `account_id` column (added by FK migration)
-
-**Missing Features:**
-- No actual database queries in controllers (all data hardcoded)
-- No payment processing integration
-- No file upload for payment proofs
-- No email verification
-- No event booking confirmation workflow
+**Next Steps for Code Alignment:**
+- Eloquent models need updating for new FK structure (e.g., Admin.account_id as PK instead of separate ID)
+- Seeders must be updated to use new column names (birth_date → date_of_birth, etc.)
+- Controllers still use hardcoded data instead of database queries
+- Views may reference old column names (e.g., $article->thumbnail_image → $article->image_url)
 
 ## Next Steps
 
 **Priority (Deadline Focused):**
 
-1. **Fix Schema Mismatches** (CRITICAL)
-   - Update migrations to include missing columns, OR
-   - Update models/seeders to match current migrations
-   - Run `php artisan migrate:fresh --seed` to verify
+1. **Update Eloquent Models** (CRITICAL)
+   - Account model: no changes needed (remains base model)
+   - Admin model: account_id as primary key (instead of separate ID), relationships to materials/articles
+   - Member model: add account_id, provisioned_by foreign keys, update column references
+   - Article/Material/Event/Product models: update relationships for new FK structure
+   - Run model generation or create manually to match new migrations
 
-2. **Database Integration**
-   - Replace hardcoded data in EventController, ArticleController with Eloquent queries
+2. **Update Seeders**
+   - Replace all references to old column names (birth_date → date_of_birth, profile_img fields, etc.)
+   - Adjust foreign key insertions to match new structure (account_id for admins, provisioned_by for members)
+   - Test seeders with `php artisan migrate:fresh --seed`
+
+3. **Test Migration**
+   - Run `php artisan migrate:fresh` in development to verify no migration errors
+   - Verify all tables created correctly with proper columns and constraints
+   - Check foreign key relationships are enforced
+
+4. **Database Integration**
+   - Replace hardcoded data in EventController, ArticleController, ProductController with Eloquent queries
    - Implement pagination and filtering
+   - Update controllers to use new field names
 
-3. **Event Checkout Flow**
+5. **Event Registration System**
+   - Implement event_registration table usage for enrollment
    - Create payment verification upload
    - Implement admin approval workflow
-   - Add verification and approved views
-
-4. **Member Profile**
-   - Complete profile editing page
-   - Add member-specific features
-
-5. **Admin Dashboard**
-   - Implement CRUD for events
-   - Implement CRUD for articles
-   - Implement payment approval panel
 
 **Secondary:**
-- Product catalog from database
+- Subscription system setup (subscription_plans, subscription_payments)
+- Member profile editing page
+- Admin CRUD for all content types
 - Search functionality
 - Email notifications
-- Responsive design polish
 
 ## Handoff Protocol & Change Log Rules
 

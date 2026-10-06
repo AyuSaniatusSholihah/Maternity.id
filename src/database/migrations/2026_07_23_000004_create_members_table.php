@@ -9,14 +9,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('members', function (Blueprint $table) {
-            $table->enum('gender', ['female', 'male']);
-            $table->bigInteger('phone_number')->unique();
-            $table->enum('salutation', ['Bapak', 'Ayah', 'Mas', 'Ibu', 'Bunda', 'Mbak', 'Suster', 'Dokter']);
-            $table->date('birth_date');
-            $table->string('job')->nullable();
-            $table->string('address');
-            $table->integer('zip_code');
-            $table->string('institution')->nullable();
+            $table->id();
+            $table->unsignedBigInteger('account_id');
+            $table->string('name', 255);
+            $table->string('email', 255)->unique();
+            $table->string('phone', 20);
+            $table->date('date_of_birth')->nullable();
+            $table->char('gender', 1)->nullable();
+            $table->text('address')->nullable();
+            $table->string('city', 100)->nullable();
+            $table->string('province', 100)->nullable();
+            $table->string('image_url', 255)->nullable();
+            $table->unsignedBigInteger('provisioned_by');
+            $table->timestamps();
         });
     }
 

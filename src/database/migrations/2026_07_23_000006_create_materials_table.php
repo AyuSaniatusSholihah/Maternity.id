@@ -9,15 +9,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('materials', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
+            $table->unsignedBigInteger('categories');
             $table->string('title', 255);
-            $table->string('slug', 260)->unique();
+            $table->string('slug', 255)->unique();
             $table->text('description');
-            $table->string('thumbnail_image', 255)->nullable();
-            $table->string('content_link', 255);
-            $table->unsignedInteger('viewer_count')->default(0);
+            $table->text('content');
+            $table->string('image_url', 255)->nullable();
             $table->timestamps();
-       });
+        });
     }
 
     public function down(): void
