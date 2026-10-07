@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
-use App\Models\Event;
+use App\Models\Category;
 use App\Models\Material;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -18,66 +17,70 @@ class MaterialSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = Admin::first();
-        $event = Event::first();
-
-        if (!$admin || !$event) {
-            return;
-        }
+        $categories = Category::all();
 
         $materials = [
             [
                 'title' => 'Panduan Lengkap Kehamilan Trimester Pertama',
-                'description' => 'E-book komprehensif yang mencakup semua informasi penting untuk trimester pertama kehamilan Anda.',
-                'content_link' => 'https://example.com/ebooks/trimester-pertama.pdf',
+                'description' => 'E-book komprehensif tentang trimester pertama kehamilan.',
+                'content' => 'Trimester pertama adalah periode penting. Dokter akan melakukan berbagai pemeriksaan kesehatan.',
+                'category' => 'Nutrisi & Gizi',
             ],
             [
-                'title' => 'Nutrisi Ibu Hamil: Resep dan Panduan Lengkap',
-                'description' => 'Koleksi resep bergizi khusus untuk ibu hamil dengan panduan nutrisi yang detail.',
-                'content_link' => 'https://example.com/ebooks/nutrisi-ibu-hamil.pdf',
+                'title' => 'Nutrisi Ibu Hamil: Resep dan Panduan',
+                'description' => 'Koleksi resep bergizi khusus untuk ibu hamil.',
+                'content' => 'Nutrisi seimbang adalah kunci kesehatan ibu hamil. Kebutuhan kalori meningkat 300-500 kal per hari.',
+                'category' => 'Nutrisi & Gizi',
             ],
             [
                 'title' => 'Persiapan Persalinan Normal: Teknik dan Meditasi',
-                'description' => 'Panduan praktis tentang teknik pernapasan, meditasi, dan persiapan mental untuk persalinan normal.',
-                'content_link' => 'https://example.com/ebooks/persiapan-persalinan.pdf',
+                'description' => 'Panduan teknik pernapasan dan persiapan mental untuk persalinan normal.',
+                'content' => 'Persiapan mental sangat penting untuk persalinan yang lancar. Teknik pernapasan membantu mengurangi rasa sakit.',
+                'category' => 'Persalinan & Kelahiran',
             ],
             [
-                'title' => 'Perawatan Bayi Baru Lahir: Panduan Orang Tua Baru',
-                'description' => 'Panduan lengkap untuk memahami dan merawat bayi baru lahir di minggu-minggu pertama.',
-                'content_link' => 'https://example.com/ebooks/perawatan-bayi.pdf',
+                'title' => 'Perawatan Bayi Baru Lahir',
+                'description' => 'Panduan lengkap merawat bayi baru lahir di minggu-minggu pertama.',
+                'content' => 'Bayi baru lahir memerlukan perawatan khusus. Jaga suhu tubuh bayi tetap hangat.',
+                'category' => 'Perawatan Bayi',
             ],
             [
                 'title' => 'Menyusui: Panduan Praktis dan Solusi Masalah',
-                'description' => 'E-book berisi teknik menyusui yang benar, tips, dan solusi untuk masalah umum menyusui.',
-                'content_link' => 'https://example.com/ebooks/panduan-menyusui.pdf',
+                'description' => 'Teknik menyusui yang benar dan solusi untuk masalah umum.',
+                'content' => 'Menyusui adalah cara terbaik memberikan nutrisi kepada bayi. Posisi yang benar sangat penting.',
+                'category' => 'Perawatan Bayi',
             ],
             [
                 'title' => 'Kesehatan Mental Ibu Hamil dan Postpartum',
-                'description' => 'Informasi penting tentang kesehatan mental selama kehamilan dan masa postpartum.',
-                'content_link' => 'https://example.com/ebooks/kesehatan-mental-ibu.pdf',
+                'description' => 'Informasi tentang kesehatan mental selama kehamilan dan postpartum.',
+                'content' => 'Kesehatan mental sama pentingnya dengan kesehatan fisik. Perubahan hormon dapat menyebabkan mood swings.',
+                'category' => 'Kesehatan Mental',
             ],
             [
                 'title' => 'Olahraga dan Fitness Selama Kehamilan',
-                'description' => 'Program latihan yang aman dan efektif untuk ibu hamil dengan video tutorial.',
-                'content_link' => 'https://example.com/ebooks/olahraga-hamil.pdf',
+                'description' => 'Program latihan yang aman untuk ibu hamil.',
+                'content' => 'Olahraga teratur selama kehamilan sangat bermanfaat. Jalan cepat adalah olahraga paling aman.',
+                'category' => 'Olahraga & Kebugaran',
             ],
             [
                 'title' => 'Panduan Pemeriksaan Kehamilan dan USG',
-                'description' => 'Penjelasan lengkap tentang pemeriksaan kehamilan rutin dan interpretasi hasil USG.',
-                'content_link' => 'https://example.com/ebooks/pemeriksaan-kehamilan.pdf',
+                'description' => 'Penjelasan pemeriksaan kehamilan rutin dan interpretasi hasil USG.',
+                'content' => 'Pemeriksaan kehamilan rutin penting untuk memantau kesehatan ibu dan bayi setiap saat.',
+                'category' => 'Pemeriksaan Medis',
             ],
         ];
 
-        foreach ($materials as $index => $material) {
+        foreach ($materials as $material) {
+            $category = $categories->where('name', $material['category'])->first();
+            
             Material::create([
+                'id' => Str::uuid(),
                 'title' => $material['title'],
                 'slug' => Str::slug($material['title']),
                 'description' => $material['description'],
-                'content_link' => $material['content_link'],
-                'thumbnail_image' => null,
-                'viewer_count' => rand(10, 500),
-                'event_id' => $event->id,
-                'uploaded_by' => $admin->account_id,
+                'content' => $material['content'],
+                'image_url' => null,
+                'categories' => $category?->id,
             ]);
         }
     }

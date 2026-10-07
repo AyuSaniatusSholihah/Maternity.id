@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Account;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AccountSeeder extends Seeder
 {
@@ -17,60 +19,76 @@ class AccountSeeder extends Seeder
     {
         // Admin accounts
         Account::create([
-            'email' => 'admin@maternity.id',
+            'id' => Str::uuid(),
             'name' => 'Admin Utama',
-            'profile_img' => null,
-            'account_type' => 'admin',
+            'email' => 'admin@maternity.id',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password123'),
+            'remember_token' => null,
         ]);
 
         Account::create([
-            'email' => 'konsultan@maternity.id',
+            'id' => Str::uuid(),
             'name' => 'Konsultan Kesehatan',
-            'profile_img' => null,
-            'account_type' => 'admin',
+            'email' => 'konsultan@maternity.id',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password123'),
+            'remember_token' => null,
         ]);
 
         Account::create([
-            'email' => 'pembuat@maternity.id',
+            'id' => Str::uuid(),
             'name' => 'Pembuat Konten',
-            'profile_img' => null,
-            'account_type' => 'admin',
+            'email' => 'pembuat@maternity.id',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password123'),
+            'remember_token' => null,
         ]);
 
         // Member accounts
         Account::create([
-            'email' => 'ibu.siti@email.com',
+            'id' => Str::uuid(),
             'name' => 'Ibu Siti Nurhaliza',
-            'profile_img' => null,
-            'account_type' => 'member',
+            'email' => 'ibu.siti@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password123'),
+            'remember_token' => null,
         ]);
 
         Account::create([
-            'email' => 'ibu.dina@email.com',
+            'id' => Str::uuid(),
             'name' => 'Ibu Dina Putri',
-            'profile_img' => null,
-            'account_type' => 'member',
+            'email' => 'ibu.dina@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password123'),
+            'remember_token' => null,
         ]);
 
         Account::create([
-            'email' => 'ibu.eka@email.com',
+            'id' => Str::uuid(),
             'name' => 'Ibu Eka Wijaya',
-            'profile_img' => null,
-            'account_type' => 'member',
+            'email' => 'ibu.eka@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password123'),
+            'remember_token' => null,
         ]);
 
         Account::create([
-            'email' => 'ibu.rini@email.com',
+            'id' => Str::uuid(),
             'name' => 'Ibu Rini Kusuma',
-            'profile_img' => null,
-            'account_type' => 'member',
+            'email' => 'ibu.rini@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password123'),
+            'remember_token' => null,
         ]);
 
         Account::create([
-            'email' => 'ibu.lestari@email.com',
+            'id' => Str::uuid(),
             'name' => 'Ibu Lestari Handoko',
-            'profile_img' => null,
-            'account_type' => 'member',
+            'email' => 'ibu.lestari@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password123'),
+            'remember_token' => null,
         ]);
     }
 }

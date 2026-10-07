@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('categories');
+            $table->uuid('id')->primary();
+            $table->uuid('categories');
             $table->string('name', 255);
             $table->string('slug', 255)->unique();
             $table->text('description');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('tokopedia_url', 255)->nullable();
             $table->string('shopee_url', 255)->nullable();
             $table->string('whatsapp_url', 255)->nullable();
-            $table->unsignedBigInteger('created_by');
+            $table->uuid('created_by');
             $table->timestamps();
             $table->softDeletes();
         });

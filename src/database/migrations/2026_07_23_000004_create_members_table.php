@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('members', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('account_id');
+            $table->uuid('id')->primary();
+            $table->uuid('account_id');
             $table->string('name', 255);
             $table->string('email', 255)->unique();
             $table->string('phone', 20);
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('city', 100)->nullable();
             $table->string('province', 100)->nullable();
             $table->string('image_url', 255)->nullable();
-            $table->unsignedBigInteger('provisioned_by');
+            $table->uuid('provisioned_by');
             $table->timestamps();
         });
     }

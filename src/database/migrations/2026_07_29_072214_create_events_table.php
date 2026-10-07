@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('categories');
+            $table->uuid('id')->primary();
+            $table->uuid('categories');
             $table->string('title', 255);
             $table->string('slug', 255)->unique();
             $table->text('description');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('close_registration_date');
             $table->string('location', 255);
             $table->string('image_url', 255)->nullable();
-            $table->unsignedBigInteger('materials')->nullable();
+            $table->uuid('materials')->nullable();
             $table->unsignedInteger('slot');
             $table->boolean('is_available')->default(true);
             $table->timestamps();

@@ -16,13 +16,16 @@ class DatabaseSeeder extends Seeder
     {
         // Run seeders in dependency order
         $this->call([
-            AccountSeeder::class,    // Base accounts (no dependencies)
-            AdminSeeder::class,      // Depends on accounts
-            MemberSeeder::class,     // Depends on accounts and admins
-            EventSeeder::class,      // Depends on admins
-            CategorySeeder::class,   // Categories (no dependencies)
-            ArticleSeeder::class,    // Depends on admins and categories
-            MaterialSeeder::class,   // Depends on events and admins
+            AccountSeeder::class,                  // Base accounts (no dependencies)
+            AdminSeeder::class,                    // Depends on accounts
+            MemberSeeder::class,                   // Depends on accounts and admins
+            CategorySeeder::class,                 // Categories (no dependencies)
+            EventSeeder::class,                    // Depends on admins and categories
+            MaterialSeeder::class,                 // Depends on categories
+            ProductSeeder::class,                  // Depends on admins and categories
+            EventRegistrationSeeder::class,        // Depends on events, members, admins
+            SubscriptionPlansSeeder::class,        // Depends on admins
+            SubscriptionPaymentsSeeder::class,     // Depends on members and subscription_plans
         ]);
     }
 }

@@ -39,9 +39,9 @@ return new class extends Migration
         });
 
         Schema::create('event_registration', function (Blueprint $table) {
-            $table->unsignedBigInteger('event_id');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('reviewer_id')->nullable();
+            $table->uuid('event_id');
+            $table->uuid('user_id');
+            $table->uuid('reviewer_id')->nullable();
             $table->text('payment_status');
             $table->string('proof_img_url', 500)->nullable();
             $table->timestamp('reviewed_at')->nullable();
@@ -60,7 +60,7 @@ return new class extends Migration
             $table->text('benefits');
             $table->unsignedInteger('price');
             $table->unsignedInteger('period');
-            $table->unsignedBigInteger('updated_by');
+            $table->uuid('updated_by');
             $table->timestamp('updated_at');
             $table->timestamp('created_at');
             $table->softDeletes();
@@ -70,8 +70,8 @@ return new class extends Migration
 
         Schema::create('subscription_payments', function (Blueprint $table) {
             $table->char('subcription_code', 8);
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('reviewer_id')->nullable();
+            $table->uuid('user_id');
+            $table->uuid('reviewer_id')->nullable();
             $table->text('payment_status');
             $table->string('proof_img_url', 500)->nullable();
             $table->timestamp('reviewed_at')->nullable();

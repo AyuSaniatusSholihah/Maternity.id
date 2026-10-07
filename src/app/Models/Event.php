@@ -12,19 +12,20 @@ class Event extends Model
     use HasUuids;
 
     protected $table = 'events';
-    public $incrementing = false;
-    protected $keyType = 'string';
 
     protected $casts = [
-        'date' => 'datetime:Y-m-d',
+        'event_date' => 'datetime:Y-m-d',
+        'open_registration_date' => 'datetime:Y-m-d',
+        'close_registration_date' => 'datetime:Y-m-d',
         'is_available' => 'boolean',
     ];
 
-    public function createdBy(): BelongsTo {
-        return $this->belongsTo(Admin::class, 'created_by', 'account_id');
+    public function category(): BelongsTo {
+        return $this->belongsTo(Category::class, 'categories', 'id');
     }
-    public function material(): HasMany {
-        return $this->hasMany(Material::class, 'event_id', 'id');
+
+    public function materials(): HasMany {
+        return $this->hasMany(Material::class, 'materials', 'id');
     }
 }
 

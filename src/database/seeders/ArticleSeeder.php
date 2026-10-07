@@ -199,7 +199,11 @@ class ArticleSeeder extends Seeder
         ];
 
         foreach ($articles as $article) {
-            $createdArticle = Article::create([
+            $categoryNamesToAttach = $article['categories'];
+            $categoriesToAttach = $categories->whereIn('name', $categoryNamesToAttach)->pluck('id')->toArray();
+            
+            Article::create([
+                'id' => Str::uuid(),
                 'title' => $article['title'],
                 'keywords' => $article['keywords'],
                 'slug' => Str::slug($article['title']),
@@ -208,12 +212,8 @@ class ArticleSeeder extends Seeder
                 'thumbnail_image' => null,
                 'status' => $article['status'],
                 'author_id' => $admin->account_id,
+                'categories' => $categoriesToAttach[0] ?? null,  // Store only first category in the categories column
             ]);
-
-            // Attach categories via pivot table
-            $categoryNamesToAttach = $article['categories'];
-            $categoriesToAttach = $categories->whereIn('name', $categoryNamesToAttach)->pluck('id')->toArray();
-            $createdArticle->categories()->attach($categoriesToAttach);
         }
     }
 }
