@@ -22,15 +22,18 @@ return new class extends Migration
         
         Schema::table('materials', function (Blueprint $table) {
             $table->foreign('categories')->references('id')->on('categories')->onDelete('restrict');
+            $table->foreign('uploaded_by')->references('account_id')->on('admins')->onDelete('restrict');
         });
 
         Schema::table('articles', function (Blueprint $table) {
             $table->foreign('categories')->references('id')->on('categories')->onDelete('restrict');
+            $table->foreign('author')->references('account_id')->on('admins')->onDelete('restrict');
         });
 
         Schema::table('events', function (Blueprint $table) {
             $table->foreign('categories')->references('id')->on('categories')->onDelete('restrict');
             $table->foreign('materials')->references('id')->on('materials')->onDelete('restrict');
+            $table->foreign('created_by')->references('account_id')->on('admins')->onDelete('restrict');
         });
 
         Schema::table('products', function (Blueprint $table) {

@@ -211,8 +211,8 @@ class ArticleSeeder extends Seeder
                 'content' => $article['content'],
                 'thumbnail_image' => null,
                 'status' => $article['status'],
-                'author_id' => $admin->account_id,
-                'categories' => $categoriesToAttach[0] ?? null,  // Store only first category in the categories column
+                'author' => $admin->account_id,
+                'categories' => $categoriesToAttach[0] ?? null,
             ]);
         }
     }

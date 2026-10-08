@@ -13,6 +13,8 @@ class Event extends Model
 
     protected $table = 'events';
 
+    protected $fillable = ['categories', 'title', 'slug', 'description', 'event_date', 'open_registration_date', 'close_registration_date', 'location', 'image_url', 'materials', 'slot', 'is_available', 'created_by'];
+
     protected $casts = [
         'event_date' => 'datetime:Y-m-d',
         'open_registration_date' => 'datetime:Y-m-d',
@@ -22,6 +24,10 @@ class Event extends Model
 
     public function category(): BelongsTo {
         return $this->belongsTo(Category::class, 'categories', 'id');
+    }
+
+    public function creator(): BelongsTo {
+        return $this->belongsTo(Admin::class, 'created_by', 'account_id');
     }
 
     public function materials(): HasMany {

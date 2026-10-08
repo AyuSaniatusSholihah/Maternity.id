@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('description');
             $table->text('content');
             $table->string('image_url', 255)->nullable();
+            $table->uuid('uploaded_by');
             $table->timestamps();
         });
     }

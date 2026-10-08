@@ -18,6 +18,11 @@ class MaterialSeeder extends Seeder
     public function run(): void
     {
         $categories = Category::all();
+        $admin = \App\Models\Admin::first();
+
+        if (!$admin) {
+            return;
+        }
 
         $materials = [
             [
@@ -81,6 +86,7 @@ class MaterialSeeder extends Seeder
                 'content' => $material['content'],
                 'image_url' => null,
                 'categories' => $category?->id,
+                'uploaded_by' => $admin->account_id,
             ]);
         }
     }

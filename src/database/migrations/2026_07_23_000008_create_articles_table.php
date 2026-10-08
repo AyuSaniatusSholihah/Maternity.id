@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('description');
             $table->text('content');
             $table->string('image_url', 255)->nullable();
-            $table->string('author', 255)->nullable();
+            $table->uuid('author');
             $table->timestamps();
         });
     }

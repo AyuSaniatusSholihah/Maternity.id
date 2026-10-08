@@ -25,6 +25,7 @@ return new class extends Migration
             $table->uuid('materials')->nullable();
             $table->unsignedInteger('slot');
             $table->boolean('is_available')->default(true);
+            $table->uuid('created_by');
             $table->timestamps();
         });
     }

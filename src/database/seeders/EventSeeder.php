@@ -117,6 +117,7 @@ class EventSeeder extends Seeder
                 'slot' => $event['slot'],
                 'is_available' => $event['is_available'],
                 'categories' => $category?->id,
+                'created_by' => $admin->account_id,
             ]);
         }
     }

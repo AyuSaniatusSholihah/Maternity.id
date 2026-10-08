@@ -63,6 +63,7 @@ Table "materials" {
   "description" text [not null]
   "content" text [not null]
   "image_url" varchar(255)
+  "uploaded_by" integer [not null, ref: > "admins"."account_id"]
   "created_at" timestamp
   "updated_at" timestamp
 
@@ -77,7 +78,7 @@ Table "articles" {
   "description" text [not null]
   "content" text [not null]
   "image_url" varchar(255)
-  "author" varchar(255)
+  "author" integer [not null, ref: > "admins"."account_id"]
   "created_at" timestamp
   "updated_at" timestamp
 
@@ -98,6 +99,7 @@ Table "events" {
   "materials" int [ref: <> "materials"."id"]
   "slot" int [not null]
   "is_available" boolean [not null, default: true]
+  "created_by" integer [not null, ref: > "admins"."account_id"]
   "created_at" timestamp
   "updated_at" timestamp
 
