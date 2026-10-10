@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Admin;
 use App\Models\Category;
 use App\Models\Event;
+use App\Models\Material;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -20,6 +21,7 @@ class EventSeeder extends Seeder
     {
         $admin = Admin::first();
         $categories = Category::all();
+        $materials = Material::all();
 
         if (!$admin) {
             return;
@@ -100,10 +102,26 @@ class EventSeeder extends Seeder
             ],
         ];
 
-        foreach ($events as $event) {
+        $speakers = [
+            'Dr. Siti Nurhaliza, Sp.OG',
+            'Dr. Budi Santoso, Sp.OG, M.Kes',
+            'Bidan Dina Wijaya, S.Keb',
+            'Dr. Eka Prasetyo, Sp.OG, PhD',
+            'Konselor Laktasi Rini Kusuma, IBCLC',
+            'Dr. Lestari Handoko, Sp.OG, M.H',
+        ];
+
+        foreach ($events as $index => $event) {
             $category = $categories->where('name', $event['category'])->first();
             
-            Event::create([
+            // Vary fees: some free, some paid
+            $fees = [0, 0, 50000, 75000, 100000, 150000];
+            $fee = $fees[$index % count($fees)];
+            
+            // Rotate through speakers
+            $speaker = $speakers[$index % count($speakers)];
+            
+            $createdEvent = Event::create([
                 'id' => Str::uuid(),
                 'title' => $event['title'],
                 'slug' => Str::slug($event['title']),
@@ -113,12 +131,20 @@ class EventSeeder extends Seeder
                 'close_registration_date' => $event['close_registration_date'],
                 'location' => $event['location'],
                 'image_url' => $event['image_url'],
-                'materials' => null,
                 'slot' => $event['slot'],
                 'is_available' => $event['is_available'],
                 'categories' => $category?->id,
+                'fee' => $fee,
+                'speaker' => $speaker,
                 'created_by' => $admin->account_id,
             ]);
+
+            // Attach 2-3 random materials to each event
+            if ($materials->isNotEmpty()) {
+                $materialCount = rand(2, 3);
+                $randomMaterials = $materials->random(min($materialCount, $materials->count()));
+                $createdEvent->materials()->attach($randomMaterials->pluck('id')->toArray());
+            }
         }
     }
 }

@@ -32,7 +32,6 @@ return new class extends Migration
 
         Schema::table('events', function (Blueprint $table) {
             $table->foreign('categories')->references('id')->on('categories')->onDelete('restrict');
-            $table->foreign('materials')->references('id')->on('materials')->onDelete('restrict');
             $table->foreign('created_by')->references('account_id')->on('admins')->onDelete('restrict');
         });
 
