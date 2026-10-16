@@ -18,7 +18,7 @@
          x-transition:leave="ease-in duration-150"
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-95"
-         class="relative w-full max-w-lg bg-[#FAF5F2] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#EADBDB] transition-all flex flex-col space-y-5">
+         class="relative w-full max-w-lg bg-[#FAF5F2] rounded-3xl p-5 sm:p-8 shadow-2xl border border-[#EADBDB] transition-all flex flex-col space-y-4 max-h-[90vh] overflow-y-auto">
         
         {{-- Header & Close Button --}}
         <div class="flex items-start justify-between">

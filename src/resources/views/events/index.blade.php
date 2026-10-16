@@ -19,7 +19,7 @@
         </style>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-2 sm:py-4 space-y-4 sm:space-y-6">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full py-2 sm:py-4 space-y-4 sm:space-y-6">
         
         <!-- ── 1. HERO BANNER (EVENT & KELAS) ── -->
         <div class="relative bg-gradient-to-r from-[#FCEBE7] via-[#FDF3F0] to-[#FAF0EE] rounded-2xl sm:rounded-3xl px-5 py-4 sm:px-8 sm:py-5 border border-[#DEA69E]/40 overflow-hidden shadow-xs">
@@ -167,36 +167,52 @@
                     const amount = this.scrollEl.clientWidth * 0.75;
                     this.scrollEl.scrollBy({ left: dir * amount, behavior: 'smooth' });
                 }
-            }" class="relative">
+            }" class="space-y-2">
 
-                <!-- Tombol Prev -->
-                <button type="button"
-                        x-show="canPrev"
-                        @click="scrollBy(-1)"
-                        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-10 w-9 h-9 bg-white border border-[#DEA69E]/50 rounded-full shadow-md flex items-center justify-center text-[#8C433C] hover:bg-[#FAF0EE] transition"
-                        style="display: none;">
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
-                </button>
+                <!-- Header Navigation Bar: Title & Prev/Next Controls (Never Overlaps Cards) -->
+                <div class="flex items-center justify-between px-1">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-[#8C433C]"></span>
+                        <h2 class="text-xs sm:text-sm font-bold text-[#2A1614]">
+                            Jadwal Event & Kelas
+                        </h2>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FAF0EE] text-[#8C433C] border border-[#DEA69E]/40">
+                            {{ count($events) }} Event
+                        </span>
+                    </div>
 
-                <!-- Carousel Track -->
-                <div x-ref="carousel"
-                     class="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4 no-scrollbar snap-x snap-mandatory"
-                     style="cursor: grab;">
-                    @foreach ($events as $event)
-                        <div class="shrink-0 w-[75vw] sm:w-[44vw] md:w-[32vw] lg:w-[28vw] xl:w-[23vw] max-w-[300px] snap-start">
-                            <x-event_card :event="$event" />
-                        </div>
-                    @endforeach
+                    <!-- Clean Carousel Arrow Buttons in Header -->
+                    <div class="flex items-center gap-1.5">
+                        <button type="button"
+                                @click="scrollBy(-1)"
+                                :disabled="!canPrev"
+                                aria-label="Geser ke kiri"
+                                class="w-8 h-8 rounded-full border border-[#DEA69E]/50 bg-white hover:bg-[#FAF0EE] disabled:opacity-35 disabled:hover:bg-white flex items-center justify-center text-[#8C433C] transition shadow-2xs cursor-pointer disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                        <button type="button"
+                                @click="scrollBy(1)"
+                                :disabled="!canNext"
+                                aria-label="Geser ke kanan"
+                                class="w-8 h-8 rounded-full border border-[#DEA69E]/50 bg-white hover:bg-[#FAF0EE] disabled:opacity-35 disabled:hover:bg-white flex items-center justify-center text-[#8C433C] transition shadow-2xs cursor-pointer disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Tombol Next -->
-                <button type="button"
-                        x-show="canNext"
-                        @click="scrollBy(1)"
-                        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-10 w-9 h-9 bg-white border border-[#DEA69E]/50 rounded-full shadow-md flex items-center justify-center text-[#8C433C] hover:bg-[#FAF0EE] transition"
-                        style="display: none;">
-                    <i class="fa-solid fa-chevron-right text-xs"></i>
-                </button>
+                <!-- Carousel Container with Outer Gutter Margins -->
+                <div class="relative px-0">
+                    <!-- Carousel Track (Spacious Gaps & Soft Shadows Padding) -->
+                    <div x-ref="carousel"
+                         class="flex gap-3.5 sm:gap-5 overflow-x-auto py-2.5 px-1 sm:px-2 no-scrollbar snap-x snap-mandatory scroll-smooth"
+                         style="cursor: grab;">
+                        @foreach ($events as $event)
+                            <div class="shrink-0 w-[80vw] min-[400px]:w-[74vw] sm:w-[310px] md:w-[320px] max-w-[330px] snap-start">
+                                <x-event_card :event="$event" />
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         @else
             <!-- Empty State -->

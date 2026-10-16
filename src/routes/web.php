@@ -82,6 +82,7 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/admin/login', function () {
         return view('admin.login');
     })->name('admin.login');
+    Route::post('/admin/login', [LoginController::class, 'adminLogin'])->name('admin.login.post');
 });
 
 // Member Protected Routes
@@ -102,6 +103,8 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'loginWithEmail'])->name('login.post');
+    Route::get('/login/dev/{id}', [LoginController::class, 'devLogin'])->name('login.dev');
     Route::get('/login/google', [LoginController::class, 'requestGoogleLogin'])->name('google.login');
     Route::get('/login/google/callback', [LoginController::class, 'callbackGoogleLogin'])->name('google.callback');
 

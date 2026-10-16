@@ -1,5 +1,5 @@
 {{--
-    Floating Help / FAQ Button (Kiri Bawah)
+    Floating Help / FAQ Button (Kanan Bawah)
     Menampilkan modal FAQ mini tentang pembayaran saat diklik.
     Dipakai di: events/checkout.blade.php
 --}}
@@ -29,14 +29,14 @@
         ]
      }"
      @click.away="openHelp = false"
-     class="fixed bottom-24 left-4 sm:bottom-8 sm:left-8 z-50 flex flex-col items-start gap-3 select-none">
+     class="fixed bottom-16 right-3 sm:bottom-8 sm:right-8 z-50 flex flex-col items-end gap-2.5 select-none">
 
     {{-- Panel FAQ --}}
     <div x-show="openHelp"
-         x-transition:enter="transition ease-out duration-300 transform"
+         x-transition:enter="transition ease-out duration-300 transform origin-bottom-right"
          x-transition:enter-start="opacity-0 translate-y-4 scale-90"
          x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-         x-transition:leave="transition ease-in duration-200 transform"
+         x-transition:leave="transition ease-in duration-200 transform origin-bottom-right"
          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
          x-transition:leave-end="opacity-0 translate-y-4 scale-90"
          class="w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-[#DEA69E]/30 overflow-hidden"
@@ -89,10 +89,10 @@
     {{-- Main ? Button --}}
     <button type="button"
             @click="openHelp = !openHelp"
-            class="w-12 h-12 sm:w-13 sm:h-13 bg-white hover:bg-[#FAF0EE] text-[#8C433C] rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(140,67,60,0.2)] border-2 border-[#DEA69E] transition-all transform hover:scale-110 active:scale-95 focus:outline-none relative group"
+            class="w-11 h-11 sm:w-13 sm:h-13 bg-white hover:bg-[#FAF0EE] text-[#8C433C] rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(140,67,60,0.2)] border-2 border-[#DEA69E] transition-all transform hover:scale-110 active:scale-95 focus:outline-none relative group"
             aria-label="Bantuan Pembayaran"
             title="Bantuan & FAQ Pembayaran">
-        <i class="fa-solid text-lg sm:text-xl transition-transform duration-300 font-black"
+        <i class="fa-solid text-base sm:text-xl transition-transform duration-300 font-black"
            :class="openHelp ? 'fa-xmark rotate-90 text-[#8C433C]' : 'fa-circle-question group-hover:scale-110 text-[#8C433C]'"></i>
 
         {{-- Pulse ring saat tertutup --}}

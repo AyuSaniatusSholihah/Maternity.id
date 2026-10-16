@@ -52,12 +52,45 @@
                 this.openModal = false;
             },
 
+            init() {
+                this.$watch('step', value => {
+                    if (value === 2 || value === 3) {
+                        this.savePendingPayment();
+                    } else if (value >= 4) {
+                        this.clearPendingPayment();
+                    }
+                });
+                if (this.step === 2 || this.step === 3) {
+                    this.savePendingPayment();
+                }
+            },
+
+            savePendingPayment() {
+                try {
+                    sessionStorage.removeItem('maternity_pending_dismissed');
+                    localStorage.setItem('maternity_pending_payment', JSON.stringify({
+                        eventSlug: '{{ $event->slug ?? 'mindful-motherhood' }}',
+                        eventTitle: this.selectedTitle || '{{ $event->title ?? 'Pelatihan Maternitas' }}',
+                        totalAmount: this.totalAmount,
+                        step: this.step,
+                        timestamp: Date.now()
+                    }));
+                } catch(e) {}
+            },
+
+            clearPendingPayment() {
+                try {
+                    localStorage.removeItem('maternity_pending_payment');
+                } catch(e) {}
+            },
+
             submitProof() {
                 // Transisi ke Step 4 (Berhasil Mengupload Bukti Pembayaran)
                 this.step = 4;
+                this.clearPendingPayment();
             }
          }" 
-         class="w-full min-h-[calc(100vh-120px)] bg-[#FBF5F2] text-neutral-800 p-4 sm:p-6 md:p-10 font-sans rounded-3xl border border-[#DEAAA1]/30 shadow-xs my-2 relative">
+         class="w-full min-h-[calc(100vh-120px)] bg-[#FBF5F2] text-neutral-800 p-2.5 sm:p-6 md:p-10 font-sans rounded-2xl sm:rounded-3xl border border-[#DEAAA1]/30 shadow-xs my-2 relative">
         
         <div class="max-w-6xl mx-auto space-y-4">
 
@@ -70,16 +103,16 @@
                 <span class="text-neutral-700 font-semibold">Checkout</span>
             </nav>
 
-        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
             
-            {{-- ── 1. KOLOM KIRI: FAQ & TESTIMONIAL (SELALU AKTIF DI SEMUA STEP) ── --}}
-            <div class="lg:col-span-6 flex flex-col justify-between space-y-10">
+            {{-- ── 1. KOLOM KIRI: FAQ & TESTIMONIAL (DI MOBILE PINDAH KE BAWAH) ── --}}
+            <div class="order-2 lg:order-1 lg:col-span-6 flex flex-col justify-between space-y-6 sm:space-y-10">
                 <x-checkout.faq />
                 <x-checkout.testimonial />
             </div>
 
-            {{-- ── 2. KOLOM KANAN: STEPPER & KONTEN DINAMIS SESUAI STEP ── --}}
-            <div class="lg:col-span-6 flex flex-col justify-start">
+            {{-- ── 2. KOLOM KANAN: STEPPER & KONTEN DINAMIS SESUAI STEP (DI MOBILE TAMPIL PERTAMA) ── --}}
+            <div class="order-1 lg:order-2 lg:col-span-6 flex flex-col justify-start">
                 
                 {{-- Stepper Navigation Reusable --}}
                 <x-checkout.stepper />
@@ -259,6 +292,10 @@
                                 class="w-full block text-center text-xs text-neutral-500 hover:text-neutral-800 py-1 transition cursor-pointer">
                             ← Kembali ke detail paket
                         </button>
+                        <a href="{{ route('home') }}" 
+                           class="w-full block text-center text-xs text-[#8C433C] hover:text-[#6e302a] hover:underline py-1 transition font-medium cursor-pointer">
+                            ← Kembali ke Beranda
+                        </a>
                     </div>
                 </div>
 
@@ -331,11 +368,17 @@
 
                         {{-- Tombol Kirim & Kembali --}}
                         <div class="flex items-center justify-between">
-                            <button type="button" 
-                                    @click="step = 2" 
-                                    class="text-xs text-neutral-500 hover:text-neutral-800 transition cursor-pointer">
-                                ← Kembali ke QRIS
-                            </button>
+                            <div class="flex items-center gap-3">
+                                <button type="button" 
+                                        @click="step = 2" 
+                                        class="text-xs text-neutral-500 hover:text-neutral-800 transition cursor-pointer">
+                                    ← Kembali ke QRIS
+                                </button>
+                                <a href="{{ route('home') }}" 
+                                   class="text-xs text-[#8C433C] hover:text-[#6e302a] hover:underline transition font-medium">
+                                    Kembali ke Beranda
+                                </a>
+                            </div>
                             <button type="submit" 
                                     class="bg-[#5F8C72] hover:bg-[#4d725d] text-white font-semibold text-xs px-8 py-2.5 rounded-xl shadow-xs transition cursor-pointer">
                                 Kirim
@@ -505,7 +548,7 @@
 
     </div>
 
-    {{-- Floating Help Button (Kiri Bawah) --}}
+    {{-- Floating Help Button (Kanan Bawah) --}}
     <x-floating_help />
 
 </x-layout>

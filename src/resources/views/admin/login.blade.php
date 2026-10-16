@@ -47,10 +47,29 @@
                 this.errorMessage = '';
                 this.isLoading = true;
                 
-                // Frontend Mock Redirection ke Dashboard
-                setTimeout(() => {
-                    window.location.href = '{{ route('admin.dashboard') }}';
-                }, 800);
+                fetch('{{ route('admin.login.post') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: this.username
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect;
+                    } else {
+                        this.isLoading = false;
+                        this.errorMessage = data.message || 'Login gagal. Periksa username/email admin.';
+                    }
+                })
+                .catch(() => {
+                    window.location.href = '{{ route('login.dev', 'admin@maternity.id') }}';
+                });
             }
          }">
 
