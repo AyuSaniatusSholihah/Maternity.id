@@ -12,7 +12,7 @@
         </style>
     </x-slot>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-4 sm:py-6 space-y-5 sm:space-y-6">
+    <div class="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 w-full py-3 sm:py-6 space-y-4 sm:space-y-6">
 
         {{-- ── 1. Greeting Architectural Banner ── --}}
         <div class="relative bg-gradient-to-r from-[#FCEBE7] via-[#FDF3F0] to-[#FAF0EE] rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-[#DEA69E]/40 overflow-hidden shadow-xs">

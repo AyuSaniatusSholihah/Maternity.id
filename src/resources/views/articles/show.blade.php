@@ -28,7 +28,7 @@
     <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-[#8C433C] via-[#DEA69E] to-[#7A9E7E] z-50 transition-all duration-150" style="width: 0%;"></div>
 
     {{-- Main Wrapper with Comfortable Left and Right Margins --}}
-    <div class="min-h-screen py-6 sm:py-10 px-4 sm:px-8 md:px-12 lg:px-14 xl:px-16 text-slate-800 font-sans antialiased w-full">
+    <div class="min-h-screen py-4 sm:py-10 px-3 sm:px-8 md:px-12 lg:px-14 xl:px-16 text-slate-800 font-sans antialiased w-full">
         <div class="max-w-7xl mx-auto">
             
             {{-- Top Navigation & Breadcrumb with Generous Margin --}}
@@ -72,7 +72,7 @@
                 </aside>
 
                 {{-- ── MAIN ARTICLE CONTENT CARD ── --}}
-                <main class="lg:col-span-7 xl:col-span-7 bg-white rounded-3xl p-6 sm:p-10 shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-[#DEA69E]/30 space-y-6">
+                <main class="lg:col-span-7 xl:col-span-7 bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-10 shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-[#DEA69E]/30 space-y-5 sm:space-y-6">
                     
                     {{-- Category & Meta Pill --}}
                     <div class="flex flex-wrap items-center gap-3">

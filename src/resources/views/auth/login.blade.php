@@ -115,8 +115,19 @@
                     </p>
                 </div>
 
+                @if(session('error'))
+                    <div class="w-full max-w-[340px] bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm p-3 rounded-xl text-left">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                @if(session('success'))
+                    <div class="w-full max-w-[340px] bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs sm:text-sm p-3 rounded-xl text-left">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 <!-- Google Login Button -->
-                <div class="pt-2 w-full flex justify-center">
+                <div class="pt-1 w-full flex justify-center">
                     <a
                         href="{{ route('google.login') }}"
                         class="w-full max-w-[340px] flex items-center justify-center gap-3 bg-white hover:bg-neutral-50 border border-[#D9D9D9] hover:border-gray-400 hover:shadow-md active:scale-[0.98] transition-all duration-200 rounded-xl py-3.5 px-6 text-[#2F2927] font-semibold text-sm sm:text-base shadow-sm"
@@ -129,6 +140,43 @@
                         </svg>
                         <span>Masuk dengan Google</span>
                     </a>
+                </div>
+
+                <!-- Divider -->
+                <div class="w-full max-w-[340px] flex items-center gap-3">
+                    <div class="flex-1 h-px bg-gray-300/70"></div>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wider">atau email</span>
+                    <div class="flex-1 h-px bg-gray-300/70"></div>
+                </div>
+
+                <!-- Email Direct Sign-In Form -->
+                <form action="{{ route('login.post') }}" method="POST" class="w-full max-w-[340px] space-y-2.5">
+                    @csrf
+                    <div class="relative">
+                        <input type="email" name="email" required placeholder="Masukkan email Anda" 
+                               value="{{ old('email', 'ayu.saniatus@gmail.com') }}"
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white/95 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C433C] focus:border-transparent transition shadow-2xs">
+                    </div>
+                    <button type="submit" class="w-full py-3 px-4 rounded-xl bg-[#2D5C3E] hover:bg-[#1E4329] text-white text-sm font-bold shadow-sm transition active:scale-[0.98]">
+                        Masuk ke Akun
+                    </button>
+                </form>
+
+                <!-- 1-Click Fast Login for Testing -->
+                <div class="w-full max-w-[380px] pt-3 border-t border-gray-300/60 text-center">
+                    <p class="text-[11px] text-gray-600 mb-2 font-medium">Akses Cepat Pengujian (1-Klik):</p>
+                    <div class="flex flex-wrap items-center justify-center gap-2">
+                        <a href="{{ route('login.dev', 'ayu.saniatus@gmail.com') }}" 
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/90 hover:bg-white border border-[#DEA69E]/60 text-xs font-semibold text-[#8C433C] shadow-2xs hover:shadow-xs transition">
+                            <span class="w-2 h-2 rounded-full bg-[#5F8C72]"></span>
+                            <span>Ayu Saniatus</span>
+                        </a>
+                        <a href="{{ route('login.dev', 'admin@maternity.id') }}" 
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/90 hover:bg-white border border-gray-300 text-xs font-semibold text-neutral-700 shadow-2xs hover:shadow-xs transition">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            <span>Admin Portal</span>
+                        </a>
+                    </div>
                 </div>
 
             </div>

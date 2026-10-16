@@ -231,50 +231,50 @@
             </div>
 
             <!-- CONTENT UTAMA (Tengah, Rapi, & Jernih di Depan Background) -->
-            <div class="max-w-2xl text-center z-10 px-3 sm:px-6 w-full flex flex-col items-center">
+            <div class="max-w-2xl text-center z-10 px-2 sm:px-6 w-full flex flex-col items-center">
                 <!-- ── 3 ORGANIC DYNAMIC CAPSULE IMAGES UNTUK MOBILE (md:hidden) ── -->
-                <div class="md:hidden flex items-center justify-center gap-2 min-[380px]:gap-2.5 mb-3.5 w-full max-w-[270px] min-[380px]:max-w-[310px] mx-auto pt-0.5">
+                <div class="md:hidden flex items-center justify-center gap-1.5 min-[380px]:gap-2 mb-2 sm:mb-3.5 w-full max-w-[210px] min-[380px]:max-w-[250px] mx-auto pt-0.5">
                     <!-- Foto 1: Kiri (Yoga) -->
-                    <div class="hero-mobile-1 w-1/3 aspect-[4/5] overflow-hidden shadow-md border-2 border-white/95 bg-[#FAF0EE] flex-shrink-0">
+                    <div class="hero-mobile-1 w-1/3 aspect-[4/5] overflow-hidden shadow-xs border-2 border-white/95 bg-[#FAF0EE] flex-shrink-0">
                         <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=400"
                             alt="Yoga Wellness" class="w-full h-full object-cover">
                     </div>
                     <!-- Foto 2: Tengah (Ibu dan Bayi) -->
-                    <div class="hero-mobile-2 w-1/3 aspect-[4/5] overflow-hidden shadow-lg border-2 border-white/95 bg-[#FAF0EE] flex-shrink-0">
+                    <div class="hero-mobile-2 w-1/3 aspect-[4/5] overflow-hidden shadow-sm border-2 border-white/95 bg-[#FAF0EE] flex-shrink-0">
                         <img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=400"
                             alt="Mother and Baby" class="w-full h-full object-cover">
                     </div>
                     <!-- Foto 3: Kanan (Prenatal Health) -->
-                    <div class="hero-mobile-3 w-1/3 aspect-[4/5] overflow-hidden shadow-md border-2 border-white/95 bg-[#FAF0EE] flex-shrink-0">
+                    <div class="hero-mobile-3 w-1/3 aspect-[4/5] overflow-hidden shadow-xs border-2 border-white/95 bg-[#FAF0EE] flex-shrink-0">
                         <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=400"
                             alt="Prenatal Health" class="w-full h-full object-cover">
                     </div>
                 </div>
 
                 <h1
-                    class="text-2xl min-[380px]:text-[28px] sm:text-6xl lg:text-7xl font-normal text-[#2E1D1B] tracking-tight leading-none mb-0.5 sm:mb-2"
+                    class="text-xl min-[380px]:text-2xl sm:text-6xl lg:text-7xl font-normal text-[#2E1D1B] tracking-tight leading-none mb-0.5 sm:mb-2"
                     style="font-family: 'DM Serif Display', serif;">
                     Empowering Women's
                 </h1>
-                <p class="font-handwriting text-2xl min-[380px]:text-[32px] sm:text-6xl lg:text-7xl text-[#5F8C72] font-semibold mb-2.5 sm:mb-7 leading-tight">
+                <p class="font-handwriting text-2xl min-[380px]:text-3xl sm:text-6xl lg:text-7xl text-[#5F8C72] font-semibold mb-1.5 sm:mb-7 leading-tight">
                     Health Awareness
                 </p>
 
-                <p class="text-[#554846] text-xs min-[380px]:text-sm sm:text-base lg:text-lg leading-relaxed sm:leading-relaxed mb-4 sm:mb-9 max-w-xs min-[380px]:max-w-md sm:max-w-xl mx-auto font-normal">
+                <p class="text-[#554846] text-xs sm:text-base lg:text-lg leading-relaxed mb-3 sm:mb-9 max-w-[280px] min-[380px]:max-w-md sm:max-w-xl mx-auto font-normal">
                     Seminar, e-book, dan artikel terpercaya untuk mendampingi perjalanan dari kehamilan hingga tumbuh kembang buah hati.
                 </p>
 
                 <!-- Action Buttons -->
-                <div class="flex flex-row items-center justify-center gap-2.5 sm:gap-5 mt-1 sm:mt-2">
+                <div class="flex flex-row items-center justify-center gap-2 sm:gap-5 mt-0.5 sm:mt-2">
                     <!-- Akses Ebook Button -->
                     <a href="{{ url('/library') }}"
-                        class="bg-[#DEAAA1] hover:bg-[#d0998f] text-[#2D1E1E] font-bold px-5 sm:px-9 py-2.5 sm:py-3.5 rounded-full shadow-xs hover:shadow-md transition-all duration-200 text-xs sm:text-base text-center transform hover:scale-[1.03] active:scale-95 whitespace-nowrap">
+                        class="bg-[#DEAAA1] hover:bg-[#d0998f] text-[#2D1E1E] font-bold px-4 min-[380px]:px-6 sm:px-9 py-2 sm:py-3.5 rounded-full shadow-xs hover:shadow-md transition-all duration-200 text-xs sm:text-base text-center transform hover:scale-[1.03] active:scale-95 whitespace-nowrap">
                         Akses Ebook
                     </a>
                     
                     <!-- Akses Seminar Button -->
                     <a href="{{ url('/events') }}"
-                        class="bg-[#5F8C72] hover:bg-[#4f755e] text-white font-bold px-5 sm:px-9 py-2.5 sm:py-3.5 rounded-full shadow-xs hover:shadow-md transition-all duration-200 text-xs sm:text-base text-center transform hover:scale-[1.03] active:scale-95 whitespace-nowrap">
+                        class="bg-[#5F8C72] hover:bg-[#4f755e] text-white font-bold px-4 min-[380px]:px-6 sm:px-9 py-2 sm:py-3.5 rounded-full shadow-xs hover:shadow-md transition-all duration-200 text-xs sm:text-base text-center transform hover:scale-[1.03] active:scale-95 whitespace-nowrap">
                         Akses Seminar
                     </a>
                 </div>
@@ -291,105 +291,105 @@
     </div>
 
     <!-- ── SECTION: APA YANG MATERNITY.ID TAWARKAN ── -->
-    <section class="relative w-full bg-[#fcf5f3] pt-2 sm:pt-4 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+    <section class="relative w-full bg-[#fcf5f3] pt-2 sm:pt-4 pb-5 sm:pb-8 px-3 sm:px-6 lg:px-8 overflow-hidden" style="font-family: 'Plus Jakarta Sans', sans-serif;">
         <div class="relative max-w-7xl mx-auto z-10">
             <!-- Header Section -->
-            <div class="text-center max-w-2xl mx-auto mb-5 sm:mb-7 reveal-on-scroll">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FAF0EE] text-[#C27A6F] border border-[#DEA69E]/40 mb-2">
+            <div class="text-center max-w-2xl mx-auto mb-4 sm:mb-7 reveal-on-scroll">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-[#FAF0EE] text-[#C27A6F] border border-[#DEA69E]/40 mb-1.5 sm:mb-2">
                     ✨ Layanan & Fitur Utama
                 </span>
-                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#2A1614] tracking-tight" style="font-family: 'DM Serif Display', serif;">
+                <h2 class="text-xl sm:text-3xl lg:text-4xl font-extrabold text-[#2A1614] tracking-tight leading-tight" style="font-family: 'DM Serif Display', serif;">
                     Apa yang Bisa Kamu Temukan di Maternity.id?
                 </h2>
-                <p class="text-xs sm:text-sm text-[#6C5B57] mt-1.5 leading-relaxed">
+                <p class="text-xs sm:text-sm text-[#6C5B57] mt-1 sm:mt-1.5 leading-relaxed">
                     Platform edukasi dan pendampingan terpadu untuk ibu hamil, persiapan melahirkan, hingga tumbuh kembang si kecil.
                 </p>
             </div>
 
             <!-- Grid 4 Fitur Utama -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 min-[380px]:gap-3 sm:gap-5">
                 
                 <!-- Kartu 1: Webinar & Workshop -->
-                <a href="{{ route('events') }}" class="group reveal-on-scroll stagger-1 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#5F8C72] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#EDF5F0] rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                <a href="{{ route('events') }}" class="group reveal-on-scroll stagger-1 relative bg-white rounded-xl sm:rounded-2xl p-2.5 min-[380px]:p-3.5 sm:p-5 border border-[#DEA69E]/30 hover:border-[#5F8C72] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 bg-[#EDF5F0] rounded-bl-full -mr-3 -mt-3 sm:-mr-4 sm:-mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
                     <div>
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#EDF5F0] text-[#5F8C72] flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-[#EDF5F0] text-[#5F8C72] flex items-center justify-center mb-2 sm:mb-4 text-xs sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
                             <i class="fa-solid fa-calendar-check"></i>
                         </div>
-                        <span class="text-[10px] sm:text-xs font-bold text-[#5F8C72] uppercase tracking-wider block mb-1">Edukasi Interaktif</span>
-                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#5F8C72] transition-colors mb-1.5">
+                        <span class="text-[9px] sm:text-xs font-bold text-[#5F8C72] uppercase tracking-wider block mb-0.5 sm:mb-1">Edukasi Interaktif</span>
+                        <h3 class="text-xs min-[380px]:text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#5F8C72] transition-colors mb-1 leading-snug">
                             Event & Kelas Webinar
                         </h3>
-                        <p class="text-xs text-neutral-500 leading-relaxed">
+                        <p class="text-[10px] min-[380px]:text-xs text-neutral-500 leading-snug line-clamp-2 sm:line-clamp-none">
                             Sesi belajar praktis & interaktif bersama dokter spesialis, bidan, dan praktisi kesehatan maternal.
                         </p>
                     </div>
-                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#5F8C72]">
-                        <span>Jelajahi Event</span>
-                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-[10px] min-[380px]:text-xs font-bold text-[#5F8C72]">
+                        <span>Jelajahi</span>
+                        <i class="fa-solid fa-arrow-right text-[9px] transform group-hover:translate-x-1 transition-transform"></i>
                     </div>
                 </a>
 
                 <!-- Kartu 2: E-Book & Panduan Digital -->
-                <a href="{{ route('library') }}" class="group reveal-on-scroll stagger-2 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#8C433C] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#FAF0EE] rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                <a href="{{ route('library') }}" class="group reveal-on-scroll stagger-2 relative bg-white rounded-xl sm:rounded-2xl p-2.5 min-[380px]:p-3.5 sm:p-5 border border-[#DEA69E]/30 hover:border-[#8C433C] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 bg-[#FAF0EE] rounded-bl-full -mr-3 -mt-3 sm:-mr-4 sm:-mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
                     <div>
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0EE] text-[#8C433C] flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-[#FAF0EE] text-[#8C433C] flex items-center justify-center mb-2 sm:mb-4 text-xs sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
                             <i class="fa-solid fa-book-open"></i>
                         </div>
-                        <span class="text-[10px] sm:text-xs font-bold text-[#8C433C] uppercase tracking-wider block mb-1">Panduan Digital</span>
-                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#8C433C] transition-colors mb-1.5">
+                        <span class="text-[9px] sm:text-xs font-bold text-[#8C433C] uppercase tracking-wider block mb-0.5 sm:mb-1">Panduan Digital</span>
+                        <h3 class="text-xs min-[380px]:text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#8C433C] transition-colors mb-1 leading-snug">
                             E-Book & Library PDF
                         </h3>
-                        <p class="text-xs text-neutral-500 leading-relaxed">
+                        <p class="text-[10px] min-[380px]:text-xs text-neutral-500 leading-snug line-clamp-2 sm:line-clamp-none">
                             Koleksi e-book gratis & berbayar seputar nutrisi, persalinan, manajemen stres, dan perawatan bayi.
                         </p>
                     </div>
-                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#8C433C]">
-                        <span>Unduh E-Book</span>
-                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-[10px] min-[380px]:text-xs font-bold text-[#8C433C]">
+                        <span>Unduh</span>
+                        <i class="fa-solid fa-arrow-right text-[9px] transform group-hover:translate-x-1 transition-transform"></i>
                     </div>
                 </a>
 
                 <!-- Kartu 3: Artikel & Insight -->
-                <a href="{{ route('articles.index') }}" class="group reveal-on-scroll stagger-3 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#D97706] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-amber-50 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                <a href="{{ route('articles.index') }}" class="group reveal-on-scroll stagger-3 relative bg-white rounded-xl sm:rounded-2xl p-2.5 min-[380px]:p-3.5 sm:p-5 border border-[#DEA69E]/30 hover:border-[#D97706] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 bg-amber-50 rounded-bl-full -mr-3 -mt-3 sm:-mr-4 sm:-mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
                     <div>
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-2 sm:mb-4 text-xs sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
                             <i class="fa-solid fa-newspaper"></i>
                         </div>
-                        <span class="text-[10px] sm:text-xs font-bold text-amber-600 uppercase tracking-wider block mb-1">Bacaan Terpercaya</span>
-                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-amber-600 transition-colors mb-1.5">
+                        <span class="text-[9px] sm:text-xs font-bold text-amber-600 uppercase tracking-wider block mb-0.5 sm:mb-1">Bacaan Terpercaya</span>
+                        <h3 class="text-xs min-[380px]:text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-amber-600 transition-colors mb-1 leading-snug">
                             Artikel & Insight Ibu
                         </h3>
-                        <p class="text-xs text-neutral-500 leading-relaxed">
+                        <p class="text-[10px] min-[380px]:text-xs text-neutral-500 leading-snug line-clamp-2 sm:line-clamp-none">
                             Informasi medis & tips praktis harian seputar kehamilan, laktasi, dan parenting yang mudah dipahami.
                         </p>
                     </div>
-                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-amber-600">
-                        <span>Baca Artikel</span>
-                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-[10px] min-[380px]:text-xs font-bold text-amber-600">
+                        <span>Baca</span>
+                        <i class="fa-solid fa-arrow-right text-[9px] transform group-hover:translate-x-1 transition-transform"></i>
                     </div>
                 </a>
 
                 <!-- Kartu 4: Produk & Rekomendasi Maternitas -->
-                <a href="{{ route('product') }}" class="group reveal-on-scroll stagger-4 relative bg-white rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 hover:border-[#C27A6F] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#FAF0EE] rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                <a href="{{ route('product') }}" class="group reveal-on-scroll stagger-4 relative bg-white rounded-xl sm:rounded-2xl p-2.5 min-[380px]:p-3.5 sm:p-5 border border-[#DEA69E]/30 hover:border-[#C27A6F] hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 bg-[#FAF0EE] rounded-bl-full -mr-3 -mt-3 sm:-mr-4 sm:-mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
                     <div>
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0EE] text-[#C27A6F] flex items-center justify-center mb-3 sm:mb-4 text-base sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-[#FAF0EE] text-[#C27A6F] flex items-center justify-center mb-2 sm:mb-4 text-xs sm:text-xl shadow-2xs group-hover:scale-105 transition-transform">
                             <i class="fa-solid fa-bag-shopping"></i>
                         </div>
-                        <span class="text-[10px] sm:text-xs font-bold text-[#C27A6F] uppercase tracking-wider block mb-1">Produk Terkurasi</span>
-                        <h3 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#C27A6F] transition-colors mb-1.5">
+                        <span class="text-[9px] sm:text-xs font-bold text-[#C27A6F] uppercase tracking-wider block mb-0.5 sm:mb-1">Produk Terkurasi</span>
+                        <h3 class="text-xs min-[380px]:text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#C27A6F] transition-colors mb-1 leading-snug">
                             Rekomendasi Produk
                         </h3>
-                        <p class="text-xs text-neutral-500 leading-relaxed">
+                        <p class="text-[10px] min-[380px]:text-xs text-neutral-500 leading-snug line-clamp-2 sm:line-clamp-none">
                             Peralatan dan perlengkapan ibu hamil, menyusui, serta perlengkapan bayi berkualitas dan aman.
                         </p>
                     </div>
-                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-[#C27A6F]">
-                        <span>Lihat Produk</span>
-                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                    <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-[10px] min-[380px]:text-xs font-bold text-[#C27A6F]">
+                        <span>Produk</span>
+                        <i class="fa-solid fa-arrow-right text-[9px] transform group-hover:translate-x-1 transition-transform"></i>
                     </div>
                 </a>
 
@@ -918,7 +918,7 @@
     <!-- ── SINGLE EXPANDABLE FLOATING ACTION BUTTON (Pojok Kanan Bawah: 1 Tombol Utama yang Menampilkan Menu saat Ditekan) ── -->
     <div x-data="{ openFab: false }" 
          @click.away="openFab = false"
-         class="fixed bottom-24 right-4 sm:bottom-8 sm:right-8 z-50 flex flex-col items-end gap-3 select-none">
+         class="fixed bottom-16 right-3 sm:bottom-8 sm:right-8 z-50 flex flex-col items-end gap-2.5 select-none">
         
         <!-- ── Popup Sub-Menu Items (Muncul ke atas saat tombol utama ditekan) ── -->
         <div x-show="openFab"
@@ -928,33 +928,33 @@
              x-transition:leave="transition ease-in duration-200 transform"
              x-transition:leave-start="opacity-100 translate-y-0 scale-100"
              x-transition:leave-end="opacity-0 translate-y-4 scale-90"
-             class="flex flex-col items-end gap-2.5"
+             class="flex flex-col items-end gap-2"
              style="display: none;">
 
             <!-- 1. Ajukan Event (Khusus Mobile: md:hidden) -->
             <a href="{{ route('events') }}" 
-               class="md:hidden flex items-center gap-2.5 bg-[#7A9E7E] hover:bg-[#5a7a66] text-white px-4 py-2.5 rounded-full shadow-[0_8px_20px_rgba(122,158,126,0.4)] border-2 border-white transition-all transform hover:scale-105 active:scale-95 text-xs font-bold group">
+               class="md:hidden flex items-center gap-2 bg-[#7A9E7E] hover:bg-[#5a7a66] text-white px-3.5 py-2 rounded-full shadow-[0_8px_20px_rgba(122,158,126,0.4)] border border-white transition-all transform hover:scale-105 active:scale-95 text-[11px] font-bold group">
                 <span>Ajukan Event</span>
-                <span class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <i class="fa-solid fa-calendar-plus text-sm"></i>
+                <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                    <i class="fa-solid fa-calendar-plus text-xs"></i>
                 </span>
             </a>
 
             <!-- 2. Instagram (Tampil di Mobile & Desktop) -->
             <a href="https://instagram.com/maternity.id" target="_blank"
-               class="flex items-center gap-2.5 bg-gradient-to-r from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white px-4 py-2.5 rounded-full shadow-[0_8px_20px_rgba(238,42,123,0.35)] border-2 border-white transition-all transform hover:scale-105 active:scale-95 text-xs font-bold group">
+               class="flex items-center gap-2 bg-gradient-to-r from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white px-3.5 py-2 rounded-full shadow-[0_8px_20px_rgba(238,42,123,0.35)] border border-white transition-all transform hover:scale-105 active:scale-95 text-[11px] font-bold group">
                 <span class="hidden sm:inline">Instagram</span>
-                <span class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <i class="fa-brands fa-instagram text-base"></i>
+                <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                    <i class="fa-brands fa-instagram text-xs"></i>
                 </span>
             </a>
 
             <!-- 3. WhatsApp (Tampil di Mobile & Desktop) -->
             <a href="https://wa.me/" target="_blank"
-               class="flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20ba5a] text-white px-4 py-2.5 rounded-full shadow-[0_8px_20px_rgba(37,211,102,0.35)] border-2 border-white transition-all transform hover:scale-105 active:scale-95 text-xs font-bold group">
+               class="flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white px-3.5 py-2 rounded-full shadow-[0_8px_20px_rgba(37,211,102,0.35)] border border-white transition-all transform hover:scale-105 active:scale-95 text-[11px] font-bold group">
                 <span class="hidden sm:inline">WhatsApp Kami</span>
-                <span class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
                 </span>
             </a>
 
@@ -963,10 +963,10 @@
         <!-- ── Main Trigger Button (Tombol Utama FAB dengan Ikon Komunikasi/Bantuan) ── -->
         <button type="button" 
                 @click="openFab = !openFab"
-                class="w-13 h-13 sm:w-14 sm:h-14 bg-gradient-to-tr from-[#C27A6F] to-[#8C433C] hover:from-[#8C433C] hover:to-[#782819] text-white rounded-full flex items-center justify-center shadow-[0_12px_28px_rgba(140,67,60,0.4)] border-2 border-white transition-all transform hover:scale-110 active:scale-95 focus:outline-none relative group"
+                class="w-11 h-11 sm:w-14 sm:h-14 bg-gradient-to-tr from-[#C27A6F] to-[#8C433C] hover:from-[#8C433C] hover:to-[#782819] text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(140,67,60,0.4)] border-2 border-white transition-all transform hover:scale-110 active:scale-95 focus:outline-none relative group"
                 aria-label="Hubungi & Menu Cepat"
                 title="Bantuan & Layanan">
-            <i class="fa-solid text-xl sm:text-2xl transition-transform duration-300"
+            <i class="fa-solid text-base sm:text-2xl transition-transform duration-300"
                :class="openFab ? 'fa-xmark rotate-90 text-white' : 'fa-comment-dots group-hover:scale-110'"></i>
         </button>
 

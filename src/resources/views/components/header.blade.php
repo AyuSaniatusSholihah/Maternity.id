@@ -1,10 +1,10 @@
 <div x-data="{ showMobileSearch: false, openMobileMenu: false }" class="w-full relative">
-    <nav class="bg-[#DEA69E] rounded-2xl px-4 sm:px-6 py-3 sm:py-3.5 shadow-sm border border-transparent flex items-center justify-between">
+    <nav class="bg-[#DEA69E] rounded-xl sm:rounded-2xl px-3 sm:px-6 py-2 sm:py-3.5 shadow-sm border border-transparent flex items-center justify-between">
         
         <!-- Logo & Brand Name -->
-        <a href="{{ url('/') }}" class="flex items-center space-x-2 shrink-0">
-            <x-logo_pink class="w-7 h-7 sm:w-8 sm:h-8" />
-            <span class="text-xl md:text-2xl" style="font-family: 'DM Serif Display', serif; background: linear-gradient(to right, rgba(61, 43, 43, 0.8), #2A1614); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Maternity</span>
+        <a href="{{ url('/') }}" class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+            <x-logo_pink class="w-6 h-6 sm:w-8 sm:h-8" />
+            <span class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight" style="font-family: 'DM Serif Display', serif; background: linear-gradient(to right, rgba(61, 43, 43, 0.8), #2A1614); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Maternity</span>
         </a>
 
         <!-- ── DESKTOP NAVIGATION LINKS (hidden md:flex) ── -->
@@ -331,24 +331,24 @@
         </div>
 
         <!-- ── MOBILE RIGHT ACTIONS: SEARCH & HAMBURGER BUTTON (md:hidden) ── -->
-        <div class="md:hidden flex items-center space-x-2">
+        <div class="md:hidden flex items-center space-x-1.5">
             <!-- 1. Tombol Search Toggle -->
             <button type="button" 
                     @click.stop="showMobileSearch = !showMobileSearch; if(showMobileSearch) openMobileMenu = false;" 
-                    class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/80 text-[#2D1E1E] transition-all shadow-xs"
+                    class="w-8 h-8 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/80 text-[#2D1E1E] transition-all shadow-xs"
                     aria-label="Cari">
-                <i class="fa-solid fa-magnifying-glass text-sm" :class="showMobileSearch ? 'text-[#8C433C]' : ''"></i>
+                <i class="fa-solid fa-magnifying-glass text-xs" :class="showMobileSearch ? 'text-[#8C433C]' : ''"></i>
             </button>
 
             <!-- 2. Tombol Hamburger Menu -->
             <button type="button" 
                     @click.stop="openMobileMenu = !openMobileMenu; if(openMobileMenu) showMobileSearch = false;" 
-                    class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/80 text-[#2D1E1E] transition-all shadow-xs relative"
+                    class="w-8 h-8 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/80 text-[#2D1E1E] transition-all shadow-xs relative"
                     aria-label="Menu">
-                <i class="fa-solid text-base transition-transform duration-300" :class="openMobileMenu ? 'fa-xmark rotate-90 text-[#8C433C]' : 'fa-bars'"></i>
+                <i class="fa-solid text-sm transition-transform duration-300" :class="openMobileMenu ? 'fa-xmark rotate-90 text-[#8C433C]' : 'fa-bars'"></i>
                 @auth
                     <!-- Unread notification indicator dot -->
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-[#DEA69E]"></span>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-[#DEA69E]"></span>
                 @endauth
             </button>
         </div>
@@ -374,8 +374,8 @@
                 <input type="text" 
                        name="q" 
                        placeholder="Cari artikel, event, panduan..." 
-                       class="w-full pl-9 pr-16 py-2.5 bg-white text-xs text-[#2D1E1E] placeholder-[#2D1E1E]/50 rounded-full border border-[#DEA69E]/80 focus:border-[#8C433C] focus:outline-none focus:ring-2 focus:ring-[#8C433C]/20 shadow-md" />
-                <button type="submit" class="absolute right-1.5 top-1/2 -translate-y-1/2 px-3.5 py-1.5 bg-[#8C433C] hover:bg-[#782819] text-white text-[11px] font-bold rounded-full transition-all duration-200 shadow-xs">
+                       class="w-full pl-9 pr-16 py-2 bg-white text-xs text-[#2D1E1E] placeholder-[#2D1E1E]/50 rounded-full border border-[#DEA69E]/80 focus:border-[#8C433C] focus:outline-none focus:ring-2 focus:ring-[#8C433C]/20 shadow-md" />
+                <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 px-3 py-1 bg-[#8C433C] hover:bg-[#782819] text-white text-[11px] font-bold rounded-full transition-all duration-200 shadow-xs">
                     Cari
                 </button>
             </div>
@@ -391,7 +391,7 @@
          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
          x-transition:leave-end="opacity-0 -translate-y-3 scale-95"
          @click.away="openMobileMenu = false"
-         class="md:hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl border border-[#DEA69E]/50 rounded-3xl p-4 shadow-2xl z-50 space-y-3"
+         class="md:hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl border border-[#DEA69E]/50 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-2xl z-50 space-y-2.5 sm:space-y-3 max-h-[80vh] overflow-y-auto"
          style="display: none;">
 
         @auth

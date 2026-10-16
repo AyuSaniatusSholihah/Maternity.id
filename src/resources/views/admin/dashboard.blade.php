@@ -499,8 +499,8 @@
                 </div>
 
                 {{-- Search & Quick Shortcut --}}
-                <div class="flex items-center gap-3">
-                    <div class="relative w-48 sm:w-64">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="relative w-28 min-[400px]:w-40 sm:w-64">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400 pointer-events-none">
                             <i class="fa-solid fa-magnifying-glass text-xs"></i>
                         </span>

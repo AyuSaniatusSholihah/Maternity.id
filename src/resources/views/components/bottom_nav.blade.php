@@ -2,44 +2,54 @@
     Floating pill bottom navigation yang elegan, responsif, dan memudahkan akses
     ke Home, Events, Library, Artikel, dan Product tanpa membebani Header.
 ────────────────────────────────────────────────────────────────────── --}}
-<div class="w-full flex justify-center py-0.5 transition-all duration-300">
-<nav class="bg-[#FAF0EE]/95 backdrop-blur-2xl border border-white/90 shadow-[0_10px_30px_rgba(120,40,25,0.18),inset_0_1px_1px_rgba(255,255,255,0.8)] rounded-full px-2 py-1.5 flex items-center justify-between gap-1 ring-1 ring-black/5">
+<div class="w-full px-2 py-1 select-none">
+<nav class="w-full flex items-center justify-between gap-0.5">
     
     <!-- 1. Home -->
     <a href="{{ route('home') }}"
-       class="flex-1 flex flex-col items-center justify-center py-1 px-1.5 rounded-full transition-colors duration-200 {{ request()->routeIs('home') ? 'bg-white text-[#782819] font-bold shadow-xs' : 'text-[#5C4542] hover:text-[#782819]' }}">
-        <i class="fa-solid fa-house text-xs {{ request()->routeIs('home') ? 'text-[#8C433C]' : '' }}"></i>
-        <span class="text-[10px] font-semibold">Home</span>
+       class="flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-200 {{ request()->routeIs('home') ? 'text-[#8C433C] font-bold' : 'text-[#7A6865] hover:text-[#8C433C]' }}">
+        <div class="w-7 h-7 flex items-center justify-center rounded-full {{ request()->routeIs('home') ? 'bg-[#FAF0EE]' : '' }}">
+            <i class="fa-solid fa-house text-sm {{ request()->routeIs('home') ? 'text-[#8C433C]' : '' }}"></i>
+        </div>
+        <span class="text-[10px] leading-tight mt-0.5 font-semibold">Home</span>
     </a>
 
     <!-- 2. Events -->
     <a href="{{ route('events') }}"
-       class="flex-1 flex flex-col items-center justify-center py-1 px-1.5 rounded-full transition-colors duration-200 {{ request()->routeIs('events*') ? 'bg-white text-[#782819] font-bold shadow-xs' : 'text-[#5C4542] hover:text-[#782819]' }}">
-        <i class="fa-regular fa-calendar text-xs {{ request()->routeIs('events*') ? 'text-[#8C433C]' : '' }}"></i>
-        <span class="text-[10px] font-semibold">Event</span>
+       class="flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-200 {{ request()->routeIs('events*') ? 'text-[#8C433C] font-bold' : 'text-[#7A6865] hover:text-[#8C433C]' }}">
+        <div class="w-7 h-7 flex items-center justify-center rounded-full {{ request()->routeIs('events*') ? 'bg-[#FAF0EE]' : '' }}">
+            <i class="fa-regular fa-calendar text-sm {{ request()->routeIs('events*') ? 'text-[#8C433C]' : '' }}"></i>
+        </div>
+        <span class="text-[10px] leading-tight mt-0.5 font-semibold">Event</span>
     </a>
 
     <!-- 3. Ebook -->
     <a href="{{ route('library') }}"
-       class="flex-1 flex flex-col items-center justify-center py-1 px-1.5 rounded-full transition-colors duration-200 {{ request()->routeIs('library*') ? 'bg-white text-[#782819] font-bold shadow-xs' : 'text-[#5C4542] hover:text-[#782819]' }}">
-        <svg class="w-3.5 h-3.5 {{ request()->routeIs('library*') ? 'text-[#8C433C]' : 'text-current' }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5.5 3C5.89782 3 6.27936 3.15804 6.56066 3.43934C6.84196 3.72064 7 4.10218 7 4.5V19.5C7 19.8978 6.84196 20.2794 6.56066 20.5607C6.27936 20.842 5.89782 21 5.5 21H3.5C3.10218 21 2.72064 20.842 2.43934 20.5607C2.15804 20.2794 2 19.8978 2 19.5V4.5C2 4.10218 2.15804 3.72064 2.43934 3.43934C2.72064 3.15804 3.10218 3 3.5 3H5.5ZM11.5 3C11.8978 3 12.2794 3.15804 12.5607 3.43934C12.842 3.72064 13 4.10218 13 4.5V19.5C13 19.8978 12.842 20.2794 12.5607 20.5607C12.2794 20.842 11.8978 21 11.5 21H9.5C9.10218 21 8.72064 20.842 8.43934 20.5607C8.15804 20.2794 8 19.8978 8 19.5V4.5C8 4.10218 8.15804 3.72064 8.43934 3.43934C8.72064 3.15804 9.10218 3 9.5 3H11.5ZM18.781 6.124L21.995 18.643C22.044 18.8338 22.0549 19.0324 22.0272 19.2274C21.9994 19.4225 21.9335 19.6101 21.8332 19.7797C21.7329 19.9493 21.6002 20.0974 21.4427 20.2157C21.2851 20.334 21.1058 20.42 20.915 20.469L19.039 20.949C18.8482 20.998 18.6496 21.0089 18.4546 20.9812C18.2595 20.9534 18.0719 20.8875 17.9023 20.7872C17.7327 20.6869 17.5846 20.5542 17.4663 20.3967C17.348 20.2391 17.262 20.0598 17.213 19.869L13.999 7.354C13.95 7.16319 13.9391 6.96459 13.9668 6.76956C13.9946 6.57452 14.0605 6.38686 14.1608 6.2173C14.2611 6.04774 14.3938 5.89959 14.5513 5.78132C14.7089 5.66305 14.8882 5.57697 15.079 5.528L16.955 5.045C17.1458 4.996 17.3444 4.98507 17.5394 5.01283C17.7345 5.04059 17.9221 5.10649 18.0917 5.20678C18.2613 5.30707 18.4094 5.43978 18.5277 5.59733C18.646 5.75488 18.732 5.93318 18.781 6.124Z" fill="currentColor"/>
-        </svg>
-        <span class="text-[10px] font-semibold">Ebook</span>
+       class="flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-200 {{ request()->routeIs('library*') ? 'text-[#8C433C] font-bold' : 'text-[#7A6865] hover:text-[#8C433C]' }}">
+        <div class="w-7 h-7 flex items-center justify-center rounded-full {{ request()->routeIs('library*') ? 'bg-[#FAF0EE]' : '' }}">
+            <svg class="w-3.5 h-3.5 {{ request()->routeIs('library*') ? 'text-[#8C433C]' : 'text-current' }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5.5 3C5.89782 3 6.27936 3.15804 6.56066 3.43934C6.84196 3.72064 7 4.10218 7 4.5V19.5C7 19.8978 6.84196 20.2794 6.56066 20.5607C6.27936 20.842 5.89782 21 5.5 21H3.5C3.10218 21 2.72064 20.842 2.43934 20.5607C2.15804 20.2794 2 19.8978 2 19.5V4.5C2 4.10218 2.15804 3.72064 2.43934 3.43934C2.72064 3.15804 3.10218 3 3.5 3H5.5ZM11.5 3C11.8978 3 12.2794 3.15804 12.5607 3.43934C12.842 3.72064 13 4.10218 13 4.5V19.5C13 19.8978 12.842 20.2794 12.5607 20.5607C12.2794 20.842 11.8978 21 11.5 21H9.5C9.10218 21 8.72064 20.842 8.43934 20.5607C8.15804 20.2794 8 19.8978 8 19.5V4.5C8 4.10218 8.15804 3.72064 8.43934 3.43934C8.72064 3.15804 9.10218 3 9.5 3H11.5ZM18.781 6.124L21.995 18.643C22.044 18.8338 22.0549 19.0324 22.0272 19.2274C21.9994 19.4225 21.9335 19.6101 21.8332 19.7797C21.7329 19.9493 21.6002 20.0974 21.4427 20.2157C21.2851 20.334 21.1058 20.42 20.915 20.469L19.039 20.949C18.8482 20.998 18.6496 21.0089 18.4546 20.9812C18.2595 20.9534 18.0719 20.8875 17.9023 20.7872C17.7327 20.6869 17.5846 20.5542 17.4663 20.3967C17.348 20.2391 17.262 20.0598 17.213 19.869L13.999 7.354C13.95 7.16319 13.9391 6.96459 13.9668 6.76956C13.9946 6.57452 14.0605 6.38686 14.1608 6.2173C14.2611 6.04774 14.3938 5.89959 14.5513 5.78132C14.7089 5.66305 14.8882 5.57697 15.079 5.528L16.955 5.045C17.1458 4.996 17.3444 4.98507 17.5394 5.01283C17.7345 5.04059 17.9221 5.10649 18.0917 5.20678C18.2613 5.30707 18.4094 5.43978 18.5277 5.59733C18.646 5.75488 18.732 5.93318 18.781 6.124Z" fill="currentColor"/>
+            </svg>
+        </div>
+        <span class="text-[10px] leading-tight mt-0.5 font-semibold">Ebook</span>
     </a>
 
     <!-- 4. Artikel -->
     <a href="{{ route('articles.index') }}"
-       class="flex-1 flex flex-col items-center justify-center py-1 px-1.5 rounded-full transition-colors duration-200 {{ request()->routeIs('articles*') ? 'bg-white text-[#782819] font-bold shadow-xs' : 'text-[#5C4542] hover:text-[#782819]' }}">
-        <i class="fa-regular fa-newspaper text-xs {{ request()->routeIs('articles*') ? 'text-[#8C433C]' : '' }}"></i>
-        <span class="text-[10px] font-semibold">Artikel</span>
+       class="flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-200 {{ request()->routeIs('articles*') ? 'text-[#8C433C] font-bold' : 'text-[#7A6865] hover:text-[#8C433C]' }}">
+        <div class="w-7 h-7 flex items-center justify-center rounded-full {{ request()->routeIs('articles*') ? 'bg-[#FAF0EE]' : '' }}">
+            <i class="fa-regular fa-newspaper text-sm {{ request()->routeIs('articles*') ? 'text-[#8C433C]' : '' }}"></i>
+        </div>
+        <span class="text-[10px] leading-tight mt-0.5 font-semibold">Artikel</span>
     </a>
 
     <!-- 5. Product -->
     <a href="{{ route('product') }}"
-       class="flex-1 flex flex-col items-center justify-center py-1 px-1.5 rounded-full transition-colors duration-200 {{ request()->routeIs('product*') ? 'bg-white text-[#782819] font-bold shadow-xs' : 'text-[#5C4542] hover:text-[#782819]' }}">
-        <i class="fa-solid fa-box-open text-xs {{ request()->routeIs('product*') ? 'text-[#8C433C]' : '' }}"></i>
-        <span class="text-[10px] font-semibold">Produk</span>
+       class="flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-200 {{ request()->routeIs('product*') ? 'text-[#8C433C] font-bold' : 'text-[#7A6865] hover:text-[#8C433C]' }}">
+        <div class="w-7 h-7 flex items-center justify-center rounded-full {{ request()->routeIs('product*') ? 'bg-[#FAF0EE]' : '' }}">
+            <i class="fa-solid fa-box-open text-sm {{ request()->routeIs('product*') ? 'text-[#8C433C]' : '' }}"></i>
+        </div>
+        <span class="text-[10px] leading-tight mt-0.5 font-semibold">Produk</span>
     </a>
 </nav>
 </div>

@@ -20,7 +20,7 @@
         </style>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-2 sm:py-4 space-y-5 sm:space-y-6">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full py-2 sm:py-4 space-y-4 sm:space-y-6">
         
         <!-- ── 1. COMPACT HERO BANNER (PRODUCT) ── -->
         <div class="relative bg-gradient-to-r from-[#FCEBE7] via-[#FDF3F0] to-[#FAF0EE] rounded-2xl sm:rounded-3xl px-5 py-4 sm:px-8 sm:py-5 border border-[#DEA69E]/40 overflow-hidden shadow-xs">
@@ -112,7 +112,7 @@
 
         <!-- ── 4. PRODUCT CARDS GRID (IDENTICAL TO LANDING DESIGN) ── -->
         @if(count($products) > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4 lg:gap-5">
                 @foreach ($products as $product)
                     <x-product_card :product="$product" />
                 @endforeach
