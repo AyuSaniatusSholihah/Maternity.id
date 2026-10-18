@@ -101,13 +101,13 @@
                             </div>
                             <span class="text-neutral-300">|</span>
                             <div class="flex items-center gap-1 text-neutral-600">
-                                <i class="fa-solid fa-users text-[#5F8C72] text-xs"></i>
-                                <span>{{ number_format($event->total_participants ?? 124) }} peserta</span>
+                                <i class="fa-solid fa-chair text-[#5F8C72] text-xs"></i>
+                                <span>{{ number_format($event->total_participants ?? 0) }} kursi tersedia</span>
                             </div>
                         </div>
 
-                        {{-- Progress kuota --}}
-                        @if(!empty($event->total_participants) && !empty($event->max_participants))
+                        <!-- {{-- Progress kuota --}}
+                        @if(!empty($event->total_participants) && !empty($event->max_participants) && $event->total_participants > 0)
                             @php $pct = min(100, round(($event->total_participants / $event->max_participants) * 100)); @endphp
                             <div class="space-y-0.5 pt-0.5">
                                 <div class="flex justify-between text-[10px] text-neutral-500">
@@ -119,7 +119,7 @@
                                          style="width: {{ $pct }}%"></div>
                                 </div>
                             </div>
-                        @endif
+                        @endif -->
                     </div>
 
                     {{-- Jadwal & Lokasi (Tile Card Kompak) --}}
@@ -150,7 +150,7 @@
                     {{-- Harga & Tombol CTA --}}
                     @php $isFree = ($event->price_numeric ?? 1) === 0 || strtolower($event->price ?? '') === 'gratis / free'; @endphp
                     <div class="flex items-center gap-2 sm:gap-3 pt-0.5">
-                        <div class="bg-[#FAF0EE] rounded-xl px-3 sm:px-5 py-1.5 sm:py-3 text-center shrink-0 border border-[#DEA69E]/40">
+                        <div class="bg-[#FAF0EE] rounded-xl px-3 sm:px-5 py-2.5 sm:py-3.5 text-center shrink-0 border border-[#DEA69E]/40 flex flex-col justify-center">
                             <p class="text-sm min-[380px]:text-base sm:text-xl font-black {{ $isFree ? 'text-[#4D7C59]' : 'text-[#2A1614]' }}">
                                 {{ $isFree ? 'Gratis' : ($event->price ?? 'Rp150.000') }}
                             </p>
@@ -159,7 +159,7 @@
 
                         <a href="{{ route('events.checkout', $event->slug ?? 'mindful-motherhood') }}"
                            id="btn-daftar-sekarang"
-                           class="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 bg-[#2D5C3E] hover:bg-[#1e4329] text-white font-bold text-xs sm:text-sm py-2.5 sm:py-3.5 px-3 sm:px-5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md group">
+                           class="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 bg-[#2D5C3E] hover:bg-[#1e4329] text-white font-bold text-xs sm:text-sm md:text-lg py-2.5 sm:py-3.5 px-3 sm:px-5  rounded-xl transition-all duration-200 shadow-sm hover:shadow-md group h-full">
                             <span>Daftar Sekarang</span>
                             <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -228,12 +228,11 @@
 
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 shrink-0 rounded-xl bg-[#FAF0EE] flex items-center justify-center">
-                        <i class="fa-solid fa-users text-[#8C433C]"></i>
+                        <i class="fa-solid fa-chair text-[#8C433C]"></i>
                     </div>
                     <div>
-                        <p class="text-[11px] text-neutral-400 font-semibold">Peserta</p>
-                        <p class="text-sm font-bold text-neutral-800">{{ number_format($event->total_participants ?? 124) }} orang</p>
-                        <p class="text-[11px] text-neutral-400">({{ $event->rating ?? '4.8' }}/5)</p>
+                        <p class="text-[11px] text-neutral-400 font-semibold">Kursi Tersedia</p>
+                        <p class="text-sm font-bold text-neutral-800">{{ number_format($event->total_participants ?? 0) }} kursi</p>
                     </div>
                 </div>
             </div>
@@ -241,44 +240,24 @@
 
         {{-- DESKRIPSI & NARASUMBER --}}
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            {{-- Collapsible Description Card (Pure Accordion with Arrow Only) --}}
-            <div x-data="{ expanded: false }" 
-                 class="sm:col-span-2 bg-white rounded-2xl border border-[#DEA69E]/25 p-3.5 sm:p-5 shadow-2xs transition-all duration-300">
+            {{-- Description Card (Now Always Expanded) --}}
+            <div class="sm:col-span-2 bg-white rounded-2xl border border-[#DEA69E]/25 p-3.5 sm:p-5 shadow-2xs">
                 
-                {{-- Header (Clickable Dropdown Bar with Panah Ke Bawah) --}}
-                <div @click="expanded = !expanded" 
-                     class="flex items-center justify-between cursor-pointer group select-none"
-                     role="button"
-                     tabindex="0"
-                     @keydown.enter="expanded = !expanded"
-                     @keydown.space.prevent="expanded = !expanded">
-                    <div class="flex items-center gap-2">
-                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#FAF0EE] flex items-center justify-center text-[#8C433C] group-hover:bg-[#8C433C] group-hover:text-white transition-colors shrink-0">
-                            <i class="fa-solid fa-align-left text-xs"></i>
-                        </div>
-                        <h2 class="text-sm sm:text-base font-bold text-[#2A1614] group-hover:text-[#8C433C] transition-colors" style="font-family: 'DM Serif Display', serif;">
-                            Tentang Event Ini
-                        </h2>
+                {{-- Header (No longer clickable) --}}
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#FAF0EE] flex items-center justify-center text-[#8C433C] shrink-0">
+                        <i class="fa-solid fa-align-left text-xs"></i>
                     </div>
-
-                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#FAF0EE] group-hover:bg-[#F3DEDB] flex items-center justify-center text-[#8C433C] border border-[#DEA69E]/30 transition-colors shadow-2xs shrink-0">
-                        <i class="fa-solid fa-chevron-down text-[11px] sm:text-xs transition-transform duration-300" :class="{ 'rotate-180': expanded }"></i>
-                    </div>
+                    <h2 class="text-sm sm:text-base font-bold text-[#2A1614]" style="font-family: 'DM Serif Display', serif;">
+                        Tentang Event Ini
+                    </h2>
                 </div>
 
-                {{-- Expandable Content (Hanya muncul saat panah/bar diklik) --}}
-                <div x-show="expanded" 
-                     x-transition:enter="transition ease-out duration-250"
-                     x-transition:enter-start="opacity-0 -translate-y-2"
-                     x-transition:enter-end="opacity-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-150"
-                     x-transition:leave-start="opacity-100 translate-y-0"
-                     x-transition:leave-end="opacity-0 -translate-y-2"
-                     style="display: none;"
-                     class="pt-3 mt-3 border-t border-[#DEA69E]/20 space-y-3">
-                    <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed whitespace-pre-line">
-                        {{ $event->long_description ?? $event->description ?? 'Informasi detail akan segera tersedia.' }}
-                    </p>
+                {{-- Content (Always Visible) --}}
+                <div class="space-y-3">
+                    <div class="text-xs sm:text-sm text-neutral-600 leading-relaxed whitespace-pre-wrap">
+                        {!! $event->long_description ?? $event->description ?? 'Informasi detail akan segera tersedia.' !!}
+                    </div>
 
                     {{-- Fasilitas & Benefit --}}
                     <div class="pt-2 border-t border-[#DEA69E]/15">
@@ -309,11 +288,10 @@
                 </h2>
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-[#DEAAA1] to-[#8C433C] flex items-center justify-center text-white font-extrabold text-lg">
-                        {{ strtoupper(substr($event->speaker ?? 'N', 0, 1)) }}
+                        {{ strtoupper(substr($event->mentor_name ?? $event->speaker ?? 'N', 0, 1)) }}
                     </div>
                     <div>
-                        <p class="text-sm font-bold text-neutral-800">{{ $event->speaker ?? 'Narasumber' }}</p>
-                        <p class="text-[11px] text-neutral-500 leading-snug">{{ $event->speaker_bio ?? 'Tenaga profesional bersertifikat' }}</p>
+                        <p class="text-sm font-bold text-neutral-800">{{ $event->mentor_name ?? $event->speaker ?? 'Narasumber' }}</p>
                     </div>
                 </div>
                 <div class="bg-[#EBF5EE] rounded-xl px-4 py-3">
@@ -322,13 +300,6 @@
                         <span class="text-xs font-bold">Terverifikasi Maternity.id</span>
                     </div>
                 </div>
-                <a href="{{ route('events.checkout', $event->slug ?? 'mindful-motherhood') }}"
-                   class="mt-auto flex items-center justify-center gap-2 bg-[#2D5C3E] hover:bg-[#1e4329] text-white font-bold text-sm py-3 px-4 rounded-xl transition-all duration-200 shadow-sm group">
-                    <span>{{ $isFree ? 'Daftar Gratis' : 'Daftar Sekarang' }}</span>
-                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
             </div>
         </div>
 

@@ -15,6 +15,11 @@ class Event extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $casts = [
+        'date' => 'datetime:Y-m-d',
+        'is_available' => 'boolean',
+    ];
+
     public function createdBy(): BelongsTo {
         return $this->belongsTo(Admin::class, 'created_by', 'account_id');
     }
@@ -22,3 +27,4 @@ class Event extends Model
         return $this->hasMany(Material::class, 'event_id', 'id');
     }
 }
+
