@@ -38,6 +38,9 @@ class EventController extends Controller
             $englishMonth = $event->event_date ? $event->event_date->format('M') : 'Jan';
             $indonesianMonth = $monthMap[$englishMonth] ?? 'Jan';
             
+            // Format price with Indonesian Rupiah (IDR) if fee > 0
+            $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
+            
             return [
                 'id' => $event->id,
                 'slug' => $event->slug,
@@ -52,8 +55,8 @@ class EventController extends Controller
                 'category' => 'Event',
                 'category_slug' => 'event',
                 'duration' => '',
-                'price' => 0,
-                'price_numeric' => 0,
+                'price' => $priceDisplay,
+                'price_numeric' => $event->fee,
                 'thumbnail_image' => $event->image_url ?? $fallbackImage,
                 'is_bookmarked' => false,
                 'is_my_event' => false,
@@ -135,6 +138,9 @@ class EventController extends Controller
             return view('events.not-found', ['slug' => $slug]);
         }
 
+        // Format price with Indonesian Rupiah (IDR) if fee > 0
+        $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
+        
         $eventData = [
             'id' => $event->id,
             'slug' => $event->slug,
@@ -143,8 +149,8 @@ class EventController extends Controller
             'long_description' => $event->description,
             'date_string' => $event->event_date ? $event->event_date->format('d M Y') : 'Jadwal Terbuka',
             'time_string' => '',
-            'price' => 'Gratis',
-            'price_numeric' => 0,
+            'price' => $priceDisplay,
+            'price_numeric' => $event->fee,
             'thumbnail_image' => $event->image_url ?? $fallbackImage,
             'location' => $event->location,
             'date' => $event->event_date,
@@ -152,7 +158,7 @@ class EventController extends Controller
             'format_type' => null,
             'format' => 'EVENT',
             'mentor_name' => null,
-            'speaker' => null,
+            'speaker' => $event->speaker,
             'speaker_bio' => null,
             'is_verified' => true,
             'badge' => $event->is_available ? 'Tersedia' : 'Penuh',
@@ -166,11 +172,12 @@ class EventController extends Controller
             ->limit(3)
             ->get()
             ->map(function ($e) use ($fallbackImage) {
+                $priceDisplay = $e->fee > 0 ? 'Rp ' . number_format($e->fee, 0, ',', '.') : 'Gratis';
                 return [
                     'slug' => $e->slug,
                     'title' => $e->title,
                     'description' => $e->description,
-                    'price' => 'Gratis',
+                    'price' => $priceDisplay,
                     'thumbnail_image' => $e->image_url ?? $fallbackImage,
                     'format_type' => null,
                     'date_string' => $e->event_date ? $e->event_date->format('d M Y') : 'Jadwal Terbuka',
@@ -202,13 +209,15 @@ class EventController extends Controller
             return redirect()->route('events');
         }
 
+        $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
+
         $eventData = [
             'id' => $event->id,
             'slug' => $event->slug,
             'title' => $event->title,
             'description' => $event->description,
-            'price' => 'Gratis',
-            'price_numeric' => 0,
+            'price' => $priceDisplay,
+            'price_numeric' => $event->fee,
             'thumbnail_image' => $event->image_url ?? $fallbackImage,
         ];
 
@@ -239,12 +248,14 @@ class EventController extends Controller
             return redirect()->route('events');
         }
 
+        $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
+
         $eventData = [
             'id' => $event->id,
             'slug' => $event->slug,
             'title' => $event->title,
             'description' => $event->description,
-            'price' => 'Gratis',
+            'price' => $priceDisplay,
             'thumbnail_image' => $event->image_url ?? $fallbackImage,
         ];
 
@@ -275,12 +286,14 @@ class EventController extends Controller
             return redirect()->route('events');
         }
 
+        $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
+
         $eventData = [
             'id' => $event->id,
             'slug' => $event->slug,
             'title' => $event->title,
             'description' => $event->description,
-            'price' => 'Gratis',
+            'price' => $priceDisplay,
             'thumbnail_image' => $event->image_url ?? $fallbackImage,
         ];
 

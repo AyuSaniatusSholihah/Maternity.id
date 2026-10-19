@@ -1,5 +1,59 @@
 # Agent Work Log — Maternity.id
 
+## [2026-10-18 15:30] EventController: Use Actual Fee and Speaker Values
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** refactor
+
+- **Status:** Done
+
+- **Files changed:**
+  - Modified: `src/app/Http/Controllers/EventController.php` (all 5 methods: index, show, checkout, verification, approved)
+
+- **What changed:**
+  1. **index() method**: Updated price display to use actual `$event->fee` column. Format as "Rp X.XXX" for fees > 0, or "Gratis" for 0 fee. Updated `price_numeric` to use `$event->fee` instead of hardcoded 0.
+  2. **show() method**: Added price formatting logic using actual `$event->fee`. Changed `speaker` from null to `$event->speaker` (pulls actual speaker name from database). Updated `price_numeric` to use `$event->fee`.
+  3. **Related events mapping in show()**: Updated relatedEvents map to format price dynamically using `$e->fee` instead of hardcoded 'Gratis'.
+  4. **checkout() method**: Added price formatting using actual `$event->fee`. Updated `price_numeric` field.
+  5. **verification() method**: Added price formatting using actual `$event->fee`.
+  6. **approved() method**: Added price formatting using actual `$event->fee`.
+
+- **Why:**
+  - All event methods were hardcoding `price => 'Gratis'` and `price_numeric => 0`, ignoring the actual database values
+  - Fee column was added to events table with seeded variation ([0, 0, 50000, 75000, 100000, 150000]) but not being displayed
+  - Speaker column was added to events table with seeded names but was showing null in event detail view
+  - EventController now displays accurate event pricing and speaker names from database, improving UX and enabling paid event functionality
+  - Price formatting in Indonesian Rupiah (IDR) with thousands separators matches business domain (Indonesia-based platform)
+
+- **Progress detail:**
+  - All 5 EventController methods updated to use actual fee and speaker values
+  - Price formatting applied consistently across all methods
+  - Migration verification confirms zero changes to database schema
+  - Seeders and migrations still run successfully: `php84 artisan migrate:fresh --seed` → exit 0
+
+- **Verification:**
+  - Confirmed EventController index() now uses `$event->fee` with IDR formatting
+  - Confirmed show() method pulls speaker name from `$event->speaker` instead of null
+  - Confirmed checkout() and verification() and approved() methods use actual fees
+  - Confirmed relatedEvents mapping in show() uses actual fees
+  - Ran `php84 artisan migrate:fresh --seed` → exit code 0 (successful)
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Side effects / risks:**
+  - None. All changes are to controller business logic only. No schema modifications.
+  - Events with fee = 0 display "Gratis"; events with fee > 0 display formatted Rupiah amount
+  - Speaker field will display actual database values; no fallback if null (matches existing pattern where other fields like location can be null)
+
+- **Suggestions / next steps:**
+  1. View event detail pages and verify pricing and speaker names display correctly
+  2. Test checkout flow to ensure fees propagate to payment form (if implemented)
+  3. Consider adding materials to event detail view (Event has BelongsToMany relationship with Material via pivot table)
+  4. Next feature: implement material loading in event detail view, or focus on checkout/payment workflow
+
+- **Commit:** Not yet committed
+
 ## [2026-09-20 00:00] Articles Feature Complete: Admin Protection, Seeded Data, DB Integration
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -1305,4 +1359,140 @@
   2. Verify event listing and filtering work correctly
   3. Test event detail, checkout, verification, and approved pages
   4. Consider if price and speaker fields should be added to schema
+
+
+
+## [2026-10-18 15:20] Feature: Add fee Column to Events Table
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+  - Modified: `src/database/migrations/2026_07_29_072214_create_events_table.php` (added `fee` column)
+  - Modified: `src/app/Models/Event.php` (added `fee` to fillable)
+  - Modified: `src/database/seeders/EventSeeder.php` (added `fee` value to seeding)
+
+- **What changed:**
+  1. **Events migration**: Added `$table->integer('fee')->default(0);` column before `created_by`
+  2. **Event model**: Added `'fee'` to fillable array
+  3. **EventSeeder**: Added `'fee' => 0,` to all event creation records
+
+- **Why:**
+  - User requirement to store event pricing
+  - Integer type with default 0 ensures all events have a fee (0 for free events)
+  - Non-null constraint prevents NULL values
+
+- **Progress detail:**
+  - Migration updated with fee column ✓
+  - Model updated with fee in fillable ✓
+  - Seeder updated to set fee for all events ✓
+  - `php84 artisan migrate:fresh --seed` → exit code 0 ✓
+
+- **Verification:**
+  - Ran `php84 artisan migrate:fresh --seed` → exit code 0 ✓
+  - All migrations and seeders completed successfully ✓
+  - Fee column created with default value 0 ✓
+
+- **Migration check:** Only event migration modified (as requested)
+
+- **Side effects / risks:**
+  - None identified
+  - Backward compatible (uses default 0)
+
+- **Suggestions / next steps:**
+  1. Update EventController to use `event->fee` instead of hardcoded 0
+  2. Update views to display fee amount formatted as currency
+  3. Add fee-based filtering/sorting if needed
+
+
+
+## [2026-10-18 15:22] Update: Vary Event Fees in Seeder
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** seed
+
+- **Status:** Done
+
+- **Files changed:**
+  - Modified: `src/database/seeders/EventSeeder.php` (added fee variation logic)
+
+- **What changed:**
+  1. Added fee array with values: [0, 0, 50000, 75000, 100000, 150000]
+  2. Used modulo operator to cycle through fees for each event
+  3. Each event gets varied fee based on index position
+
+- **Why:**
+  - More realistic seed data with mix of free and paid events
+  - Tests fee display and filtering functionality
+
+- **Progress detail:**
+  - Updated seeder to assign varied fees ✓
+  - `php84 artisan migrate:fresh --seed` → exit code 0 ✓
+
+- **Verification:**
+  - Ran `php84 artisan migrate:fresh --seed` → exit code 0 ✓
+  - All seeders completed successfully ✓
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Side effects / risks:**
+  - None identified
+
+- **Suggestions / next steps:**
+  1. Verify fees display correctly in /events page
+  2. Update EventController to use actual fee values instead of hardcoded 0
+
+
+
+## [2026-10-18 15:25] Feature: Add speaker Column to Events Table
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+  - Modified: `src/database/migrations/2026_07_29_072214_create_events_table.php` (added `speaker` column)
+  - Modified: `src/app/Models/Event.php` (added `speaker` to fillable)
+  - Modified: `src/database/seeders/EventSeeder.php` (added speaker data to seeding)
+
+- **What changed:**
+  1. **Events migration**: Added `$table->string('speaker', 255);` column before `created_by`
+  2. **Event model**: Added `'speaker'` to fillable array
+  3. **EventSeeder**: 
+     - Added speakers array with 6 professional names
+     - Rotate speakers through events using modulo
+     - Each event gets assigned a speaker name
+
+- **Why:**
+  - User requirement to store event speaker/facilitator name
+  - Non-null constraint ensures all events have a speaker
+  - Realistic seed data with variety of healthcare professionals
+
+- **Progress detail:**
+  - Migration updated with speaker column ✓
+  - Model updated with speaker in fillable ✓
+  - Seeder updated with speaker names and rotation logic ✓
+  - `php84 artisan migrate:fresh --seed` → exit code 0 ✓
+
+- **Verification:**
+  - Ran `php84 artisan migrate:fresh --seed` → exit code 0 ✓
+  - All migrations and seeders completed successfully ✓
+  - Speaker column created as non-null string ✓
+
+- **Migration check:** Only event migration modified (as requested)
+
+- **Side effects / risks:**
+  - None identified
+  - Backward compatible (no column removal)
+
+- **Suggestions / next steps:**
+  1. Update EventController to use `event->speaker` instead of null values
+  2. Display speaker name in event cards and detail pages
+  3. Consider adding speaker bio/description field
 
