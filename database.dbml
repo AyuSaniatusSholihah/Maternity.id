@@ -1,0 +1,194 @@
+Table "accounts" {
+  "id" integer [pk, not null, increment]
+  "name" varchar(255) [not null]
+  "email" varchar(255) [unique, not null]
+  "email_verified_at" timestamp
+  "password" varchar(255) [not null]
+  "remember_token" varchar(100)
+  "created_at" timestamp [not null]
+  "updated_at" timestamp [not null]
+  "deleted_at" timestamp
+
+  Note: 'Base user account table'
+}
+
+Table "admins" {
+  "account_id" integer [pk, not null, ref: > "accounts"."id"]
+  "name" varchar(255) [not null]
+  "email" varchar(255) [unique, not null]
+  "phone" varchar(20) [not null]
+  "profile_img" varchar(255)
+  "role" varchar(50) [not null, default: 'active']
+  "created_at" timestamp [not null]
+  "updated_at" timestamp [not null]
+
+  Note: 'Administrator users'
+}
+
+Table "members" {
+  "id" integer [pk, not null, increment]
+  "account_id" integer [not null, ref: > "accounts"."id"]
+  "name" varchar(255) [not null]
+  "email" varchar(255) [unique, not null]
+  "phone" varchar(20) [not null]
+  "date_of_birth" date
+  "gender" char(1) [note: 'M for men W for women']
+  "address" text
+  "city" varchar(100)
+  "province" varchar(100)
+  "image_url" varchar(255)
+  "provisioned_by" integer [not null, ref: > "admins"."account_id"]
+  "created_at" timestamp [not null]
+  "updated_at" timestamp [not null]
+
+  Note: 'Regular members / users'
+}
+
+Table "categories" {
+  "id" int [pk, not null]
+  "name" varchar(255) [unique, not null]
+  "slug" varchar(255) [unique, not null]
+  "description" text
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Note: 'Content categories for articles, ebooks, materials'
+}
+
+Table "materials" {
+  "id" int [pk, not null]
+  "categories" int [ref: <> "categories"."id"]
+  "title" varchar(255) [not null]
+  "slug" varchar(255) [unique, not null]
+  "description" text [not null]
+  "content" text [not null]
+  "image_url" varchar(255)
+  "uploaded_by" integer [not null, ref: > "admins"."account_id"]
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Note: 'Educational materials'
+}
+
+Table "articles" {
+  "id" int [pk, not null]
+  "categories" int [ref: <> "categories"."id"]
+  "title" varchar(255) [not null]
+  "slug" varchar(255) [unique, not null]
+  "description" text [not null]
+  "content" text [not null]
+  "image_url" varchar(255)
+  "author" integer [not null, ref: > "admins"."account_id"]
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Note: 'Articles and blog posts'
+}
+
+Table "events" {
+  "id" integer [pk, not null, increment]
+  "categories" int [ref: <> "categories"."id"]
+  "title" varchar(255) [not null]
+  "slug" varchar(255) [unique, not null]
+  "description" text [not null]
+  "event_date" date [not null]
+  "open_registration_date" date [not null]
+  "close_registration_date" date [not null]
+  "location" varchar(255) [not null]
+  "image_url" varchar(255)
+  "materials" int [ref: <> "materials"."id"]
+  "slot" int [not null]
+  "is_available" boolean [not null, default: true]
+  "created_by" integer [not null, ref: > "admins"."account_id"]
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Note: 'Events and webinars'
+}
+
+Table "products" {
+  "id" int [pk, not null]
+  "categories" int [ref: <> "categories"."id"]
+  "name" varchar(255) [not null]
+  "slug" varchar(255) [unique, not null]
+  "description" text [not null]
+  "price" decimal(10,2) [not null]
+  "thumbnail_img" varchar(255)
+  "click_count" int
+  "tiktok_url" varchar(255)
+  "tokopedia_url" varchar(255)
+  "shopee_url" varchar(255)
+  "whatsapp_url" varchar(255)
+  "created_by" integer [not null, ref: > "admins"."account_id"]
+  "created_at" timestamp [not null]
+  "updated_at" timestamp [not null]
+  "deleted_at" bigint
+
+  Note: 'Products for sale'
+}
+
+Table "cache" {
+  "key" varchar(255) [pk, not null]
+  "value" text [not null]
+  "expiration" integer [not null]
+
+  Note: 'Application cache table'
+}
+
+Table "jobs" {
+  "id" bigint [pk, not null, increment]
+  "queue" varchar(255) [not null]
+  "payload" text [not null]
+  "attempts" integer [not null]
+  "reserved_at" integer
+  "available_at" integer [not null]
+  "created_at" integer [not null]
+
+  Note: 'Job queue system'
+}
+
+Table "event_registration" {
+  "event_id" integer [not null, ref: > "events"."id"]
+  "user_id" integer [not null, ref: > "members"."id"]
+  "reviewer_id" integer [ref: > "admins"."account_id"]
+  "payment_status" text [not null, note: 'enum: accepted, declined, hold, blocked']
+  "proof_img_url" varchar(500)
+  "reviewed_at" timestamp
+  "message" varchar(255)
+  "created_at" timestamp [not null]
+  "updated_at" timestamp
+
+  Indexes {
+    (event_id, user_id) [pk]
+  }
+}
+
+Table "subscription_plans" {
+  "code" char(8)
+  "name" varchar(50)
+  "benefits" text [not null, note: 'comma separated (x, y, z)']
+  "price" int [not null]
+  "period" int [not null, note: 'in months']
+  "updated_by" integer [not null, ref: > "admins"."account_id"]
+  "updated_at" timestamp [not null]
+  "created_at" timestamp [not null]
+  "deleted_at" timestamp
+}
+
+Table "subscription_payments" {
+  "subcription_code" char(8) [not null, ref: > "subscription_plans"."code"]
+  "user_id" integer [not null, ref: > "members"."id"]
+  "reviewer_id" integer [ref: > "admins"."account_id"]
+  "payment_status" text [not null, note: 'enum: accepted, declined, hold, blocked']
+  "proof_img_url" varchar(500)
+  "reviewed_at" timestamp
+  "message" varchar(255)
+  "started_at" timestamp [not null]
+  "ended_at" timestamp [not null]
+  "created_at" timestamp [not null]
+  "updated_at" timestamp
+
+  Indexes {
+    (subcription_code, user_id) [pk]
+  }
+}

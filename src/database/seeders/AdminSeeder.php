@@ -24,27 +24,33 @@ class AdminSeeder extends Seeder
         if ($adminUtama) {
             Admin::create([
                 'account_id' => $adminUtama->id,
-                'assigned_at' => now()->subMonths(6)->toDateString(),
-                'position' => 'maintainer',
-                'number_contact' => '081234567890',
+                'name' => 'Admin Utama',
+                'email' => 'admin@maternity.id',
+                'phone' => '081234567890',
+                'profile_img' => null,
+                'role' => 'active',
             ]);
         }
 
         if ($konsultan) {
             Admin::create([
                 'account_id' => $konsultan->id,
-                'assigned_at' => now()->subMonths(3)->toDateString(),
-                'position' => 'consultant',
-                'number_contact' => '082123456789',
+                'name' => 'Konsultan Kesehatan',
+                'email' => 'konsultan@maternity.id',
+                'phone' => '082123456789',
+                'profile_img' => null,
+                'role' => 'active',
             ]);
         }
 
         if ($pembuat) {
             Admin::create([
                 'account_id' => $pembuat->id,
-                'assigned_at' => now()->subMonth()->toDateString(),
-                'position' => 'consultant',
-                'number_contact' => '083123456789',
+                'name' => 'Pembuat Konten',
+                'email' => 'pembuat@maternity.id',
+                'phone' => '083123456789',
+                'profile_img' => null,
+                'role' => 'active',
             ]);
         }
     }

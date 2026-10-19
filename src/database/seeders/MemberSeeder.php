@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\Member;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class MemberSeeder extends Seeder
 {
@@ -26,26 +27,20 @@ class MemberSeeder extends Seeder
         ];
 
         // Get a consultant admin for provisioning
-        $provisioner = Admin::where('position', 'consultant')->first();
+        $provisioner = Admin::first();
 
         foreach ($memberEmails as $index => $email) {
             $account = Account::where('email', $email)->first();
 
-            if ($account) {
+            if ($account && $provisioner) {
                 Member::create([
+                    'id' => Str::uuid(),
                     'account_id' => $account->id,
-                    'gender' => 'female',
-                    'phone_number' => 6281200000000 + $index,
-                    'salutation' => 'Ibu',
-                    'birth_date' => now()->subYears(25 + $index)->toDateString(),
-                    'job' => match($index) {
-                        0 => 'Karyawan Swasta',
-                        1 => 'Guru',
-                        2 => 'Konsultan',
-                        3 => 'Wiraswasta',
-                        4 => 'Ibu Rumah Tangga',
-                        default => 'Profesi Lainnya',
-                    },
+                    'name' => $account->name,
+                    'email' => $email,
+                    'phone' => '628120000000' . str_pad($index, 2, '0', STR_PAD_LEFT),
+                    'date_of_birth' => now()->subYears(25 + $index)->toDateString(),
+                    'gender' => 'W',
                     'address' => match($index) {
                         0 => 'Jl. Merdeka No. 123, Jakarta',
                         1 => 'Jl. Sudirman No. 45, Bandung',
@@ -54,16 +49,24 @@ class MemberSeeder extends Seeder
                         4 => 'Jl. Diponegoro No. 101, Yogyakarta',
                         default => 'Alamat Tidak Tersedia',
                     },
-                    'zip_code' => 12000 + $index * 1000,
-                    'institution' => match($index) {
-                        0 => 'RSIA Bunda Jakarta',
-                        1 => 'RSIA Citra Bandung',
-                        2 => 'RSIA Mitra Surabaya',
-                        3 => 'RSIA Murni Medan',
-                        4 => 'RSIA Cakti Yogyakarta',
-                        default => null,
+                    'city' => match($index) {
+                        0 => 'Jakarta',
+                        1 => 'Bandung',
+                        2 => 'Surabaya',
+                        3 => 'Medan',
+                        4 => 'Yogyakarta',
+                        default => 'Kota Lainnya',
                     },
-                    'provision_by' => $provisioner?->account_id,
+                    'province' => match($index) {
+                        0 => 'DKI Jakarta',
+                        1 => 'Jawa Barat',
+                        2 => 'Jawa Timur',
+                        3 => 'Sumatera Utara',
+                        4 => 'DI Yogyakarta',
+                        default => 'Provinsi Lainnya',
+                    },
+                    'image_url' => null,
+                    'provisioned_by' => $provisioner->account_id,
                 ]);
             }
         }

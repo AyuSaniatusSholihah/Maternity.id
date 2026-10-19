@@ -9,9 +9,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->date('assigned_at');
-            $table->enum('position', ['maintainer', 'consultant']);
-            $table->string('number_contact', 15);
+            $table->uuid('account_id')->primary();
+            $table->string('name', 255);
+            $table->string('email', 255)->unique();
+            $table->string('phone', 20);
+            $table->string('profile_img', 255)->nullable();
+            $table->string('role', 50)->default('active');
+            $table->timestamps();
         });
     }
 

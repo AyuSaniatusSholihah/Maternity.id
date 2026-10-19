@@ -7,19 +7,18 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['event_id', 'title', 'slug', 'description', 'thumbnail_image', 'content_link', 'viewer_count', 'uploaded_by'])]
+#[Fillable(['categories', 'title', 'slug', 'description', 'content', 'image_url', 'uploaded_by'])]
 class Material extends Model
 {
     use HasUuids;
 
     protected $table = 'materials';
-    public $incrementing = false;
-    protected $keyType = 'string';
 
-    public function event(): BelongsTo {
-        return $this->belongsTo(Event::class, 'event_id', 'id');
+    public function category(): BelongsTo {
+        return $this->belongsTo(Category::class, 'categories', 'id');
     }
-    public function uploadedBy(): BelongsTo {
+
+    public function uploader(): BelongsTo {
         return $this->belongsTo(Admin::class, 'uploaded_by', 'account_id');
     }
 }
