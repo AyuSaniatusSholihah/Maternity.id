@@ -183,7 +183,6 @@ class ArticleSeeder extends Seeder
             Article::create([
                 'id' => Str::uuid(),
                 'title' => $article['title'],
-                'keywords' => $article['keywords'],
                 'slug' => Str::slug($article['title']),
                 'description' => $article['short_description'],
                 'content' => $article['content'],

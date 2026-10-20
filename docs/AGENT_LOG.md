@@ -10,25 +10,24 @@
 
 - **Files changed:**
   - Modified: `src/database/seeders/DatabaseSeeder.php` (reordered seeders)
-  - Modified: `src/database/seeders/ArticleSeeder.php` (fixed schema mismatches, updated to 20 articles)
+  - Modified: `src/database/seeders/ArticleSeeder.php` (fixed schema mismatches, updated to 20 articles, removed keywords field)
 
 - **What changed:**
   1. **DatabaseSeeder Seeder Order**: Reordered seeders to run MaterialSeeder BEFORE EventSeeder, so the event-material N:M pivot table can be properly populated. Also added ArticleSeeder to the call stack (was missing).
   2. **ArticleSeeder Fix**: 
      - Rewrote ArticleSeeder to use correct schema: articles table has single `categories` FK (not N:M pivot)
      - Updated all 20 articles to use only existing categories from CategorySeeder (Nutrisi & Gizi, Kesehatan Mental, Olahraga & Kebugaran, Persalinan & Kelahiran, Perawatan Bayi, Gejala & Tanda, Perubahan Tubuh, Pemeriksaan Medis, Keamanan & Bahaya, Gaya Hidup)
-     - Removed `status` field (not in articles migration)
+     - Removed `keywords` field from Article::create() call (not in articles table schema)
      - Removed non-existent `thumbnail_image` field (uses `image_url`)
-     - Fixed field mapping: `short_description` → `description`, removed `keywords` assignment since it's not in fillable
 
 - **Why:**
   - Seeder order was running EventSeeder before MaterialSeeder, preventing event-material pivot relationships from being created
-  - ArticleSeeder contained data structure mismatches with actual database schema (used many-to-many when schema has single FK)
-  - ArticleSeeder was not being called at all in DatabaseSeeder (missing from call stack)
+  - ArticleSeeder contained data structure mismatches with actual database schema
+  - `keywords` column does not exist in articles table but seeder was trying to insert it
   - 20 articles now properly seed the articles table with varied maternity-focused content matching CategorySeeder categories
 
 - **Progress detail:**
-  - All 3 issues fixed: seeder order, article schema mapping, missing seeder call
+  - All issues fixed: seeder order, article schema mapping, keywords field removal
   - DatabaseSeeder now runs in correct dependency order: Categories → Materials → Events (with Materials attached) → Articles
   - ArticleSeeder successfully creates 20 articles with proper category FK assignments
   - All migrations and seeders passing: `php84 artisan migrate:fresh --seed` → exit 0
@@ -37,7 +36,8 @@
   - Confirmed seeder execution order in DatabaseSeeder
   - Confirmed ArticleSeeder uses only existing categories from CategorySeeder
   - Confirmed articles table schema uses single `categories` FK (not many-to-many)
-  - Ran `php84 artisan migrate:fresh --seed` → exit code 0
+  - Confirmed keywords field removed from Article::create() call
+  - Ran `php84 artisan migrate:fresh --seed` → exit code 0 (success)
 
 - **Migration check:** Confirmed: no migration files touched
 
@@ -47,7 +47,7 @@
   - Articles will now have 20 entries with proper category FK references
 
 - **Suggestions / next steps:**
-  1. Verify event-material pivot table is now populated with correct UUIDs
+  1. Verify event-material pivot table is populated with correct UUIDs
   2. Verify articles table has 20 entries with proper category FK values
   3. Test article routes to ensure categories load properly
   4. Test event detail page to display attached materials
