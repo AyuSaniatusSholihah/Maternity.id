@@ -1,5 +1,59 @@
 # Agent Work Log — Maternity.id
 
+## [2026-10-18 15:45] Fix Seeder Order and Populate Articles
+
+- **Agent/Session:** Kiro (Claude Haiku 4.5)
+
+- **Type:** refactor | seed | fix
+
+- **Status:** Done
+
+- **Files changed:**
+  - Modified: `src/database/seeders/DatabaseSeeder.php` (reordered seeders)
+  - Modified: `src/database/seeders/ArticleSeeder.php` (fixed schema mismatches, updated to 20 articles)
+
+- **What changed:**
+  1. **DatabaseSeeder Seeder Order**: Reordered seeders to run MaterialSeeder BEFORE EventSeeder, so the event-material N:M pivot table can be properly populated. Also added ArticleSeeder to the call stack (was missing).
+  2. **ArticleSeeder Fix**: 
+     - Rewrote ArticleSeeder to use correct schema: articles table has single `categories` FK (not N:M pivot)
+     - Updated all 20 articles to use only existing categories from CategorySeeder (Nutrisi & Gizi, Kesehatan Mental, Olahraga & Kebugaran, Persalinan & Kelahiran, Perawatan Bayi, Gejala & Tanda, Perubahan Tubuh, Pemeriksaan Medis, Keamanan & Bahaya, Gaya Hidup)
+     - Removed `status` field (not in articles migration)
+     - Removed non-existent `thumbnail_image` field (uses `image_url`)
+     - Fixed field mapping: `short_description` → `description`, removed `keywords` assignment since it's not in fillable
+
+- **Why:**
+  - Seeder order was running EventSeeder before MaterialSeeder, preventing event-material pivot relationships from being created
+  - ArticleSeeder contained data structure mismatches with actual database schema (used many-to-many when schema has single FK)
+  - ArticleSeeder was not being called at all in DatabaseSeeder (missing from call stack)
+  - 20 articles now properly seed the articles table with varied maternity-focused content matching CategorySeeder categories
+
+- **Progress detail:**
+  - All 3 issues fixed: seeder order, article schema mapping, missing seeder call
+  - DatabaseSeeder now runs in correct dependency order: Categories → Materials → Events (with Materials attached) → Articles
+  - ArticleSeeder successfully creates 20 articles with proper category FK assignments
+  - All migrations and seeders passing: `php84 artisan migrate:fresh --seed` → exit 0
+
+- **Verification:**
+  - Confirmed seeder execution order in DatabaseSeeder
+  - Confirmed ArticleSeeder uses only existing categories from CategorySeeder
+  - Confirmed articles table schema uses single `categories` FK (not many-to-many)
+  - Ran `php84 artisan migrate:fresh --seed` → exit code 0
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Side effects / risks:**
+  - None. All changes are seeding and configuration only. No schema modifications.
+  - Events will now have 2-3 materials attached (pivot table populated)
+  - Articles will now have 20 entries with proper category FK references
+
+- **Suggestions / next steps:**
+  1. Verify event-material pivot table is now populated with correct UUIDs
+  2. Verify articles table has 20 entries with proper category FK values
+  3. Test article routes to ensure categories load properly
+  4. Test event detail page to display attached materials
+
+- **Commit:** Not yet committed
+
 ## [2026-10-18 15:30] EventController: Use Actual Fee and Speaker Values
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
