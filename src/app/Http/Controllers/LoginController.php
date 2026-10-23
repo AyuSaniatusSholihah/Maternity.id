@@ -28,7 +28,9 @@ class LoginController extends Controller
             'profile_img' => $googleUserData->getAvatar(),
         ]);
 
-        Auth::login($user);
+        Auth::guard('web')->login($user);
+        request()->session()->regenerate();
+
         return redirect()->route('home');
     }
 }

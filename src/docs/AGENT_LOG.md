@@ -1,5 +1,86 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-26 16:15] Add account roles and align fresh seed data
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / seed
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000001_create_accounts_table.php`
+    - modified `database/seeders/AccountSeeder.php`
+    - modified `database/seeders/ArticleSeeder.php`
+    - modified `app/Models/Account.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Added the `accounts.role` enum with allowed values `user`, `admin`, and `superadmin`, defaulting to `user`.
+    - Added `role` to the Account model fillable attributes.
+    - Seeded the three existing administrative accounts as `admin` and the five member accounts as `user`.
+    - Corrected the article seed category `Persiapan & Kelahiran` to the existing `Persalinan & Kelahiran` category so the full seed run no longer inserts a null required category.
+
+- **Why:**
+    - The account schema needed an explicit three-level role contract, and fresh seeding had to populate it without mass-assignment loss. The requested `migrate:fresh --seed` run also exposed an existing ArticleSeeder/CategorySeeder name mismatch; that was corrected in the seeder rather than changing the schema.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders.
+    - Database assertion returned `user => 5` and `admin => 3`; no `superadmin` seed was added.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - PHP syntax checks passed for all changed PHP files.
+    - `git diff --check` passed.
+
+- **Migration check:** Migration file changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:**
+    - This updates the create-table migration and therefore applies to fresh database rebuilds. Databases that have already run this migration need a separate additive migration before deploying the role field there.
+
+- **Suggestions / next steps:** Update authorization middleware to use `Account::role` consistently if role-based access should replace the existing account-type checks.
+
+- **Commit:** Not committed
+
+## [2026-10-26 00:00] Fix Google OAuth session persistence
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Controllers/LoginController.php`
+    - modified `config/session.php`
+    - modified `.env`
+    - modified `.env.example`
+
+- **What changed:**
+    - Google OAuth callback now logs in through the explicit `web` guard and regenerates the session before redirecting home.
+    - Changed the default and local session driver from `database` to `file` because the immutable `sessions.user_id` column is unsigned integer while `accounts.id` is UUID.
+
+- **Why:**
+    - Google accounts were created successfully, but the authenticated session was not reliably available after the callback. The application uses Laravel's session guard, not bearer authentication tokens; the database session schema cannot represent the UUID account identifier safely. No migration was changed because the project rules make the schema final.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 -l app/Http/Controllers/LoginController.php` passed.
+    - `php84 -l config/session.php` passed.
+    - `php84 artisan config:clear` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:**
+    - Existing database-backed sessions will not be read after switching to file sessions, so active users may need to log in again. File sessions are appropriate for the current single-instance local setup; multi-instance deployments should use a shared session store with a UUID-compatible schema.
+
+- **Suggestions / next steps:** Test the full Google OAuth browser flow and verify that the redirected home page sees `auth()->check()` as true and that the session cookie is present.
+
+- **Commit:** Not committed
+
 ## [2026-10-16 08:10] Mobile Asset CSS Loading Fix & Carousel Margin Redesign
 
 - **Agent/Session:** Antigravity (Gemini 2.5 Flash)

@@ -144,7 +144,7 @@ class ArticleSeeder extends Seeder
                 'keywords' => 'persiapan rumah, perlengkapan bayi, nursery, peralatan',
                 'short_description' => 'Checklist lengkap perlengkapan bayi dan persiapan rumah untuk kedatangan bayi baru.',
                 'content' => 'Persiapan rumah untuk bayi baru sangat penting. Siapkan tempat tidur bayi yang aman, pakaian bayi, popok, botol minum, dan perlengkapan mandi. Pastikan rumah aman dari benda-benda yang berbahaya. Beli peralatan penting seperti stroller, car seat, dan tas bayi. Jangan lupa perlengkapan ibu seperti bantal menyusui dan bantalan payudara. Mulai persiapan setidaknya 2-3 bulan sebelum tanggal perkiraan lahir.',
-                'category' => 'Persiapan & Kelahiran',
+                'category' => 'Persalinan & Kelahiran',
             ],
             [
                 'title' => 'Nutrisi Postpartum dan Pemulihan Setelah Persalinan',

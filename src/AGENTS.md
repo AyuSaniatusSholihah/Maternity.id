@@ -19,11 +19,13 @@
 **Product:** Maternity.id - A maternity class website where users can browse and join various prenatal classes/workshops, purchase learning-material books (e-books), and access health articles.
 
 **Main User Roles:**
+
 - **Member (Guest)**: Browse events, articles, products; login via Google OAuth; view personal profile
 - **Member (Authenticated)**: Enroll in events, view notifications, manage subscriptions, access member-only features
 - **Admin**: Create and manage events, articles, and educational materials; approve payments
 
 **Main User Flows:**
+
 1. Browse events (online/offline classes, workshops, seminars) → View details → Checkout → Upload payment proof → Admin verification → Approved status
 2. Browse library/ebooks → View content
 3. Browse articles → Read full content
@@ -43,6 +45,7 @@
 ## Setup & Commands
 
 **Install & Setup:**
+
 ```bash
 cd /mnt/Data/Development/JS/wibawa/src
 
@@ -72,6 +75,7 @@ npm run dev
 ```
 
 **Run Application:**
+
 ```bash
 # Start Laravel development server
 php artisan serve
@@ -81,11 +85,13 @@ composer run dev
 ```
 
 **Run Tests:**
+
 ```bash
 composer run test
 ```
 
 **Linting:**
+
 ```bash
 # Laravel Pint (PHP formatter)
 vendor/bin/pint
@@ -95,21 +101,22 @@ vendor/bin/pint
 
 **Key Directories:**
 
-| Path | Purpose |
-|------|---------|
-| `app/Http/Controllers/` | Controller classes (EventController, ArticleController, LoginController, etc.) |
-| `app/Models/` | Eloquent models (Account, Admin, Member, Event, Article, Material) |
-| `database/migrations/` | Database schema definitions (FINAL) |
-| `database/seeders/` | Database seeders for initial data |
-| `database/factories/` | Model factories for testing |
-| `resources/views/` | Blade templates organized by feature |
-| `resources/views/components/` | Reusable Blade components |
-| `resources/css/` | Tailwind CSS entry point |
-| `resources/js/` | Alpine.js initialization |
-| `public/` | Publicly accessible files (images, index.php, .htaccess) |
-| `config/` | Laravel configuration files |
+| Path                          | Purpose                                                                        |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| `app/Http/Controllers/`       | Controller classes (EventController, ArticleController, LoginController, etc.) |
+| `app/Models/`                 | Eloquent models (Account, Admin, Member, Event, Article, Material)             |
+| `database/migrations/`        | Database schema definitions (FINAL)                                            |
+| `database/seeders/`           | Database seeders for initial data                                              |
+| `database/factories/`         | Model factories for testing                                                    |
+| `resources/views/`            | Blade templates organized by feature                                           |
+| `resources/views/components/` | Reusable Blade components                                                      |
+| `resources/css/`              | Tailwind CSS entry point                                                       |
+| `resources/js/`               | Alpine.js initialization                                                       |
+| `public/`                     | Publicly accessible files (images, index.php, .htaccess)                       |
+| `config/`                     | Laravel configuration files                                                    |
 
 **Important Controllers:**
+
 - `EventController` - Browse, view, checkout events
 - `ArticleController` - Browse and view health articles
 - `EbookController` - Library/ebook browsing
@@ -119,6 +126,7 @@ vendor/bin/pint
 - `MyController` - Member profile management
 
 **Important Models:**
+
 - `Account` - Base user model (extends Authenticatable), hasOne Admin/Member
 - `Admin` - Admin profile linked to Account
 - `Member` - Member profile linked to Account
@@ -128,23 +136,25 @@ vendor/bin/pint
 
 ## Database Overview
 
-| Table | Purpose | Key Columns | Relationships |
-|-------|---------|-------------|---------------|
-| `accounts` | Base user accounts (both members and admins) | id (UUID), email, name, profile_img, account_type (member/admin), created_at, updated_at | HasOne: Admin, HasOne: Member |
-| `admins` | Admin-specific data | account_id (PK, FK to accounts), assigned_at, position (maintainer/consultant), number_contact | BelongsTo: Account, HasMany: Events (created/uploaded), HasMany: Articles, HasMany: Materials (uploaded) |
-| `members` | Member-specific data | account_id (PK, FK to accounts), gender, phone_number, salutation, birth_date, job, address, zip_code, institution, provision_by (FK to admins) | BelongsTo: Account, BelongsTo: Admin (provision) |
-| `events` | Prenatal classes/workshops | id (UUID), name, slug, mentor_name, description, poster_img, date, location, venue (online/offline), status (draft/published), is_available, price, gc_invitation_link, created_by, created_at, updated_at | BelongsTo: Admin (created_by), HasMany: Materials |
-| `articles` | Health education articles | id (UUID), title, keywords, slug, short_description, thumbnail_image, content, status (draft/published), author_id, created_at, updated_at | BelongsTo: Admin (author_id) |
-| `materials` | E-books attached to events | id (UUID), event_id (FK), title, slug, description, thumbnail_image, content_link, viewer_count, uploaded_by (FK), created_at, updated_at | BelongsTo: Event, BelongsTo: Admin (uploaded_by) |
+| Table       | Purpose                                      | Key Columns                                                                                                                                                                                                | Relationships                                                                                            |
+| ----------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `accounts`  | Base user accounts (both members and admins) | id (UUID), email, name, profile_img, account_type (member/admin), created_at, updated_at                                                                                                                   | HasOne: Admin, HasOne: Member                                                                            |
+| `admins`    | Admin-specific data                          | account_id (PK, FK to accounts), assigned_at, position (maintainer/consultant), number_contact                                                                                                             | BelongsTo: Account, HasMany: Events (created/uploaded), HasMany: Articles, HasMany: Materials (uploaded) |
+| `members`   | Member-specific data                         | account_id (PK, FK to accounts), gender, phone_number, salutation, birth_date, job, address, zip_code, institution, provision_by (FK to admins)                                                            | BelongsTo: Account, BelongsTo: Admin (provision)                                                         |
+| `events`    | Prenatal classes/workshops                   | id (UUID), name, slug, mentor_name, description, poster_img, date, location, venue (online/offline), status (draft/published), is_available, price, gc_invitation_link, created_by, created_at, updated_at | BelongsTo: Admin (created_by), HasMany: Materials                                                        |
+| `articles`  | Health education articles                    | id (UUID), title, keywords, slug, short_description, thumbnail_image, content, status (draft/published), author_id, created_at, updated_at                                                                 | BelongsTo: Admin (author_id)                                                                             |
+| `materials` | E-books attached to events                   | id (UUID), event_id (FK), title, slug, description, thumbnail_image, content_link, viewer_count, uploaded_by (FK), created_at, updated_at                                                                  | BelongsTo: Event, BelongsTo: Admin (uploaded_by)                                                         |
 
 **Notes:**
+
 - Foreign keys are defined in a separate migration file: `database/migrations/2026_09_12_034032_foreign_key_relationship.php`
 - The base table migrations do NOT include the foreign key columns (they are added later in the FK migration)
 - The FK migration file adds columns like `account_id`, `provision_by`, `event_id`, `uploaded_by`, `author_id`, `created_by` after the base tables are created
-| `password_reset_tokens` | Password reset functionality | email (PK), token, created_at | - |
-| `sessions` | Laravel session storage | id, user_id (nullable FK), ip_address, user_agent, payload, last_activity | - |
+  | `password_reset_tokens` | Password reset functionality | email (PK), token, created_at | - |
+  | `sessions` | Laravel session storage | id, user_id (nullable FK), ip_address, user_agent, payload, last_activity | - |
 
 **Notes:**
+
 - Foreign keys are defined in a separate migration file (`2026_09_12_034032_foreign_key_relationship.php`) that runs after base table migrations
 - The FK migration adds foreign key columns (`account_id`, `provision_by`, `event_id`, `uploaded_by`, `author_id`, `created_by`) to tables after they are created
 - The seeder for members contains `date_of_pregnancy` and `is_profile_complete` fields that are not in the migration
@@ -163,15 +173,18 @@ vendor/bin/pint
 8. Redirects to home page
 
 **Account Types:**
+
 - Existing accounts with `account_type = 'admin'` → Admin access
 - New accounts or accounts with `account_type = 'member'` → Member access
 - Admin accounts are created via seeders (AccountSeeder)
 
 **Protected Routes:**
+
 - `/profile`, `/my/account` - Member profile (requires authentication)
 - `/logout` - Session termination
 
 **Public Routes:**
+
 - `/`, `/events`, `/articles`, `/library`, `/product` - Browse content
 - `/login`, `/register` - Login forms
 - `/events/{slug}`, `/articles/{slug}` - Public event/article details
@@ -180,21 +193,25 @@ vendor/bin/pint
 ## Business Logic Notes
 
 **Events & Enrollment:**
+
 - Events are curated data in controllers (hardcoded arrays), not pulled from database yet
 - Each event has: slug, title, description, mentor, date, location, venue (online/offline), price, gc_invitation_link
 - Users can checkout events and upload payment proof
 - Admin verifies payment and approves enrollment
 
 **Articles & Library:**
+
 - Articles and materials (e-books) have similar structures with thumbnail, content link, viewer count
 - Materials can be attached to events or standalone
 - All content is currently hardcoded in controllers
 
 **Product Catalog:**
+
 - Products are physical items from various merchants
 - Each product has: title, category, image, location, price, TikTok URL, rating, sold count
 
 **Visual Theme:**
+
 - Primary color: `#DEA69E` (pinkish orange)
 - Accent: `#7A9E7E` (green)
 - Dark text: `#2A1614`, `#2D1E1E`
@@ -204,11 +221,13 @@ vendor/bin/pint
 ## Frontend & Theme Guide
 
 **Layout Files:**
+
 - `resources/views/components/layout.blade.php` - Main layout with header, footer, mobile bottom nav
 - `resources/views/components/header.blade.php` - Sticky header with nav, search, notifications, profile dropdown
 - `resources/views/components/footer.blade.php` - Footer with quick action pills, links, social media
 
 **Reusable Components:**
+
 - `event_card.blade.php` - Event listing card
 - `article_card.blade.php` - Article listing card
 - `product_card.blade.php` - Product listing card
@@ -216,11 +235,13 @@ vendor/bin/pint
 - `bottom_nav.blade.php` - Mobile bottom navigation
 
 **CSS Framework:**
+
 - Tailwind CSS 4.3 with custom directives
 - Font families: Plus Jakarta Sans (body), DM Serif Display (brand), Caveat (handwriting)
 - Custom animations: heroFloat, blobMorph, stagger reveals
 
 **Component Conventions:**
+
 - Use existing color palette (`#DEA69E`, `#7A9E7E`, `#2A1614`, `#2D1E1E`)
 - Rounded corners: `rounded-2xl`, `rounded-full`
 - Shadow: `shadow-xs`, `shadow-sm`, `shadow-md`, `shadow-lg`, `shadow-xl`, `shadow-2xl`
@@ -230,21 +251,25 @@ vendor/bin/pint
 ## Coding Conventions
 
 **Naming:**
+
 - Controllers: PascalCase + "Controller" suffix (EventController, ArticleController)
 - Models: PascalCase singular (Account, Event, Article, Material)
 - Routes: snake_case for readability (events.show, articles.index)
 - Database: snake_case (event_id, account_id, created_at, updated_at)
 
 **Validation:**
+
 - No Form Request classes observed yet; validation likely in controllers
 - Use Laravel's built-in validation when adding forms
 
 **Logic Placement:**
+
 - Business logic in controllers (current implementation)
 - Consider creating service classes for complex operations (checkout flow, event enrollment)
 - Keep controllers thin for maintainability
 
 **Alpine.js Patterns:**
+
 - Use `x-data`, `x-show`, `x-transition` for interactive UI
 - Keep Alpine components localized to sections
 - Use `@click.away` for dropdowns/modals
@@ -252,6 +277,7 @@ vendor/bin/pint
 ## Current Status
 
 **Done:**
+
 - [x] Basic Laravel 13.8 project setup
 - [x] MySQL database schema (migrations fully aligned with DBML specification)
 - [x] All migration files updated: accounts (ID, auth fields), admins (account_id PK), members (proper FKs), categories (timestamps), materials (DBML fields), articles (DBML fields), events (DBML fields), products (new table)
@@ -265,9 +291,11 @@ vendor/bin/pint
 - [x] Admin dashboard stub views
 - [x] Auth views (login page)
 - [x] Seeders for initial data (AccountSeeder, AdminSeeder, MemberSeeder, EventSeeder, ArticleSeeder, MaterialSeeder)
+- [x] Account role enum (`user`, `admin`, `superadmin`) and role-aware account seeding
 - [x] Articles feature complete: Admin protection, seeded data (20 articles), DB integration, category filtering
 
 **In Progress:**
+
 - [ ] Update Eloquent models to match new migration structure
 - [ ] Update seeders to insert data with new column names
 - [ ] Actual database integration (controllers use hardcoded data, not Eloquent)
@@ -277,6 +305,7 @@ vendor/bin/pint
 - [ ] Admin CRUD operations
 
 **Not Started:**
+
 - [ ] Full admin dashboard with CRUD for events, articles, materials
 - [ ] Product catalog from database (currently hardcoded)
 - [ ] Member profile editing
@@ -290,7 +319,9 @@ vendor/bin/pint
 **Schema Status (RESOLVED):**
 
 All database migrations have been aligned with the DBML specification:
+
 - Accounts table: UUID → ID (auto-increment), added standard auth fields (password, email_verified_at, remember_token, deleted_at)
+- Accounts table: added `role` enum with `user`, `admin`, and `superadmin` values; fresh seeds create 5 users and 3 admins
 - Admins table: Redesigned with account_id as primary key (FK to accounts), added name, email, phone, profile_img, role
 - Members table: Added account_id (FK), provisioned_by (FK), updated field names (date_of_birth, city, province, image_url)
 - Articles/Materials/Events: Simplified per DBML, removed legacy fields (status, views_count, keywords, etc.)
@@ -299,6 +330,7 @@ All database migrations have been aligned with the DBML specification:
 - Foreign keys: Properly defined with correct constraints in FK migration
 
 **Next Steps for Code Alignment:**
+
 - Eloquent models need updating for new FK structure (e.g., Admin.account_id as PK instead of separate ID)
 - Seeders must be updated to use new column names (birth_date → date_of_birth, etc.)
 - Controllers still use hardcoded data instead of database queries
@@ -309,33 +341,34 @@ All database migrations have been aligned with the DBML specification:
 **Priority (Deadline Focused):**
 
 1. **Update Eloquent Models** (CRITICAL)
-   - Account model: no changes needed (remains base model)
-   - Admin model: account_id as primary key (instead of separate ID), relationships to materials/articles
-   - Member model: add account_id, provisioned_by foreign keys, update column references
-   - Article/Material/Event/Product models: update relationships for new FK structure
-   - Run model generation or create manually to match new migrations
+    - Account model: no changes needed (remains base model)
+    - Admin model: account_id as primary key (instead of separate ID), relationships to materials/articles
+    - Member model: add account_id, provisioned_by foreign keys, update column references
+    - Article/Material/Event/Product models: update relationships for new FK structure
+    - Run model generation or create manually to match new migrations
 
 2. **Update Seeders**
-   - Replace all references to old column names (birth_date → date_of_birth, profile_img fields, etc.)
-   - Adjust foreign key insertions to match new structure (account_id for admins, provisioned_by for members)
-   - Test seeders with `php artisan migrate:fresh --seed`
+    - Replace all references to old column names (birth_date → date_of_birth, profile_img fields, etc.)
+    - Adjust foreign key insertions to match new structure (account_id for admins, provisioned_by for members)
+    - Test seeders with `php artisan migrate:fresh --seed`
 
 3. **Test Migration**
-   - Run `php artisan migrate:fresh` in development to verify no migration errors
-   - Verify all tables created correctly with proper columns and constraints
-   - Check foreign key relationships are enforced
+    - Run `php artisan migrate:fresh` in development to verify no migration errors
+    - Verify all tables created correctly with proper columns and constraints
+    - Check foreign key relationships are enforced
 
 4. **Database Integration**
-   - Replace hardcoded data in EventController, ArticleController, ProductController with Eloquent queries
-   - Implement pagination and filtering
-   - Update controllers to use new field names
+    - Replace hardcoded data in EventController, ArticleController, ProductController with Eloquent queries
+    - Implement pagination and filtering
+    - Update controllers to use new field names
 
 5. **Event Registration System**
-   - Implement event_registration table usage for enrollment
-   - Create payment verification upload
-   - Implement admin approval workflow
+    - Implement event_registration table usage for enrollment
+    - Create payment verification upload
+    - Implement admin approval workflow
 
 **Secondary:**
+
 - Subscription system setup (subscription_plans, subscription_payments)
 - Member profile editing page
 - Admin CRUD for all content types

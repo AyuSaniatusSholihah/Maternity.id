@@ -12,6 +12,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name', 255);
             $table->string('email', 255)->unique();
+            $table->enum('role', ['user', 'admin', 'superadmin'])->default('user');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 255)->nullable();
             $table->string('remember_token', 100)->nullable();

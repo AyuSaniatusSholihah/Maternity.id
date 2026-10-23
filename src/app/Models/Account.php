@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'email_verified_at', 'password', 'remember_token'])]
+#[Fillable(['name', 'email', 'role', 'email_verified_at', 'password', 'remember_token'])]
 class Account extends Authenticatable
 {
     use HasUuids, Notifiable;
