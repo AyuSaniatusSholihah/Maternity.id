@@ -291,7 +291,7 @@ vendor/bin/pint
 - [x] Admin dashboard stub views
 - [x] Auth views (login page)
 - [x] Seeders for initial data (AccountSeeder, AdminSeeder, MemberSeeder, EventSeeder, ArticleSeeder, MaterialSeeder)
-- [x] Account role enum (`user`, `admin`, `superadmin`) and role-aware account seeding
+- [x] Account role enum (`admin`, `member`) and role-aware account seeding
 - [x] Articles feature complete: Admin protection, seeded data (20 articles), DB integration, category filtering
 
 **In Progress:**
@@ -321,7 +321,7 @@ vendor/bin/pint
 All database migrations have been aligned with the DBML specification:
 
 - Accounts table: UUID → ID (auto-increment), added standard auth fields (password, email_verified_at, remember_token, deleted_at)
-- Accounts table: added `role` enum with `user`, `admin`, and `superadmin` values; fresh seeds create 5 users and 3 admins
+- Accounts table: added `role` enum with `admin` and `member` values; fresh seeds create 5 members and 3 admins
 - Admins table: Redesigned with account_id as primary key (FK to accounts), added name, email, phone, profile_img, role
 - Members table: Added account_id (FK), provisioned_by (FK), updated field names (date_of_birth, city, province, image_url)
 - Articles/Materials/Events: Simplified per DBML, removed legacy fields (status, views_count, keywords, etc.)

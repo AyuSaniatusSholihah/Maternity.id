@@ -1,5 +1,42 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-26 16:30] Restrict account roles to admin and member
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix / seed
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000001_create_accounts_table.php`
+    - modified `database/seeders/AccountSeeder.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Replaced the account role enum values `user`, `admin`, and `superadmin` with `admin` and `member`.
+    - Changed the default role from `user` to `member`.
+    - Changed all five member seed records from `user` to `member`.
+    - Updated the project status documentation to describe the two-role contract.
+
+- **Why:** The requested account model has exactly two roles: `admin` and `member`; `superadmin` and the `user` role are no longer part of the schema.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders.
+    - Database assertion returned `admin => 3` and `member => 5`.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - PHP syntax checks and `git diff --check` passed.
+
+- **Migration check:** Migration file changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:** Existing databases that already applied the previous enum definition require a schema migration or fresh rebuild before they can accept the new role values.
+
+- **Suggestions / next steps:** Update any role-based middleware or authorization checks to compare against `member` and `admin` if they still use legacy role names.
+
+- **Commit:** Not committed
+
 ## [2026-10-26 16:15] Add account roles and align fresh seed data
 
 - **Agent/Session:** GitHub Copilot
