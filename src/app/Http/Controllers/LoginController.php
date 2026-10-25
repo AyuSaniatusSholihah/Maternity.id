@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Member;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
@@ -21,12 +23,25 @@ class LoginController extends Controller
     public function callbackGoogleLogin()
     {
         $googleUserData = Socialite::driver('google')->user();
-        $user = Account::query()->updateOrCreate([
-            'email' => $googleUserData->getEmail(),
-        ] ,[
-            'name' => $googleUserData->getName(),
-            'profile_img' => $googleUserData->getAvatar(),
-        ]);
+        $user = DB::transaction(function () use ($googleUserData) {
+            $user = Account::query()->updateOrCreate([
+                'email' => $googleUserData->getEmail(),
+            ], [
+                'name' => $googleUserData->getName(),
+            ]);
+
+            if ($user->role === 'member') {
+                Member::query()->updateOrCreate(
+                    ['account_id' => $user->id],
+                    [
+                        'name' => $user->name,
+                        'email' => $user->email,
+                    ],
+                );
+            }
+
+            return $user;
+        });
 
         Auth::guard('web')->login($user);
         request()->session()->regenerate();

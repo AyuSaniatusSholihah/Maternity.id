@@ -1,5 +1,41 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-26 17:00] Make member profile fields optional and sync OAuth members
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000004_create_members_table.php`
+    - modified `app/Http/Controllers/LoginController.php`
+
+- **What changed:**
+    - Made member `account_id`, `phone`, `provisioned_by`, and timestamps nullable; kept member `name` and `email` required.
+    - Google OAuth account creation now runs in a database transaction and creates or updates the associated member record for accounts with role `member`.
+    - Member `name` and `email` are synchronized from the associated account.
+
+- **Why:** New member accounts need a profile row immediately, while optional profile details can be completed later. Admin accounts remain linked only to the `admins` table. Name and email defaults come from the account at application level because a database column default cannot read another table.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders.
+    - PHP syntax checks passed for the changed controller and migration.
+    - Temporary account/member upsert check confirmed matching account UUID, name, and email, then removed the temporary records.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - `git diff --check` passed.
+
+- **Migration check:** Migration file changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:** Existing databases that already applied the members migration need an additive migration or fresh rebuild before nullable changes are available.
+
+- **Suggestions / next steps:** Add a dedicated registration endpoint if registration must support non-Google account creation; currently the active account-creation path is Google OAuth.
+
+- **Commit:** Not committed
+
 ## [2026-10-26 16:30] Restrict account roles to admin and member
 
 - **Agent/Session:** GitHub Copilot
