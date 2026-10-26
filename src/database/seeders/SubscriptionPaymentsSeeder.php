@@ -38,7 +38,7 @@ class SubscriptionPaymentsSeeder extends Seeder
             $selectedCodes = array_slice($subscriptionCodes, 0, $memberSubscriptionCount);
             
             foreach ($selectedCodes as $codeIdx => $code) {
-                $combinationKey = "$code-{$member->id}";
+                $combinationKey = "$code-{$member->account_id}";
                 
                 // Skip if this combination already exists
                 if (in_array($combinationKey, $usedCombinations)) {
@@ -61,7 +61,7 @@ class SubscriptionPaymentsSeeder extends Seeder
                 
                 $payments[] = [
                     'subcription_code' => $code,
-                    'user_id' => $member->id,
+                    'user_id' => $member->account_id,
                     'reviewer_id' => $status === 'accepted' ? $admin?->account_id : null,
                     'payment_status' => $status,
                     'proof_img_url' => $status === 'accepted' ? 'https://example.com/proof/bayar-' . $index . '-' . $codeIdx . '.jpg' : null,

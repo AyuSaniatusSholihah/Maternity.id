@@ -52,7 +52,7 @@ return new class extends Migration
 
             $table->primary(['event_id', 'user_id']);
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('members')->onDelete('cascade');
+            $table->foreign('user_id')->references('account_id')->on('members')->onDelete('cascade');
             $table->foreign('reviewer_id')->references('account_id')->on('admins')->onDelete('set null');
         });
 
@@ -84,7 +84,7 @@ return new class extends Migration
 
             $table->primary(['subcription_code', 'user_id']);
             $table->foreign('subcription_code')->references('code')->on('subscription_plans')->onDelete('restrict');
-            $table->foreign('user_id')->references('id')->on('members')->onDelete('cascade');
+            $table->foreign('user_id')->references('account_id')->on('members')->onDelete('cascade');
             $table->foreign('reviewer_id')->references('account_id')->on('admins')->onDelete('set null');
         });
     }

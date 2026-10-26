@@ -24,11 +24,16 @@ class LoginController extends Controller
     {
         $googleUserData = Socialite::driver('google')->user();
         $user = DB::transaction(function () use ($googleUserData) {
-            $user = Account::query()->updateOrCreate([
+            $user = Account::query()->firstOrNew([
                 'email' => $googleUserData->getEmail(),
-            ], [
-                'name' => $googleUserData->getName(),
             ]);
+            $user->name = $googleUserData->getName();
+
+            if (! $user->exists) {
+                $user->role = 'member';
+            }
+
+            $user->save();
 
             if ($user->role === 'member') {
                 Member::query()->updateOrCreate(

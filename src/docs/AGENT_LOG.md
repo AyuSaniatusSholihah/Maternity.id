@@ -1,5 +1,114 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-26 17:50] Use account ID as the member primary key
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000004_create_members_table.php`
+    - modified `database/migrations/2026_09_12_034032_foreign_key_relationship.php`
+    - modified `app/Models/Member.php`
+    - modified `database/seeders/MemberSeeder.php`
+    - modified `database/seeders/EventRegistrationSeeder.php`
+    - modified `database/seeders/SubscriptionPaymentsSeeder.php`
+
+- **What changed:**
+    - Removed the standalone `members.id` column.
+    - Made `members.account_id` the primary key and retained its foreign key to `accounts.id`.
+    - Updated event registration and subscription payment foreign keys to reference `members.account_id`.
+    - Configured the Member model and seeder to use the account UUID as the member key without generating a second UUID.
+    - Updated event registration and subscription payment seeders to use `member.account_id` for their member foreign keys.
+
+- **Why:** A member is the profile for an account, so the account UUID should uniquely identify the member row and be used consistently by dependent tables.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders, including event registrations and subscription payments.
+    - PHP syntax checks passed for the Member model and all changed seeders.
+    - Static diagnostics reported no errors for the changed Member model and dependent seeders.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+
+- **Migration check:** Migration files changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:** Existing databases require a fresh rebuild or an additive migration to remove `members.id` and update dependent foreign keys.
+
+- **Suggestions / next steps:** Run `php84 artisan migrate:fresh --seed` and verify event registration/subscription seeders use member account IDs.
+
+- **Commit:** Not committed
+
+## [2026-10-26 17:35] Explicitly create member profile for new accounts
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Controllers/LoginController.php`
+
+- **What changed:**
+    - Changed Google account lookup from `updateOrCreate` to an explicit `firstOrNew` flow.
+    - New accounts are explicitly assigned the `member` role before saving.
+    - The transaction then creates or updates the linked `members` row using `account_id`, account name, and account email.
+
+- **Why:** New account registration must always create both the account and its member profile; relying only on the database role default made that behavior implicit.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 -l app/Http/Controllers/LoginController.php` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Temporary registration check confirmed a new account receives role `member` and a linked member row, then removed the temporary records.
+    - Static diagnostics reported no errors for the changed controller.
+
+- **Migration check:** Confirmed: no migration files touched in this unit; the prior requested member migration change remains intact.
+
+- **Side effects / risks:** Existing admin accounts continue to use their existing role and do not receive member profiles.
+
+- **Suggestions / next steps:** Exercise the Google OAuth callback in a browser with a new account and confirm both records are created.
+
+- **Commit:** Not committed
+
+## [2026-10-26 17:20] Require member account linkage
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000004_create_members_table.php`
+
+- **What changed:**
+    - Made `members.account_id` required while retaining nullable definitions for every member column other than `id`, `account_id`, `name`, and `email`.
+    - Kept the OAuth registration transaction that creates or updates a member row linked to the new account UUID.
+
+- **Why:** Every member must reference its corresponding account, while optional profile fields must not prevent registration.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Database inspection confirmed `id`, `account_id`, `name`, and `email` are `NOT NULL`; all other member columns are nullable.
+    - Database inspection confirmed 5 seeded members and 0 members missing `account_id`.
+    - PHP syntax checks and `git diff --check` passed.
+
+- **Migration check:** Migration file changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:** Existing databases that already applied the previous nullable `account_id` definition require an additive migration or fresh rebuild.
+
+- **Suggestions / next steps:** Run the Google registration flow and confirm the created member row contains the account UUID, name, and email.
+
+- **Commit:** Not committed
+
 ## [2026-10-26 17:00] Make member profile fields optional and sync OAuth members
 
 - **Agent/Session:** GitHub Copilot

@@ -42,7 +42,7 @@ class EventRegistrationSeeder extends Seeder
                 
                 $registrations[] = [
                     'event_id' => $event->id,
-                    'user_id' => $member->id,
+                    'user_id' => $member->account_id,
                     'reviewer_id' => $admin?->account_id,
                     'payment_status' => $status,
                     'proof_img_url' => $status === 'accepted' ? 'https://example.com/proof/bukti-' . $memberIndex . '.jpg' : null,
