@@ -30,20 +30,23 @@ class EventController extends Controller
             'Dec' => 'Des',
         ];
         
-        // Fetch only published events from database
-        $allEventsQuery = Event::where('status', 'published')->get();
+        // Fetch all events from database
+        $allEventsQuery = Event::all();
         
         // Transform database events to match view structure
         $allEvents = $allEventsQuery->map(function ($event) use ($fallbackImage, $monthMap) {
-            $englishMonth = $event->date ? $event->date->format('M') : 'Jan';
+            $englishMonth = $event->event_date ? $event->event_date->format('M') : 'Jan';
             $indonesianMonth = $monthMap[$englishMonth] ?? 'Jan';
+            
+            // Format price with Indonesian Rupiah (IDR) if fee > 0
+            $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
             
             return [
                 'id' => $event->id,
                 'slug' => $event->slug,
-                'title' => $event->name,
+                'title' => $event->title,
                 'description' => $event->description,
-                'date_string' => $event->date ? $event->date->format('d M Y') : 'Jadwal Terbuka',
+                'date_string' => $event->event_date ? $event->event_date->format('d M Y') : 'Jadwal Terbuka',
                 'time_string' => '',
                 'month' => $indonesianMonth,
                 'format' => $event->venue === 'online' ? 'ONLINE' : 'OFFLINE',
@@ -52,9 +55,9 @@ class EventController extends Controller
                 'category' => 'Event',
                 'category_slug' => 'event',
                 'duration' => '',
-                'price' => $event->price > 0 ? 'Rp' . number_format($event->price, 0, ',', '.') : 'Gratis',
-                'price_numeric' => $event->price,
-                'thumbnail_image' => $event->poster_img ?? $fallbackImage,
+                'price' => $priceDisplay,
+                'price_numeric' => $event->fee,
+                'thumbnail_image' => $event->image_url ?? $fallbackImage,
                 'is_bookmarked' => false,
                 'is_my_event' => false,
                 'is_verified' => true,
@@ -128,54 +131,57 @@ class EventController extends Controller
     {
         $fallbackImage = config('app.fallback_image_url');
         
-        $event = Event::where('slug', $slug)->where('status', 'published')->first();
+        $event = Event::where('slug', $slug)->first();
 
         // If event not found, return a 404 view with redirect
         if (!$event) {
             return view('events.not-found', ['slug' => $slug]);
         }
 
+        // Format price with Indonesian Rupiah (IDR) if fee > 0
+        $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
+        
         $eventData = [
             'id' => $event->id,
             'slug' => $event->slug,
-            'title' => $event->name,
+            'title' => $event->title,
             'description' => $event->description,
             'long_description' => $event->description,
-            'date_string' => $event->date ? $event->date->format('d M Y') : 'Jadwal Terbuka',
+            'date_string' => $event->event_date ? $event->event_date->format('d M Y') : 'Jadwal Terbuka',
             'time_string' => '',
-            'price' => $event->price > 0 ? 'Rp' . number_format($event->price, 0, ',', '.') : 'Gratis',
-            'price_numeric' => $event->price,
-            'thumbnail_image' => $event->poster_img ?? $fallbackImage,
+            'price' => $priceDisplay,
+            'price_numeric' => $event->fee,
+            'thumbnail_image' => $event->image_url ?? $fallbackImage,
             'location' => $event->location,
-            'date' => $event->date,
-            'venue' => $event->venue,
-            'format_type' => $event->venue,
-            'format' => $event->venue === 'online' ? 'ONLINE' : 'OFFLINE',
-            'mentor_name' => $event->mentor_name,
-            'speaker' => $event->mentor_name,
-            'speaker_bio' => null, // Only name, no bio/description
+            'date' => $event->event_date,
+            'venue' => null,
+            'format_type' => null,
+            'format' => 'EVENT',
+            'mentor_name' => null,
+            'speaker' => $event->speaker,
+            'speaker_bio' => null,
             'is_verified' => true,
             'badge' => $event->is_available ? 'Tersedia' : 'Penuh',
             'rating' => '4.8',
-            'total_participants' => $event->slots ?? $event->slot ?? 0,
-            'max_participants' => $event->slots ?? $event->slot ?? 0,
+            'total_participants' => $event->slot ?? 0,
+            'max_participants' => $event->slot ?? 0,
             'maps_url' => null,
         ];
 
-        $relatedEvents = Event::where('status', 'published')
-            ->where('id', '!=', $event->id)
+        $relatedEvents = Event::where('id', '!=', $event->id)
             ->limit(3)
             ->get()
             ->map(function ($e) use ($fallbackImage) {
+                $priceDisplay = $e->fee > 0 ? 'Rp ' . number_format($e->fee, 0, ',', '.') : 'Gratis';
                 return [
                     'slug' => $e->slug,
-                    'title' => $e->name,
+                    'title' => $e->title,
                     'description' => $e->description,
-                    'price' => $e->price > 0 ? 'Rp' . number_format($e->price, 0, ',', '.') : 'Gratis',
-                    'thumbnail_image' => $e->poster_img ?? $fallbackImage,
-                    'format_type' => $e->venue,
-                    'date_string' => $e->date ? $e->date->format('d M Y') : 'Jadwal Terbuka',
-                    'format' => $e->venue === 'online' ? 'ONLINE' : 'OFFLINE',
+                    'price' => $priceDisplay,
+                    'thumbnail_image' => $e->image_url ?? $fallbackImage,
+                    'format_type' => null,
+                    'date_string' => $e->event_date ? $e->event_date->format('d M Y') : 'Jadwal Terbuka',
+                    'format' => 'EVENT',
                     'category' => 'Event',
                 ];
             })->toArray();
@@ -196,21 +202,23 @@ class EventController extends Controller
         $event = Event::where('slug', $slug)->first();
 
         if (!$event) {
-            $event = Event::where('status', 'published')->first() ?? Event::first();
+            $event = Event::first();
         }
 
         if (!$event) {
             return redirect()->route('events');
         }
 
+        $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
+
         $eventData = [
             'id' => $event->id,
             'slug' => $event->slug,
-            'title' => $event->name,
+            'title' => $event->title,
             'description' => $event->description,
-            'price' => $event->price > 0 ? 'Rp' . number_format($event->price, 0, ',', '.') : 'Gratis',
-            'price_numeric' => $event->price,
-            'thumbnail_image' => $event->poster_img ?? $fallbackImage,
+            'price' => $priceDisplay,
+            'price_numeric' => $event->fee,
+            'thumbnail_image' => $event->image_url ?? $fallbackImage,
         ];
 
         return view('events.checkout', [
@@ -226,27 +234,29 @@ class EventController extends Controller
         $fallbackImage = config('app.fallback_image_url');
         
         if (!$slug) {
-            $event = Event::where('status', 'published')->first() ?? Event::first();
+            $event = Event::first();
             $slug = $event?->slug ?? 'event';
         }
 
         $event = Event::where('slug', $slug)->first();
 
         if (!$event) {
-            $event = Event::where('status', 'published')->first() ?? Event::first();
+            $event = Event::first();
         }
 
         if (!$event) {
             return redirect()->route('events');
         }
 
+        $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
+
         $eventData = [
             'id' => $event->id,
             'slug' => $event->slug,
-            'title' => $event->name,
+            'title' => $event->title,
             'description' => $event->description,
-            'price' => $event->price > 0 ? 'Rp' . number_format($event->price, 0, ',', '.') : 'Gratis',
-            'thumbnail_image' => $event->poster_img ?? $fallbackImage,
+            'price' => $priceDisplay,
+            'thumbnail_image' => $event->image_url ?? $fallbackImage,
         ];
 
         return view('events.verification', [
@@ -262,27 +272,29 @@ class EventController extends Controller
         $fallbackImage = config('app.fallback_image_url');
         
         if (!$slug) {
-            $event = Event::where('status', 'published')->first() ?? Event::first();
+            $event = Event::first();
             $slug = $event?->slug ?? 'event';
         }
 
         $event = Event::where('slug', $slug)->first();
 
         if (!$event) {
-            $event = Event::where('status', 'published')->first() ?? Event::first();
+            $event = Event::first();
         }
 
         if (!$event) {
             return redirect()->route('events');
         }
 
+        $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
+
         $eventData = [
             'id' => $event->id,
             'slug' => $event->slug,
-            'title' => $event->name,
+            'title' => $event->title,
             'description' => $event->description,
-            'price' => $event->price > 0 ? 'Rp' . number_format($event->price, 0, ',', '.') : 'Gratis',
-            'thumbnail_image' => $event->poster_img ?? $fallbackImage,
+            'price' => $priceDisplay,
+            'thumbnail_image' => $event->image_url ?? $fallbackImage,
         ];
 
         return view('events.approved', [

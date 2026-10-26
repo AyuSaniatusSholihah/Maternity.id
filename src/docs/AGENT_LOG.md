@@ -1,5 +1,268 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-26 17:50] Use account ID as the member primary key
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000004_create_members_table.php`
+    - modified `database/migrations/2026_09_12_034032_foreign_key_relationship.php`
+    - modified `app/Models/Member.php`
+    - modified `database/seeders/MemberSeeder.php`
+    - modified `database/seeders/EventRegistrationSeeder.php`
+    - modified `database/seeders/SubscriptionPaymentsSeeder.php`
+
+- **What changed:**
+    - Removed the standalone `members.id` column.
+    - Made `members.account_id` the primary key and retained its foreign key to `accounts.id`.
+    - Updated event registration and subscription payment foreign keys to reference `members.account_id`.
+    - Configured the Member model and seeder to use the account UUID as the member key without generating a second UUID.
+    - Updated event registration and subscription payment seeders to use `member.account_id` for their member foreign keys.
+
+- **Why:** A member is the profile for an account, so the account UUID should uniquely identify the member row and be used consistently by dependent tables.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders, including event registrations and subscription payments.
+    - PHP syntax checks passed for the Member model and all changed seeders.
+    - Static diagnostics reported no errors for the changed Member model and dependent seeders.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+
+- **Migration check:** Migration files changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:** Existing databases require a fresh rebuild or an additive migration to remove `members.id` and update dependent foreign keys.
+
+- **Suggestions / next steps:** Run `php84 artisan migrate:fresh --seed` and verify event registration/subscription seeders use member account IDs.
+
+- **Commit:** Not committed
+
+## [2026-10-26 17:35] Explicitly create member profile for new accounts
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Controllers/LoginController.php`
+
+- **What changed:**
+    - Changed Google account lookup from `updateOrCreate` to an explicit `firstOrNew` flow.
+    - New accounts are explicitly assigned the `member` role before saving.
+    - The transaction then creates or updates the linked `members` row using `account_id`, account name, and account email.
+
+- **Why:** New account registration must always create both the account and its member profile; relying only on the database role default made that behavior implicit.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 -l app/Http/Controllers/LoginController.php` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Temporary registration check confirmed a new account receives role `member` and a linked member row, then removed the temporary records.
+    - Static diagnostics reported no errors for the changed controller.
+
+- **Migration check:** Confirmed: no migration files touched in this unit; the prior requested member migration change remains intact.
+
+- **Side effects / risks:** Existing admin accounts continue to use their existing role and do not receive member profiles.
+
+- **Suggestions / next steps:** Exercise the Google OAuth callback in a browser with a new account and confirm both records are created.
+
+- **Commit:** Not committed
+
+## [2026-10-26 17:20] Require member account linkage
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000004_create_members_table.php`
+
+- **What changed:**
+    - Made `members.account_id` required while retaining nullable definitions for every member column other than `id`, `account_id`, `name`, and `email`.
+    - Kept the OAuth registration transaction that creates or updates a member row linked to the new account UUID.
+
+- **Why:** Every member must reference its corresponding account, while optional profile fields must not prevent registration.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Database inspection confirmed `id`, `account_id`, `name`, and `email` are `NOT NULL`; all other member columns are nullable.
+    - Database inspection confirmed 5 seeded members and 0 members missing `account_id`.
+    - PHP syntax checks and `git diff --check` passed.
+
+- **Migration check:** Migration file changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:** Existing databases that already applied the previous nullable `account_id` definition require an additive migration or fresh rebuild.
+
+- **Suggestions / next steps:** Run the Google registration flow and confirm the created member row contains the account UUID, name, and email.
+
+- **Commit:** Not committed
+
+## [2026-10-26 17:00] Make member profile fields optional and sync OAuth members
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000004_create_members_table.php`
+    - modified `app/Http/Controllers/LoginController.php`
+
+- **What changed:**
+    - Made member `account_id`, `phone`, `provisioned_by`, and timestamps nullable; kept member `name` and `email` required.
+    - Google OAuth account creation now runs in a database transaction and creates or updates the associated member record for accounts with role `member`.
+    - Member `name` and `email` are synchronized from the associated account.
+
+- **Why:** New member accounts need a profile row immediately, while optional profile details can be completed later. Admin accounts remain linked only to the `admins` table. Name and email defaults come from the account at application level because a database column default cannot read another table.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders.
+    - PHP syntax checks passed for the changed controller and migration.
+    - Temporary account/member upsert check confirmed matching account UUID, name, and email, then removed the temporary records.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - `git diff --check` passed.
+
+- **Migration check:** Migration file changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:** Existing databases that already applied the members migration need an additive migration or fresh rebuild before nullable changes are available.
+
+- **Suggestions / next steps:** Add a dedicated registration endpoint if registration must support non-Google account creation; currently the active account-creation path is Google OAuth.
+
+- **Commit:** Not committed
+
+## [2026-10-26 16:30] Restrict account roles to admin and member
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix / seed
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000001_create_accounts_table.php`
+    - modified `database/seeders/AccountSeeder.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Replaced the account role enum values `user`, `admin`, and `superadmin` with `admin` and `member`.
+    - Changed the default role from `user` to `member`.
+    - Changed all five member seed records from `user` to `member`.
+    - Updated the project status documentation to describe the two-role contract.
+
+- **Why:** The requested account model has exactly two roles: `admin` and `member`; `superadmin` and the `user` role are no longer part of the schema.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders.
+    - Database assertion returned `admin => 3` and `member => 5`.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - PHP syntax checks and `git diff --check` passed.
+
+- **Migration check:** Migration file changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:** Existing databases that already applied the previous enum definition require a schema migration or fresh rebuild before they can accept the new role values.
+
+- **Suggestions / next steps:** Update any role-based middleware or authorization checks to compare against `member` and `admin` if they still use legacy role names.
+
+- **Commit:** Not committed
+
+## [2026-10-26 16:15] Add account roles and align fresh seed data
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / seed
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `database/migrations/2026_07_23_000001_create_accounts_table.php`
+    - modified `database/seeders/AccountSeeder.php`
+    - modified `database/seeders/ArticleSeeder.php`
+    - modified `app/Models/Account.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Added the `accounts.role` enum with allowed values `user`, `admin`, and `superadmin`, defaulting to `user`.
+    - Added `role` to the Account model fillable attributes.
+    - Seeded the three existing administrative accounts as `admin` and the five member accounts as `user`.
+    - Corrected the article seed category `Persiapan & Kelahiran` to the existing `Persalinan & Kelahiran` category so the full seed run no longer inserts a null required category.
+
+- **Why:**
+    - The account schema needed an explicit three-level role contract, and fresh seeding had to populate it without mass-assignment loss. The requested `migrate:fresh --seed` run also exposed an existing ArticleSeeder/CategorySeeder name mismatch; that was corrected in the seeder rather than changing the schema.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan migrate:fresh --seed` passed through all migrations and seeders.
+    - Database assertion returned `user => 5` and `admin => 3`; no `superadmin` seed was added.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - PHP syntax checks passed for all changed PHP files.
+    - `git diff --check` passed.
+
+- **Migration check:** Migration file changed as explicitly requested by the owner; no unrelated migration files were touched.
+
+- **Side effects / risks:**
+    - This updates the create-table migration and therefore applies to fresh database rebuilds. Databases that have already run this migration need a separate additive migration before deploying the role field there.
+
+- **Suggestions / next steps:** Update authorization middleware to use `Account::role` consistently if role-based access should replace the existing account-type checks.
+
+- **Commit:** Not committed
+
+## [2026-10-26 00:00] Fix Google OAuth session persistence
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Controllers/LoginController.php`
+    - modified `config/session.php`
+    - modified `.env`
+    - modified `.env.example`
+
+- **What changed:**
+    - Google OAuth callback now logs in through the explicit `web` guard and regenerates the session before redirecting home.
+    - Changed the default and local session driver from `database` to `file` because the immutable `sessions.user_id` column is unsigned integer while `accounts.id` is UUID.
+
+- **Why:**
+    - Google accounts were created successfully, but the authenticated session was not reliably available after the callback. The application uses Laravel's session guard, not bearer authentication tokens; the database session schema cannot represent the UUID account identifier safely. No migration was changed because the project rules make the schema final.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 -l app/Http/Controllers/LoginController.php` passed.
+    - `php84 -l config/session.php` passed.
+    - `php84 artisan config:clear` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:**
+    - Existing database-backed sessions will not be read after switching to file sessions, so active users may need to log in again. File sessions are appropriate for the current single-instance local setup; multi-instance deployments should use a shared session store with a UUID-compatible schema.
+
+- **Suggestions / next steps:** Test the full Google OAuth browser flow and verify that the redirected home page sees `auth()->check()` as true and that the session cookie is present.
+
+- **Commit:** Not committed
+
 ## [2026-10-16 08:10] Mobile Asset CSS Loading Fix & Carousel Margin Redesign
 
 - **Agent/Session:** Antigravity (Gemini 2.5 Flash)

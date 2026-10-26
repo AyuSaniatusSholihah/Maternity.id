@@ -18,8 +18,8 @@ class EbookController extends Controller
         $dateStart = $request->input('dateStart');
         $dateEnd = $request->input('dateEnd');
 
-        // Query materials dengan eager loading uploadedBy relation
-        $query = Material::with('uploadedBy.account');
+        // Query materials dengan eager loading uploader relation
+        $query = Material::with('uploader.account');
 
         // Apply date filtering jika ada
         if ($dateStart && $dateEnd) {
@@ -44,8 +44,8 @@ class EbookController extends Controller
                 'title' => $material->title,
                 'book_title' => $material->title,
                 'description' => $material->description,
-                'cover' => $material->thumbnail_image ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80',
-                'author' => $material->uploadedBy?->account?->name ?? 'Tim Medis Maternity.id',
+                'cover' => $material->image_url ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80',
+                'author' => $material->uploader?->name ?? 'Tim Medis Maternity.id',
                 'price' => 'Gratis',
                 'link_text' => 'akses online',
                 'handle' => '@maternity.id',

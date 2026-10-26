@@ -16,8 +16,7 @@ class ArticleController extends Controller
         $fallbackImage = config('app.fallback_image_url');
         
         // Get all published articles from database, sorted by updated_at (latest first)
-        $articlesQuery = Article::where('status', 'published')
-            ->with(['author', 'categories'])
+        $articlesQuery = Article::with(['author'])
             ->orderBy('updated_at', 'desc');
 
         // Handle sorting
@@ -28,10 +27,10 @@ class ArticleController extends Controller
             $articlesQuery->orderBy('updated_at', 'desc');
         }
 
-        // Handle category filter
+        // Handle category filter - articles have single category FK
         $categoryFilter = $request->input('category');
         if ($categoryFilter && $categoryFilter !== 'all') {
-            $articlesQuery->whereHas('categories', function ($q) use ($categoryFilter) {
+            $articlesQuery->whereHas('category', function ($q) use ($categoryFilter) {
                 $q->where('slug', $categoryFilter);
             });
         }
@@ -54,24 +53,23 @@ class ArticleController extends Controller
                 'id' => $article->id,
                 'slug' => $article->slug,
                 'title' => $article->title,
-                'category' => $article->categories->first()?->name ?? 'Umum',
-                'category_slug' => $article->categories->first()?->slug ?? 'umum',
+                'category' => $article->category?->name ?? 'Umum',
+                'category_slug' => $article->category?->slug ?? 'umum',
                 'excerpt' => $article->short_description,
                 'content' => $article->content,
-                'author' => $article->author?->account?->name ?? 'Tim Medis Maternity.id',
+                'author' => $article->author?->name ?? 'Tim Medis Maternity.id',
                 'author_role' => 'Praktisi Medis',
-                'thumbnail_image' => $article->thumbnail_image ?? $fallbackImage,
-                'read_time' => $article->author?->account?->name ?? 'Tim Medis Maternity.id',
+                'thumbnail_image' => $article->image_url ?? $fallbackImage,
+                'read_time' => ceil(str_word_count(strip_tags($article->content)) / 200) . ' menit membaca',
                 'published_at' => $article->updated_at->format('d M Y'),
-                'views' => $article->views_count,
+                'views' => 0,
             ];
         })->toArray();
 
         // Featured article (first published article if no search/filter)
         $featuredArticle = null;
         if (empty($searchQuery) && (empty($categoryFilter) || $categoryFilter === 'all')) {
-            $featuredArticleQuery = Article::where('status', 'published')
-                ->with(['author', 'categories'])
+            $featuredArticleQuery = Article::with(['author'])
                 ->orderBy('updated_at', 'desc')
                 ->first();
             
@@ -80,15 +78,15 @@ class ArticleController extends Controller
                     'id' => $featuredArticleQuery->id,
                     'slug' => $featuredArticleQuery->slug,
                     'title' => $featuredArticleQuery->title,
-                    'category' => $featuredArticleQuery->categories->first()?->name ?? 'Umum',
-                    'category_slug' => $featuredArticleQuery->categories->first()?->slug ?? 'umum',
+                    'category' => $featuredArticleQuery->category?->name ?? 'Umum',
+                    'category_slug' => $featuredArticleQuery->category?->slug ?? 'umum',
                     'excerpt' => $featuredArticleQuery->short_description,
                     'content' => $featuredArticleQuery->content,
-                    'author' => $featuredArticleQuery->author?->account?->name ?? 'Tim Medis Maternity.id',
-                    'thumbnail_image' => $featuredArticleQuery->thumbnail_image ?? $fallbackImage,
-                    'read_time' => $featuredArticleQuery->author?->account?->name ?? 'Tim Medis Maternity.id',
+                    'author' => $featuredArticleQuery->author?->name ?? 'Tim Medis Maternity.id',
+                    'thumbnail_image' => $featuredArticleQuery->image_url ?? $fallbackImage,
+                    'read_time' => ceil(str_word_count(strip_tags($featuredArticleQuery->content)) / 200) . ' menit membaca',
                     'published_at' => $featuredArticleQuery->updated_at->format('d M Y'),
-                    'views' => $featuredArticleQuery->views_count,
+                    'views' => 0,
                 ];
                 // Remove featured article from main list
                 $transformedArticles = array_filter($transformedArticles, function ($article) use ($featuredArticleQuery) {
@@ -98,28 +96,26 @@ class ArticleController extends Controller
         }
 
         // Popular articles for sidebar
-        $popularArticles = Article::where('status', 'published')
-            ->with(['author', 'categories'])
-            ->orderBy('views_count', 'desc')
+        $popularArticles = Article::with(['author'])
+            ->orderBy('updated_at', 'desc')
             ->limit(3)
             ->get()
             ->map(function ($article) use ($fallbackImage) {
                 return [
                     'slug' => $article->slug,
                     'title' => $article->title,
-                    'read_time' => $article->author?->account?->name ?? 'Tim Medis Maternity.id',
-                    'thumbnail_image' => $article->thumbnail_image ?? $fallbackImage,
+                    'read_time' => ceil(str_word_count(strip_tags($article->content)) / 200) . ' menit membaca',
+                    'thumbnail_image' => $article->image_url ?? $fallbackImage,
                 ];
             })->toArray();
 
         // Get all categories with count
-        $categories = Category::withCount(['articles' => function ($q) {
-            $q->where('status', 'published');
-        }])->get()->map(function ($cat) {
+        $categories = Category::get()->map(function ($cat) {
+            $count = Article::where('categories', $cat->id)->count();
             return [
                 'slug' => $cat->slug,
                 'name' => $cat->name,
-                'count' => $cat->articles_count,
+                'count' => $count,
                 'icon' => 'fa-solid fa-tag',
             ];
         })->toArray();
@@ -128,7 +124,7 @@ class ArticleController extends Controller
         array_unshift($categories, [
             'slug' => 'all',
             'name' => 'Semua',
-            'count' => Article::where('status', 'published')->count(),
+            'count' => Article::count(),
             'icon' => 'fa-solid fa-shapes',
         ]);
 
@@ -163,8 +159,7 @@ class ArticleController extends Controller
         $fallbackImage = config('app.fallback_image_url');
         
         $article = Article::where('slug', $slug)
-            ->where('status', 'published')
-            ->with(['author', 'author.account', 'categories'])
+            ->with(['author', 'category'])
             ->firstOrFail();
 
         // Transform article for view
@@ -172,33 +167,30 @@ class ArticleController extends Controller
             'id' => $article->id,
             'slug' => $article->slug,
             'title' => $article->title,
-            'categories' => $article->categories->map(function ($cat) {
-                return (object) [
-                    'name' => $cat->name,
-                    'slug' => $cat->slug,
-                ];
-            }),
+            'categories' => $article->category ? [(object) [
+                'name' => $article->category->name,
+                'slug' => $article->category->slug,
+            ]] : [(object) ['name' => 'Umum', 'slug' => 'umum']],
             'excerpt' => $article->short_description,
             'content' => $article->content,
             'author' => (object) [
-                'name' => $article->author?->account?->name ?? 'Tim Medis Maternity.id',
+                'name' => $article->author?->name ?? 'Tim Medis Maternity.id',
                 'role' => 'Praktisi Medis',
                 'avatar' => null,
             ],
-            'image_url' => $article->thumbnail_image ?? $fallbackImage,
-            'thumbnail_image' => $article->thumbnail_image ?? $fallbackImage,
-            'views' => $article->views_count,
+            'image_url' => $article->image_url ?? $fallbackImage,
+            'thumbnail_image' => $article->image_url ?? $fallbackImage,
+            'views' => 0,
             'published_at' => $article->updated_at,
             'tags' => array_filter(array_map('trim', explode(',', $article->keywords ?? ''))),
         ];
 
         // Get related articles (from same category, exclude current)
-        $relatedArticles = Article::where('status', 'published')
-            ->where('id', '!=', $article->id)
-            ->whereHas('categories', function ($q) use ($article) {
-                $q->whereIn('categories.id', $article->categories->pluck('id'));
+        $relatedArticles = Article::where('id', '!=', $article->id)
+            ->when($article->categories, function ($q) use ($article) {
+                $q->where('categories', $article->categories);
             })
-            ->with(['author', 'author.account', 'categories'])
+            ->with(['author'])
             ->limit(4)
             ->get()
             ->map(function ($art) use ($fallbackImage) {
@@ -207,10 +199,10 @@ class ArticleController extends Controller
                     'slug' => $art->slug,
                     'title' => $art->title,
                     'excerpt' => $art->short_description,
-                    'image_url' => $art->thumbnail_image ?? $fallbackImage,
-                    'thumbnail_image' => $art->thumbnail_image ?? $fallbackImage,
+                    'image_url' => $art->image_url ?? $fallbackImage,
+                    'thumbnail_image' => $art->image_url ?? $fallbackImage,
                     'author' => (object) [
-                        'name' => $art->author?->account?->name ?? 'Tim Medis Maternity.id',
+                        'name' => $art->author?->name ?? 'Tim Medis Maternity.id',
                     ],
                 ];
             });

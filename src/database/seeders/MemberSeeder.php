@@ -7,7 +7,6 @@ use App\Models\Admin;
 use App\Models\Member;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class MemberSeeder extends Seeder
 {
@@ -34,7 +33,6 @@ class MemberSeeder extends Seeder
 
             if ($account && $provisioner) {
                 Member::create([
-                    'id' => Str::uuid(),
                     'account_id' => $account->id,
                     'name' => $account->name,
                     'email' => $email,

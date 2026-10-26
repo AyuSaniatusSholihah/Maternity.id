@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
@@ -13,7 +14,7 @@ class Event extends Model
 
     protected $table = 'events';
 
-    protected $fillable = ['categories', 'title', 'slug', 'description', 'event_date', 'open_registration_date', 'close_registration_date', 'location', 'image_url', 'materials', 'slot', 'is_available', 'created_by'];
+    protected $fillable = ['categories', 'title', 'slug', 'description', 'event_date', 'open_registration_date', 'close_registration_date', 'location', 'image_url', 'slot', 'is_available', 'fee', 'speaker', 'created_by'];
 
     protected $casts = [
         'event_date' => 'datetime:Y-m-d',
@@ -30,8 +31,8 @@ class Event extends Model
         return $this->belongsTo(Admin::class, 'created_by', 'account_id');
     }
 
-    public function materials(): HasMany {
-        return $this->hasMany(Material::class, 'materials', 'id');
+    public function materials(): BelongsToMany {
+        return $this->belongsToMany(Material::class, 'event_material', 'event_id', 'material_id');
     }
 }
 

@@ -20,12 +20,13 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,                    // Depends on accounts
             MemberSeeder::class,                   // Depends on accounts and admins
             CategorySeeder::class,                 // Categories (no dependencies)
-            EventSeeder::class,                    // Depends on admins and categories
-            MaterialSeeder::class,                 // Depends on categories
+            MaterialSeeder::class,                 // Depends on categories and admins
+            EventSeeder::class,                    // Depends on admins, categories, and materials (for pivot table)
             ProductSeeder::class,                  // Depends on admins and categories
             EventRegistrationSeeder::class,        // Depends on events, members, admins
             SubscriptionPlansSeeder::class,        // Depends on admins
             SubscriptionPaymentsSeeder::class,     // Depends on members and subscription_plans
+            ArticleSeeder::class,                  // Depends on admins and categories
         ]);
     }
 }

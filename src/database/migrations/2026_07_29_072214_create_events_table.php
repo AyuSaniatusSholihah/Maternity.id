@@ -22,9 +22,10 @@ return new class extends Migration
             $table->date('close_registration_date');
             $table->string('location', 255);
             $table->string('image_url', 255)->nullable();
-            $table->uuid('materials')->nullable();
             $table->unsignedInteger('slot');
             $table->boolean('is_available')->default(true);
+            $table->integer('fee')->default(0);
+            $table->string('speaker', 255);
             $table->uuid('created_by');
             $table->timestamps();
         });
