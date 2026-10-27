@@ -1072,12 +1072,11 @@
                                                         title="Preview Halaman Pelatihan">
                                                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                                                     </a>
-                                                    <button type="button"
-                                                        @click="alert('Fitur edit detail pelatihan')"
+                                                    <a :href="'{{ url('/admin/event') }}/' + ev.slug + '/edit'"
                                                         class="p-1.5 text-neutral-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
                                                         title="Edit Jadwal">
                                                         <i class="fa-solid fa-pen-to-square text-xs"></i>
-                                                    </button>
+                                                    </a>
                                                     <button type="button"
                                                         @click="events = events.filter(e => e.id !== ev.id)"
                                                         class="p-1.5 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"

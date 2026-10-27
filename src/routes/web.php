@@ -67,7 +67,9 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
 
     Route::get('/event', [AdminEventController::class, 'index'])->name('admin.event');
     Route::get('/event/add', [AdminEventController::class, 'create'])->name('admin.event.create');
+    Route::get('/event/{slug}/edit', [AdminEventController::class, 'edit'])->name('admin.event.edit');
     Route::post('/event', [AdminEventController::class, 'store'])->name('admin.event.store');
+    Route::put('/event/{slug}', [AdminEventController::class, 'update'])->name('admin.event.update');
 
     Route::get('/ebook', function () {
         return view('admin.dashboard');

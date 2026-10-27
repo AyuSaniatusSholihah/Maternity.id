@@ -1,5 +1,46 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-28 00:30] Add slug-based admin event editing
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `routes/web.php`
+    - modified `app/Http/Controllers/AdminEventController.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `resources/views/admin/events/create.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Added `GET /admin/event/{slug}/edit` and `PUT /admin/event/{slug}` routes.
+    - Changed each event list Edit button into a link to the slug-based edit page.
+    - Reused the add-event layout for edit mode with current database values prefilled.
+    - Added validated event update logic with automatic collision-safe slug generation while preserving `created_by`.
+
+- **Why:** Admins need to edit each event from the list through a dedicated page rather than an in-place placeholder action.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - Route list shows the edit GET and PUT endpoints.
+    - Normal HTTP request to an existing event edit page returned HTTP 200 with the prefilled form.
+    - Temporary update round-trip verified title, fee, generated slug, and preserved `created_by`; temporary records were removed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics and `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** Updating an event title also updates its slug; external links to the old slug may no longer resolve.
+
+- **Suggestions / next steps:** Add a redirect history strategy if old public event slugs must remain valid after title edits.
+
+- **Commit:** Not committed
+
 ## [2026-10-27 02:00] Separate admin event creation page
 
 - **Agent/Session:** GitHub Copilot

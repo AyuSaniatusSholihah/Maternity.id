@@ -302,6 +302,7 @@ vendor/bin/pint
 - [x] Optional member profile fields with account-synchronized name/email creation
 - [x] Admin event page synchronized with event and category database data
 - [x] Dedicated `/admin/event/add` page for schema-aligned event creation
+- [x] Slug-based admin event editing with prefilled values
 - [x] Admin dashboard document structure restored for browser rendering
 - [x] Articles feature complete: Admin protection, seeded data (20 articles), DB integration, category filtering
 

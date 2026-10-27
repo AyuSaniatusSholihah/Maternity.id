@@ -16,6 +16,15 @@ class AdminEventController extends Controller
     {
         return view('admin.events.create', [
             'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
+            'event' => null,
+        ]);
+    }
+
+    public function edit(string $slug): View
+    {
+        return view('admin.events.create', [
+            'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
+            'event' => Event::query()->where('slug', $slug)->firstOrFail(),
         ]);
     }
 
@@ -32,6 +41,7 @@ class AdminEventController extends Controller
             ->get()
             ->map(fn (Event $event): array => [
                 'id' => $event->id,
+                'slug' => $event->slug,
                 'title' => $event->title,
                 'category' => $event->category?->name ?? 'Tanpa kategori',
                 'categoryColor' => 'bg-[#FAF5F2] text-[#8C433C]',
@@ -58,7 +68,37 @@ class AdminEventController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $this->validateEvent($request);
+        $slug = $this->uniqueSlug($validated['title']);
+
+        Event::create([
+            ...$validated,
+            'slug' => $slug,
+            'created_by' => $request->user()->id,
+        ]);
+
+        return redirect()
+            ->route('admin.event')
+            ->with('status', 'Event berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, string $slug): RedirectResponse
+    {
+        $event = Event::query()->where('slug', $slug)->firstOrFail();
+        $validated = $this->validateEvent($request);
+        $event->update([
+            ...$validated,
+            'slug' => $this->uniqueSlug($validated['title'], $event->id),
+        ]);
+
+        return redirect()
+            ->route('admin.event')
+            ->with('status', 'Event berhasil diperbarui.');
+    }
+
+    private function validateEvent(Request $request): array
+    {
+        return $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'categories' => ['required', 'uuid', 'exists:categories,id'],
             'description' => ['required', 'string'],
@@ -71,23 +111,21 @@ class AdminEventController extends Controller
             'fee' => ['required', 'integer', 'min:0'],
             'speaker' => ['required', 'string', 'max:255'],
         ]);
+    }
 
-        $slug = Str::slug($validated['title']);
+    private function uniqueSlug(string $title, ?string $ignoreId = null): string
+    {
+        $slug = Str::slug($title);
         $baseSlug = $slug;
         $suffix = 2;
 
-        while (Event::query()->where('slug', $slug)->exists()) {
+        while (Event::query()
+            ->where('slug', $slug)
+            ->when($ignoreId, fn ($query) => $query->where('id', '!=', $ignoreId))
+            ->exists()) {
             $slug = $baseSlug . '-' . $suffix++;
         }
 
-        Event::create([
-            ...$validated,
-            'slug' => $slug,
-            'created_by' => $request->user()->id,
-        ]);
-
-        return redirect()
-            ->route('admin.event')
-            ->with('status', 'Event berhasil ditambahkan.');
+        return $slug;
     }
 }
