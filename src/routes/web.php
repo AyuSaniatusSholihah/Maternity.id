@@ -47,7 +47,7 @@ Route::get('/mitra', function () {
 })->name('mitra.index');
 
 // Admin Knowledge & Portal Routes
-Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admin')->group(function () {
+Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admin')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
@@ -56,33 +56,21 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->pref
         return view('admin.dashboard');
     })->name('admin.home');
 
-    Route::get('/approvals', function () {
+    Route::get('/approval', function () {
         return view('admin.dashboard');
-    })->name('admin.approvals');
+    })->name('admin.approval');
 
-    Route::get('/articles', function () {
+    Route::get('/article', function () {
         return view('admin.dashboard');
-    })->name('admin.articles');
+    })->name('admin.article');
 
-    Route::get('/events', function () {
+    Route::get('/event', function () {
         return view('admin.dashboard');
-    })->name('admin.events');
+    })->name('admin.event');
 
-    Route::get('/library', function () {
+    Route::get('/ebook', function () {
         return view('admin.dashboard');
-    })->name('admin.library');
-
-    Route::get('/content-library', function () {
-        return view('admin.dashboard');
-    })->name('admin.content-library');
-});
-
-// Admin Login (Guest only)
-Route::middleware(['guest'])->group(function () {
-    Route::get('/admin/login', function () {
-        return view('admin.login');
-    })->name('admin.login');
-    Route::post('/admin/login', [LoginController::class, 'adminLogin'])->name('admin.login.post');
+    })->name('admin.ebook');
 });
 
 // Member Protected Routes

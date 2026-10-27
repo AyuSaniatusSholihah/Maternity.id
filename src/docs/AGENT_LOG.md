@@ -1,5 +1,138 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-27 00:45] Add dedicated admin content routes
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `resources/views/admin/login.blade.php`
+
+- **What changed:**
+    - Added dedicated protected routes `/admin/approval`, `/admin/article`, `/admin/event`, and `/admin/ebook`.
+    - Replaced sidebar tab buttons with links to those routes.
+    - Updated URL-based tab selection so refreshing a dedicated route opens its matching admin section.
+    - Updated the unused legacy admin login view to reference the shared login and ebook routes instead of removed admin-only routes.
+
+- **Why:** Each admin sidebar page now has its own addressable route instead of relying only on one dashboard URL and client-side tab state.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:cache` passed.
+    - `php84 artisan route:list --path=admin` shows dedicated approval, article, event, and ebook routes.
+    - Authenticated admin requests to all four dedicated routes returned HTTP 200.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in the routes or dashboard view.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The admin sections still share the existing dashboard shell and in-memory UI data; navigation is now route-based and refresh-safe.
+
+- **Suggestions / next steps:** Replace the shared dashboard shell with dedicated Blade views when each admin page needs independent backend data or CRUD behavior.
+
+- **Commit:** Not committed
+
+## [2026-10-27 00:30] Fix stale admin login link
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `resources/views/admin/library/index.blade.php`
+
+- **What changed:** Replaced the removed `admin.login` route reference in the admin sidebar with the shared `logout` route.
+
+- **Why:** The admin portal now uses one login page and no longer defines `admin.login`; the stale route reference caused `/admin` to fail with a route-not-found 500 during dashboard rendering.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - Authenticated admin request to `GET /admin` returned HTTP 200.
+    - `php84 artisan view:cache` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in the dashboard view, admin middleware, or web routes.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The portal exit link now logs the current user out through the existing shared logout flow.
+
+- **Suggestions / next steps:** Verify the admin dashboard and logout link in the browser.
+
+- **Commit:** Not committed
+
+## [2026-10-27 00:15] Fix admin dashboard role display
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `resources/views/admin/dashboard.blade.php`
+
+- **What changed:** Replaced the admin dashboard's obsolete `account_type` display with the current `role` attribute from the authenticated account and replaced stale `admin.login` links with the shared `logout` route.
+
+- **Why:** The accounts schema now stores `admin` and `member` in `role`; `account_type` no longer exists, and the separate `admin.login` route was removed from the unified login design.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:** Pending final validation.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** None identified.
+
+- **Suggestions / next steps:** Verify the dashboard as a seeded admin account and confirm member accounts remain redirected by the admin middleware.
+
+- **Commit:** Not committed
+
+## [2026-10-27 00:00] Protect admin routes by account role
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Middleware/EnsureUserIsAdmin.php`
+    - modified `routes/web.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Changed `EnsureUserIsAdmin` to authorize only authenticated accounts whose `role` is `admin`.
+    - Removed the separate `/admin/login` GET and POST routes.
+    - Applied the custom middleware as the sole middleware for the complete `/admin` route group, so guests and members both redirect to the homepage.
+
+- **Why:** The application has one login flow and two account roles. Admin access must be determined by the authenticated account role, not the removed `account_type` field or a separate admin login page.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan route:list --path=admin` shows 7 protected admin routes and no `/admin/login` route.
+    - Middleware check confirmed guests and members redirect to the homepage, while an admin receives status 200.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in `routes/web.php`; the middleware helper typing issue was resolved by using the `Auth` facade.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** Requests to `/admin` while logged out now redirect to `/` instead of the default `/login`; members receive the same homepage redirect.
+
+- **Suggestions / next steps:** Exercise `/admin` with a seeded admin and member account in the browser to confirm the dashboard is available only to admins.
+
+- **Commit:** Not committed
+
 ## [2026-10-26 17:50] Use account ID as the member primary key
 
 - **Agent/Session:** GitHub Copilot
