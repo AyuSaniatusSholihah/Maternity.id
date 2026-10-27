@@ -1,5 +1,113 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-27 01:45] Fix escaped JSON in admin Alpine state
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `resources/views/admin/dashboard.blade.php`
+
+- **What changed:** HTML-escaped the category and event JSON injected into the dashboard's double-quoted Alpine `x-data` attribute using JSON hex encoding.
+
+- **Why:** Raw JSON quotes closed the `x-data` HTML attribute early, causing the remaining Alpine payload to appear as visible text above the admin page and preventing normal Alpine rendering.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - Replaced raw JSON/hex encoding with Laravel `Js::from(...)->toHtml()` for the Alpine event/category payloads.
+    - Rendered `GET /admin/event` output now contains `JSON.parse(...)` inside the `x-data` attribute and no serialized payload after `</body>`.
+    - `php84 artisan view:clear` and `php84 artisan view:cache` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics and `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** JSON values are decoded by the browser's HTML parser before Alpine evaluates the `x-data` expression.
+
+- **Suggestions / next steps:** Refresh the authenticated `/admin/event` page and confirm the dashboard begins at the sidebar without a visible serialized payload.
+
+- **Commit:** Not committed
+
+## [2026-10-27 01:30] Restore blank admin dashboard rendering
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Restored the missing CSS closing tags, document head closing tags, body opening tag, and Alpine `x-data` declaration at the top of the dashboard view.
+    - Restored the minimum verification and article state required by the existing admin sections.
+    - Kept the database-backed event/category state as the active event source.
+
+- **Why:** The view had been truncated after the opening `<style>` declaration, leaving JavaScript fragments inside CSS and removing the document body/Alpine boundary. Laravel returned HTTP 200, but the browser could not render the admin page.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - Rendered `GET /admin/event` as an admin returned HTTP 200.
+    - Rendered output contains valid `</head>`, `<body>`, and `</body>` boundaries.
+    - `php84 artisan view:cache` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in the dashboard view.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The article and approval sections retain their existing in-memory UI data; this fix restores rendering and does not change those data sources.
+
+- **Suggestions / next steps:** Verify `/admin/event` in an authenticated browser session after refreshing cached assets.
+
+- **Commit:** Not committed
+
+## [2026-10-27 01:00] Integrate admin event page with database
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - added `app/Http/Controllers/AdminEventController.php`
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+
+- **What changed:**
+    - Admin event page now loads events, categories, registration counts, dates, fees, slots, availability, locations, speakers, descriptions, and image URLs from the database.
+    - Added protected `POST /admin/event` persistence with validation, slug generation, category validation, and the authenticated admin as `created_by`.
+    - Replaced mock category options and non-persisted form fields with the actual `events` table columns.
+    - Derived month filters from the event dates stored in the database.
+
+- **Why:** The event admin UI previously displayed hardcoded data and only changed Alpine state; event creation did not reach the database and the UI fields did not match the schema.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 -l app/Http/Controllers/AdminEventController.php` and `php84 -l app/Models/Event.php` passed.
+    - `php84 artisan view:cache` passed.
+    - Authenticated `GET /admin/event` returned HTTP 200.
+    - Direct controller persistence check created a temporary event with the admin account as `created_by`, then removed it.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in the event controller, model, route, or dashboard view.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The existing event page remains a shared dashboard shell; edit/delete controls are still UI-only and were not expanded beyond the requested database synchronization.
+
+- **Suggestions / next steps:** Add dedicated update/delete endpoints if event editing and deletion should persist to the database.
+
+- **Commit:** Not committed
+
 ## [2026-10-27 00:45] Add dedicated admin content routes
 
 - **Agent/Session:** GitHub Copilot
@@ -87,7 +195,12 @@
 
 - **Progress detail:** Fully completed.
 
-- **Verification:** Pending final validation.
+- **Verification:**
+    - Authenticated requests to `/admin`, `/admin/dashboard`, `/admin/approval`, `/admin/article`, `/admin/event`, and `/admin/ebook` returned HTTP 200 with full dashboard HTML.
+    - `php84 artisan view:cache` passed.
+    - Static diagnostics reported no errors in the dashboard view or event controller.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Browser access without an authenticated admin correctly redirected away from the protected page.
 
 - **Migration check:** Confirmed: no migration files touched.
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\AdminEventController;
 use App\Http\Controllers\EbookController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LoginController;
@@ -64,9 +65,8 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
         return view('admin.dashboard');
     })->name('admin.article');
 
-    Route::get('/event', function () {
-        return view('admin.dashboard');
-    })->name('admin.event');
+    Route::get('/event', [AdminEventController::class, 'index'])->name('admin.event');
+    Route::post('/event', [AdminEventController::class, 'store'])->name('admin.event.store');
 
     Route::get('/ebook', function () {
         return view('admin.dashboard');

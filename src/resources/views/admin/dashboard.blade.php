@@ -50,120 +50,30 @@
         })(),
         mobileSidebar: false,
         searchQuery: '',
-    
-        // ── DATA APPROVAL / VERIFIKASI USER ──
         approvalFilter: 'all',
         selectedVerification: null,
         showProofModal: false,
         verifications: [{
-                id: 'TRX-901',
-                userName: 'Sandi Pratama',
-                userEmail: 'sandi.pratama@gmail.com',
-                userWhatsapp: '0895-7042-9812',
-                userBirthDate: '14/08/1996',
-                eventName: 'Seminar Mindful Motherhood (Solo)',
-                eventCategory: 'Mental Health & Parenting',
-                packageType: 'Paket Bundling + Ebook',
-                amount: 'Rp 54.000',
-                date: '07 Sep 2026, 14:15',
-                proofUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=800',
-                status: 'pending', // pending, approved, rejected
-                adminNotes: ''
-            },
-            {
-                id: 'TRX-899',
-                userName: 'Ayu Kartika',
-                userEmail: 'ayu.kartika@gmail.com',
-                userWhatsapp: '0812-3456-7890',
-                userBirthDate: '22/03/1998',
-                eventName: 'Kelas Gentle Birth & Hypnobirthing',
-                eventCategory: 'Persalinan',
-                packageType: 'Paket VIP Tatap Muka',
-                amount: 'Rp 85.000',
-                date: '07 Sep 2026, 11:30',
-                proofUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=800',
-                status: 'approved',
-                adminNotes: 'Pembayaran QRIS sesuai nominal'
-            },
-            {
-                id: 'TRX-895',
-                userName: 'Nadia Rahmawati',
-                userEmail: 'nadia.r@yahoo.com',
-                userWhatsapp: '0878-9988-1122',
-                userBirthDate: '05/11/1995',
-                eventName: 'Seminar Gizi 1000 Hari Pertama (Jogja)',
-                eventCategory: 'Nutrisi Ibu',
-                packageType: 'Akses Reguler Online',
-                amount: 'Rp 45.000',
-                date: '06 Sep 2026, 16:45',
-                proofUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=800',
-                status: 'pending',
-                adminNotes: ''
-            },
-            {
-                id: 'TRX-890',
-                userName: 'Budi Santoso',
-                userEmail: 'budi.santoso@gmail.com',
-                userWhatsapp: '0813-2211-0099',
-                userBirthDate: '10/01/1993',
-                eventName: 'Prenatal Yoga Bersama Pasangan',
-                eventCategory: 'Yoga & Fisik',
-                packageType: 'Akses Reguler Online',
-                amount: 'Rp 35.000',
-                date: '05 Sep 2026, 09:20',
-                proofUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=800',
-                status: 'rejected',
-                adminNotes: 'Bukti transfer buram dan tidak terbaca'
-            }
-        ],
+            id: 'TRX-895',
+            userName: 'Nadia Rahmawati',
+            userEmail: 'nadia.r@yahoo.com',
+            userWhatsapp: '0878-9988-1122',
+            userBirthDate: '05/11/1995',
+            eventName: 'Seminar Gizi 1000 Hari Pertama (Jogja)',
+            linkedEvent: null
+        }],
     
-        // ── DATA ARTIKEL KETIKAN ──
         articleFilter: 'all',
         showArticleModal: false,
         articleForm: {
             title: '',
             category: 'Nutrisi Ibu',
-            author: 'dr. Annisa Pratama, Sp.OG',
-            authorRole: 'Dokter Spesialis Obstetri & Ginekologi',
+            author: '',
             excerpt: '',
             content: '',
-            readTime: '5 menit membaca',
-            linkedEvent: 'Seminar Mindful Motherhood'
+            linkedEvent: ''
         },
-        articles: [{
-                id: 1,
-                title: 'Nutrisi Seimbang untuk Ibu Hamil Trimester Pertama',
-                category: 'Nutrisi Ibu',
-                categoryColor: 'bg-[#FCEBE7] text-[#C97A70]',
-                author: 'dr. Annisa Pratama, Sp.OG',
-                publishedAt: '15 Agu 2026',
-                views: '3.8k',
-                excerpt: 'Panduan makanan sehat dan asupan asam folat yang mendukung pembentukan organ vital janin.',
-                linkedEvent: 'Seminar Gizi 1000 Hari Pertama'
-            },
-            {
-                id: 2,
-                title: 'Cara Mengelola Stres dan Kecemasan Jelang Persalinan',
-                category: 'Kesehatan Wanita',
-                categoryColor: 'bg-[#E4F5E6] text-[#428E53]',
-                author: 'Rina Sasmita, M.Psi., Psikolog',
-                publishedAt: '14 Agu 2026',
-                views: '2.1k',
-                excerpt: 'Tips pernapasan diafragma dan afirmasi positif agar pikiran tetap rileks dan tenang.',
-                linkedEvent: 'Mindful Motherhood Workshop'
-            },
-            {
-                id: 3,
-                title: 'Pola Tidur Bayi Baru Lahir dan Tips Mengatasi Kolik',
-                category: 'Perawatan Bayi',
-                categoryColor: 'bg-[#FEF3C7] text-[#B45309]',
-                author: 'Bidan Ratna Sari, S.Tr.Keb',
-                publishedAt: '10 Agu 2026',
-                views: '1.9k',
-                excerpt: 'Kenali siklus tidur newborn dan teknik menenangkan bayi menangis di malam hari.',
-                linkedEvent: null
-            }
-        ],
+        articles: [],
     
         // ── DATA EVENT / JADWAL PELATIHAN ──
         eventMonthFilter: 'all',
@@ -171,14 +81,12 @@
         eventPosterPreview: '',
         eventForm: {
             title: '',
-            category: 'Mental Health & Parenting',
-            month: '2026-10',
-            date: 'Sabtu, 24 Oktober 2026',
-            time: '09.00 - 12.00 WIB',
-            format: 'Hybrid (Solo & Zoom)',
-            location: 'Grand Mercure Solo & Live Zoom',
-            speaker: 'dr. Annisa Pratama, Sp.OG',
-            speakerRole: 'Dokter Spesialis Obstetri & Ginekologi',
+            category: {{ Illuminate\Support\Js::from(($adminCategories ?? collect())->first()?->id)->toHtml() }},
+            date: '{{ now()->toDateString() }}',
+            openDate: '{{ now()->toDateString() }}',
+            closeDate: '{{ now()->addDays(7)->toDateString() }}',
+            location: '',
+            speaker: '',
             price: '54000',
             quota: '100',
             description: ''
@@ -193,104 +101,8 @@
                 reader.readAsDataURL(file);
             }
         },
-        saveNewEvent() {
-            if (!this.eventForm.title.trim()) {
-                alert('Silakan masukkan judul pelatihan/seminar.');
-                return;
-            }
-            const formattedPrice = this.eventForm.price ? 'Rp ' + Number(this.eventForm.price).toLocaleString('id-ID') : 'Gratis';
-            this.events.unshift({
-                id: Date.now(),
-                title: this.eventForm.title,
-                category: this.eventForm.category,
-                categoryColor: 'bg-[#FAF5F2] text-[#8C433C]',
-                month: this.eventForm.month || '2026-10',
-                monthLabel: this.eventForm.month === '2026-09' ? 'September 2026' : (this.eventForm.month === '2026-10' ? 'Oktober 2026' : 'November 2026'),
-                date: this.eventForm.date || 'Sabtu, 24 Oktober 2026',
-                time: this.eventForm.time || '09.00 - 12.00 WIB',
-                location: this.eventForm.location || 'Online via Zoom',
-                speaker: this.eventForm.speaker || 'Tim Ahli Maternity.id',
-                price: formattedPrice,
-                quota: Number(this.eventForm.quota) || 100,
-                registered: 0,
-                status: 'open',
-                posterUrl: this.eventPosterPreview || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400'
-            });
-            alert('Jadwal Event Pelatihan baru berhasil diunggah dan ditambahkan ke list!');
-            this.showEventModal = false;
-            this.eventPosterPreview = '';
-            this.eventForm.title = '';
-            this.eventForm.description = '';
-        },
-        events: [{
-                id: 1,
-                title: 'Mindful Motherhood: Menemukan Ketenangan Ibu',
-                category: 'Mental Health & Parenting',
-                categoryColor: 'bg-[#FAF5F2] text-[#8C433C]',
-                month: '2026-09',
-                monthLabel: 'September 2026',
-                date: 'Sabtu, 28 September 2026',
-                time: '09.00 - 12.00 WIB',
-                location: 'Grand Mercure Solo & Live Zoom',
-                speaker: 'dr. Annisa Pratama, Sp.OG',
-                price: 'Rp 54.000',
-                quota: 100,
-                registered: 48,
-                status: 'open',
-                posterUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400'
-            },
-            {
-                id: 2,
-                title: 'Nutrisi & Tumbuh Kembang 1000 Hari Pertama',
-                category: 'Gizi & Nutrisi',
-                categoryColor: 'bg-[#FCEBE7] text-[#C97A70]',
-                month: '2026-10',
-                monthLabel: 'Oktober 2026',
-                date: 'Minggu, 12 Oktober 2026',
-                time: '13.30 - 16.30 WIB',
-                location: 'Hotel Tentrem Yogyakarta',
-                speaker: 'dr. Raditya Sp.GK',
-                price: 'Rp 65.000',
-                quota: 80,
-                registered: 35,
-                status: 'open',
-                posterUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=400'
-            },
-            {
-                id: 3,
-                title: 'Kelas Persalinan Alami & Gentle Birth Hypnobirthing',
-                category: 'Persalinan Alami',
-                categoryColor: 'bg-[#EDE9FE] text-[#6D28D9]',
-                month: '2026-10',
-                monthLabel: 'Oktober 2026',
-                date: 'Sabtu, 24 Oktober 2026',
-                time: '09.00 - 12.30 WIB',
-                location: 'RS Hermina Solo & Zoom Live',
-                speaker: 'Bidan Ratna Sari, S.Tr.Keb',
-                price: 'Rp 75.000',
-                quota: 60,
-                registered: 42,
-                status: 'open',
-                posterUrl: 'https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?auto=format&fit=crop&q=80&w=400'
-            },
-            {
-                id: 4,
-                title: 'Manajemen Laktasi & Sukses ASI Eksklusif 6 Bulan',
-                category: 'Laktasi & Bayi',
-                categoryColor: 'bg-[#FEF3C7] text-[#B45309]',
-                month: '2026-11',
-                monthLabel: 'November 2026',
-                date: 'Minggu, 08 November 2026',
-                time: '10.00 - 12.00 WIB',
-                location: 'Online Live Zoom',
-                speaker: 'dr. Sinta Wulandari, CIMI',
-                price: 'Rp 45.000',
-                quota: 120,
-                registered: 20,
-                status: 'open',
-                posterUrl: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=400'
-            }
-        ],
+        eventCategories: {{ Illuminate\Support\Js::from($adminCategories ?? [])->toHtml() }},
+        events: {{ Illuminate\Support\Js::from($adminEvents ?? [])->toHtml() }},
         get filteredEvents() {
             return this.events.filter(ev => {
                 const matchMonth = (this.eventMonthFilter === 'all' || ev.month === this.eventMonthFilter);
@@ -969,28 +781,26 @@
                             </button>
                         </div>
 
-                        <form action="#" method="POST" @submit.prevent="saveNewEvent()" class="space-y-5">
+                        <form action="{{ route('admin.event.store') }}" method="POST" class="space-y-5">
+                            @csrf
 
                             {{-- Baris 1: Judul & Kategori --}}
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                                 <div class="md:col-span-8">
                                     <label class="block text-xs font-bold text-neutral-700 mb-1">Judul Seminar /
                                         Pelatihan <span class="text-red-500">*</span></label>
-                                    <input type="text" x-model="eventForm.title"
+                                    <input type="text" name="title" x-model="eventForm.title"
                                         placeholder="Contoh: Workshop Yoga Prenatal & Manajemen Nafas Persalinan"
                                         class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-4 py-2.5 text-xs text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white font-medium">
                                 </div>
                                 <div class="md:col-span-4">
                                     <label class="block text-xs font-bold text-neutral-700 mb-1">Kategori
                                         Pelatihan</label>
-                                    <select x-model="eventForm.category"
+                                    <select name="categories" x-model="eventForm.category"
                                         class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2.5 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white cursor-pointer font-medium">
-                                        <option value="Mental Health & Parenting">Mental Health & Parenting</option>
-                                        <option value="Persalinan Alami & Hypnobirthing">Persalinan Alami &
-                                            Hypnobirthing</option>
-                                        <option value="Nutrisi Ibu & Janin">Nutrisi Ibu & Janin</option>
-                                        <option value="Yoga & Fisik Kehamilan">Yoga & Fisik Kehamilan</option>
-                                        <option value="Laktasi & Perawatan Bayi">Laktasi & Perawatan Bayi</option>
+                                        <template x-for="category in eventCategories" :key="category.id">
+                                            <option :value="category.id" x-text="category.name"></option>
+                                        </template>
                                     </select>
                                 </div>
                             </div>
@@ -1034,33 +844,29 @@
                                     <div>
                                         <label class="block text-xs font-bold text-neutral-700 mb-1">Tanggal
                                             Pelaksanaan</label>
-                                        <input type="text" x-model="eventForm.date"
-                                            placeholder="Contoh: Sabtu, 24 Oktober 2026"
+                                        <input type="date" name="event_date" x-model="eventForm.date"
                                             class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-4 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
                                     </div>
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label class="block text-xs font-bold text-neutral-700 mb-1">Jam
-                                                Acara</label>
-                                            <input type="text" x-model="eventForm.time"
-                                                placeholder="09.00 - 12.00 WIB"
+                                            <label class="block text-xs font-bold text-neutral-700 mb-1">Pendaftaran
+                                                Dibuka</label>
+                                            <input type="date" name="open_registration_date"
+                                                x-model="eventForm.openDate"
                                                 class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold text-neutral-700 mb-1">Format
-                                                Event</label>
-                                            <select x-model="eventForm.format"
-                                                class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white cursor-pointer">
-                                                <option value="Hybrid (Offline & Online)">Hybrid (Solo & Zoom)</option>
-                                                <option value="Online Live Zoom">Online Live Zoom</option>
-                                                <option value="Tatap Muka (Offline)">Tatap Muka (Offline)</option>
-                                            </select>
+                                            <label class="block text-xs font-bold text-neutral-700 mb-1">Pendaftaran
+                                                Ditutup</label>
+                                            <input type="date" name="close_registration_date"
+                                                x-model="eventForm.closeDate"
+                                                class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
                                         </div>
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-neutral-700 mb-1">Lokasi / Venue
                                             Acara</label>
-                                        <input type="text" x-model="eventForm.location"
+                                        <input type="text" name="location" x-model="eventForm.location"
                                             placeholder="Grand Mercure Solo / Hotel Tentrem Jogja / Zoom Cloud"
                                             class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-4 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
                                     </div>
@@ -1073,20 +879,21 @@
                                 <div>
                                     <label class="block text-xs font-bold text-neutral-700 mb-1">Nama Pemateri / Dokter
                                         Ahli</label>
-                                    <input type="text" x-model="eventForm.speaker"
+                                    <input type="text" name="speaker" x-model="eventForm.speaker"
                                         placeholder="dr. Annisa Pratama, Sp.OG"
                                         class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-neutral-700 mb-1">Harga Tiket
                                         Pendaftaran (Rp)</label>
-                                    <input type="number" x-model="eventForm.price" placeholder="54000"
+                                    <input type="number" name="fee" x-model="eventForm.price"
+                                        placeholder="54000"
                                         class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-neutral-700 mb-1">Target Kuota
                                         Peserta</label>
-                                    <input type="number" x-model="eventForm.quota" placeholder="100"
+                                    <input type="number" name="slot" x-model="eventForm.quota" placeholder="100"
                                         class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
                                 </div>
                             </div>
@@ -1095,7 +902,7 @@
                             <div>
                                 <label class="block text-xs font-bold text-neutral-700 mb-1">Deskripsi Singkat & Materi
                                     Pembelajaran</label>
-                                <textarea x-model="eventForm.description" rows="3"
+                                <textarea name="description" x-model="eventForm.description" rows="3"
                                     placeholder="Tulis ringkasan topik yang akan dipelajari oleh peserta selama sesi pelatihan..."
                                     class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl p-3.5 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white"></textarea>
                             </div>
@@ -1135,24 +942,13 @@
                                     class="px-3.5 py-1.5 rounded-full text-xs transition shrink-0 cursor-pointer">
                                     Semua Bulan (<span x-text="events.length"></span>)
                                 </button>
-                                <button type="button" @click="eventMonthFilter = '2026-09'"
-                                    :class="eventMonthFilter === '2026-09' ? 'bg-[#5F8C72] text-white font-bold' :
-                                        'bg-[#FAF5F2] text-neutral-600 hover:bg-neutral-100 font-medium'"
-                                    class="px-3.5 py-1.5 rounded-full text-xs transition shrink-0 cursor-pointer">
-                                    September 2026
-                                </button>
-                                <button type="button" @click="eventMonthFilter = '2026-10'"
-                                    :class="eventMonthFilter === '2026-10' ? 'bg-[#5F8C72] text-white font-bold' :
-                                        'bg-[#FAF5F2] text-neutral-600 hover:bg-neutral-100 font-medium'"
-                                    class="px-3.5 py-1.5 rounded-full text-xs transition shrink-0 cursor-pointer">
-                                    Oktober 2026
-                                </button>
-                                <button type="button" @click="eventMonthFilter = '2026-11'"
-                                    :class="eventMonthFilter === '2026-11' ? 'bg-[#5F8C72] text-white font-bold' :
-                                        'bg-[#FAF5F2] text-neutral-600 hover:bg-neutral-100 font-medium'"
-                                    class="px-3.5 py-1.5 rounded-full text-xs transition shrink-0 cursor-pointer">
-                                    November 2026
-                                </button>
+                                <template x-for="month in @js($adminEventMonths ?? [])" :key="month.month">
+                                    <button type="button" @click="eventMonthFilter = month.month"
+                                        :class="eventMonthFilter === month.month ? 'bg-[#5F8C72] text-white font-bold' :
+                                            'bg-[#FAF5F2] text-neutral-600 hover:bg-neutral-100 font-medium'"
+                                        class="px-3.5 py-1.5 rounded-full text-xs transition shrink-0 cursor-pointer"
+                                        x-text="month.monthLabel"></button>
+                                </template>
                             </div>
                         </div>
 
@@ -1199,7 +995,7 @@
                                                         <span x-text="ev.date"></span>
                                                     </p>
                                                     <p class="text-[11px] text-neutral-500 font-mono"
-                                                        x-text="ev.time"></p>
+                                                        x-text="ev.registrationPeriod"></p>
                                                 </div>
                                             </td>
 

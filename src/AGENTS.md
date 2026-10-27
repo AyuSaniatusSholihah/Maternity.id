@@ -300,6 +300,8 @@ vendor/bin/pint
 - [x] Seeders for initial data (AccountSeeder, AdminSeeder, MemberSeeder, EventSeeder, ArticleSeeder, MaterialSeeder)
 - [x] Account role enum (`admin`, `member`) and role-aware account seeding
 - [x] Optional member profile fields with account-synchronized name/email creation
+- [x] Admin event page synchronized with event and category database data
+- [x] Admin dashboard document structure restored for browser rendering
 - [x] Articles feature complete: Admin protection, seeded data (20 articles), DB integration, category filtering
 
 **In Progress:**
