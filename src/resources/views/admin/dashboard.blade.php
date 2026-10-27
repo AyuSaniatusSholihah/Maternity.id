@@ -748,179 +748,189 @@
                                 <i class="fa-solid fa-eye text-[#B96A5C]"></i>
                                 <span>Lihat Katalog Publik</span>
                             </a>
-                            <button type="button" @click="showEventModal = true"
+                            <a href="{{ route('admin.event.create') }}"
                                 class="bg-[#5F8C72] hover:bg-[#4f755e] text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition shadow-xs cursor-pointer">
                                 <i class="fa-solid fa-calendar-plus"></i>
                                 <span>+ Upload Pelatihan Baru</span>
-                            </button>
+                            </a>
                         </div>
                     </div>
 
-                    {{-- Form Upload Pelatihan Baru (Inline Collapsible Form) --}}
-                    <div x-show="showEventModal" x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0 -translate-y-4"
-                        x-transition:enter-end="opacity-100 translate-y-0"
-                        class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#5F8C72]/40 shadow-md space-y-6 relative">
+                    @if (false)
+                        {{-- Form moved to /admin/event/add. --}}
+                        <div x-show="showEventModal" x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 -translate-y-4"
+                            x-transition:enter-end="opacity-100 translate-y-0"
+                            class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#5F8C72]/40 shadow-md space-y-6 relative">
 
-                        <div class="flex items-center justify-between pb-4 border-b border-neutral-100">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-10 h-10 rounded-2xl bg-[#E4F5E6] text-[#428E53] flex items-center justify-center">
-                                    <i class="fa-solid fa-calendar-plus text-base"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-base text-neutral-900 font-serif-brand">Form Upload
-                                        Pelatihan / Seminar Baru</h3>
-                                    <p class="text-xs text-neutral-500">Isi detail lengkap untuk menerbitkan event ke
-                                        halaman user</p>
-                                </div>
-                            </div>
-                            <button type="button" @click="showEventModal = false"
-                                class="text-neutral-400 hover:text-neutral-700 p-2">
-                                <i class="fa-solid fa-xmark text-lg"></i>
-                            </button>
-                        </div>
-
-                        <form action="{{ route('admin.event.store') }}" method="POST" class="space-y-5">
-                            @csrf
-
-                            {{-- Baris 1: Judul & Kategori --}}
-                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                                <div class="md:col-span-8">
-                                    <label class="block text-xs font-bold text-neutral-700 mb-1">Judul Seminar /
-                                        Pelatihan <span class="text-red-500">*</span></label>
-                                    <input type="text" name="title" x-model="eventForm.title"
-                                        placeholder="Contoh: Workshop Yoga Prenatal & Manajemen Nafas Persalinan"
-                                        class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-4 py-2.5 text-xs text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white font-medium">
-                                </div>
-                                <div class="md:col-span-4">
-                                    <label class="block text-xs font-bold text-neutral-700 mb-1">Kategori
-                                        Pelatihan</label>
-                                    <select name="categories" x-model="eventForm.category"
-                                        class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2.5 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white cursor-pointer font-medium">
-                                        <template x-for="category in eventCategories" :key="category.id">
-                                            <option :value="category.id" x-text="category.name"></option>
-                                        </template>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {{-- Baris 2: Poster & Tanggal --}}
-                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
-
-                                {{-- Area Upload Poster / Gambar --}}
-                                <div class="md:col-span-6">
-                                    <label class="block text-xs font-bold text-neutral-700 mb-1">Poster / Foto Banner
-                                        Event</label>
-                                    <label
-                                        class="flex flex-col items-center justify-center border-2 border-dashed border-neutral-300 hover:border-[#5F8C72] rounded-2xl p-4 text-center cursor-pointer bg-[#FAF5F2] hover:bg-white transition h-40 relative overflow-hidden">
-                                        <input type="file" accept="image/*" class="hidden"
-                                            @change="handleEventPoster($event)">
-
-                                        <template x-if="!eventPosterPreview">
-                                            <div class="space-y-1">
-                                                <i class="fa-regular fa-image text-2xl text-neutral-400"></i>
-                                                <p class="text-xs font-bold text-neutral-800">Upload Poster Pelatihan
-                                                </p>
-                                                <p class="text-[10px] text-neutral-500">Format JPG, PNG (Rasio 16:9
-                                                    disarankan)</p>
-                                            </div>
-                                        </template>
-
-                                        <template x-if="eventPosterPreview">
-                                            <div class="w-full h-full relative">
-                                                <img :src="eventPosterPreview"
-                                                    class="w-full h-full object-cover rounded-xl">
-                                                <span
-                                                    class="absolute bottom-2 right-2 bg-neutral-900/70 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">Ganti
-                                                    Poster</span>
-                                            </div>
-                                        </template>
-                                    </label>
-                                </div>
-
-                                {{-- Tanggal, Jam & Format --}}
-                                <div class="md:col-span-6 space-y-3">
-                                    <div>
-                                        <label class="block text-xs font-bold text-neutral-700 mb-1">Tanggal
-                                            Pelaksanaan</label>
-                                        <input type="date" name="event_date" x-model="eventForm.date"
-                                            class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-4 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <div>
-                                            <label class="block text-xs font-bold text-neutral-700 mb-1">Pendaftaran
-                                                Dibuka</label>
-                                            <input type="date" name="open_registration_date"
-                                                x-model="eventForm.openDate"
-                                                class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-neutral-700 mb-1">Pendaftaran
-                                                Ditutup</label>
-                                            <input type="date" name="close_registration_date"
-                                                x-model="eventForm.closeDate"
-                                                class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
-                                        </div>
+                            <div class="flex items-center justify-between pb-4 border-b border-neutral-100">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-2xl bg-[#E4F5E6] text-[#428E53] flex items-center justify-center">
+                                        <i class="fa-solid fa-calendar-plus text-base"></i>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-neutral-700 mb-1">Lokasi / Venue
-                                            Acara</label>
-                                        <input type="text" name="location" x-model="eventForm.location"
-                                            placeholder="Grand Mercure Solo / Hotel Tentrem Jogja / Zoom Cloud"
-                                            class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-4 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
+                                        <h3 class="font-bold text-base text-neutral-900 font-serif-brand">Form Upload
+                                            Pelatihan / Seminar Baru</h3>
+                                        <p class="text-xs text-neutral-500">Isi detail lengkap untuk menerbitkan event
+                                            ke
+                                            halaman user</p>
                                     </div>
                                 </div>
-
-                            </div>
-
-                            {{-- Baris 3: Pemateri, Kuota & Harga --}}
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-neutral-700 mb-1">Nama Pemateri / Dokter
-                                        Ahli</label>
-                                    <input type="text" name="speaker" x-model="eventForm.speaker"
-                                        placeholder="dr. Annisa Pratama, Sp.OG"
-                                        class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-neutral-700 mb-1">Harga Tiket
-                                        Pendaftaran (Rp)</label>
-                                    <input type="number" name="fee" x-model="eventForm.price"
-                                        placeholder="54000"
-                                        class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-neutral-700 mb-1">Target Kuota
-                                        Peserta</label>
-                                    <input type="number" name="slot" x-model="eventForm.quota" placeholder="100"
-                                        class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
-                                </div>
-                            </div>
-
-                            {{-- Baris 4: Deskripsi & Tombol Aksi --}}
-                            <div>
-                                <label class="block text-xs font-bold text-neutral-700 mb-1">Deskripsi Singkat & Materi
-                                    Pembelajaran</label>
-                                <textarea name="description" x-model="eventForm.description" rows="3"
-                                    placeholder="Tulis ringkasan topik yang akan dipelajari oleh peserta selama sesi pelatihan..."
-                                    class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl p-3.5 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white"></textarea>
-                            </div>
-
-                            <div class="flex items-center justify-end gap-3 pt-3 border-t border-neutral-100">
                                 <button type="button" @click="showEventModal = false"
-                                    class="px-5 py-2.5 rounded-xl text-xs font-semibold text-neutral-600 hover:bg-neutral-100 transition cursor-pointer">
-                                    Batal
-                                </button>
-                                <button type="submit"
-                                    class="bg-[#5F8C72] hover:bg-[#4f755e] text-white font-bold py-2.5 px-6 rounded-xl text-xs flex items-center gap-2 transition shadow-sm cursor-pointer">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <span>Publikasikan Pelatihan ke Website</span>
+                                    class="text-neutral-400 hover:text-neutral-700 p-2">
+                                    <i class="fa-solid fa-xmark text-lg"></i>
                                 </button>
                             </div>
 
-                        </form>
-                    </div>
+                            <form action="{{ route('admin.event.store') }}" method="POST" class="space-y-5">
+                                @csrf
+
+                                {{-- Baris 1: Judul & Kategori --}}
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                    <div class="md:col-span-8">
+                                        <label class="block text-xs font-bold text-neutral-700 mb-1">Judul Seminar /
+                                            Pelatihan <span class="text-red-500">*</span></label>
+                                        <input type="text" name="title" x-model="eventForm.title"
+                                            placeholder="Contoh: Workshop Yoga Prenatal & Manajemen Nafas Persalinan"
+                                            class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-4 py-2.5 text-xs text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white font-medium">
+                                    </div>
+                                    <div class="md:col-span-4">
+                                        <label class="block text-xs font-bold text-neutral-700 mb-1">Kategori
+                                            Pelatihan</label>
+                                        <select name="categories" x-model="eventForm.category"
+                                            class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2.5 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white cursor-pointer font-medium">
+                                            <template x-for="category in eventCategories" :key="category.id">
+                                                <option :value="category.id" x-text="category.name"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {{-- Baris 2: Poster & Tanggal --}}
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+
+                                    {{-- Area Upload Poster / Gambar --}}
+                                    <div class="md:col-span-6">
+                                        <label class="block text-xs font-bold text-neutral-700 mb-1">Poster / Foto
+                                            Banner
+                                            Event</label>
+                                        <label
+                                            class="flex flex-col items-center justify-center border-2 border-dashed border-neutral-300 hover:border-[#5F8C72] rounded-2xl p-4 text-center cursor-pointer bg-[#FAF5F2] hover:bg-white transition h-40 relative overflow-hidden">
+                                            <input type="file" accept="image/*" class="hidden"
+                                                @change="handleEventPoster($event)">
+
+                                            <template x-if="!eventPosterPreview">
+                                                <div class="space-y-1">
+                                                    <i class="fa-regular fa-image text-2xl text-neutral-400"></i>
+                                                    <p class="text-xs font-bold text-neutral-800">Upload Poster
+                                                        Pelatihan
+                                                    </p>
+                                                    <p class="text-[10px] text-neutral-500">Format JPG, PNG (Rasio 16:9
+                                                        disarankan)</p>
+                                                </div>
+                                            </template>
+
+                                            <template x-if="eventPosterPreview">
+                                                <div class="w-full h-full relative">
+                                                    <img :src="eventPosterPreview"
+                                                        class="w-full h-full object-cover rounded-xl">
+                                                    <span
+                                                        class="absolute bottom-2 right-2 bg-neutral-900/70 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">Ganti
+                                                        Poster</span>
+                                                </div>
+                                            </template>
+                                        </label>
+                                    </div>
+
+                                    {{-- Tanggal, Jam & Format --}}
+                                    <div class="md:col-span-6 space-y-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-neutral-700 mb-1">Tanggal
+                                                Pelaksanaan</label>
+                                            <input type="date" name="event_date" x-model="eventForm.date"
+                                                class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-4 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label
+                                                    class="block text-xs font-bold text-neutral-700 mb-1">Pendaftaran
+                                                    Dibuka</label>
+                                                <input type="date" name="open_registration_date"
+                                                    x-model="eventForm.openDate"
+                                                    class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-xs font-bold text-neutral-700 mb-1">Pendaftaran
+                                                    Ditutup</label>
+                                                <input type="date" name="close_registration_date"
+                                                    x-model="eventForm.closeDate"
+                                                    class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-neutral-700 mb-1">Lokasi / Venue
+                                                Acara</label>
+                                            <input type="text" name="location" x-model="eventForm.location"
+                                                placeholder="Grand Mercure Solo / Hotel Tentrem Jogja / Zoom Cloud"
+                                                class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-4 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                {{-- Baris 3: Pemateri, Kuota & Harga --}}
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-neutral-700 mb-1">Nama Pemateri /
+                                            Dokter
+                                            Ahli</label>
+                                        <input type="text" name="speaker" x-model="eventForm.speaker"
+                                            placeholder="dr. Annisa Pratama, Sp.OG"
+                                            class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-neutral-700 mb-1">Harga Tiket
+                                            Pendaftaran (Rp)</label>
+                                        <input type="number" name="fee" x-model="eventForm.price"
+                                            placeholder="54000"
+                                            class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-neutral-700 mb-1">Target Kuota
+                                            Peserta</label>
+                                        <input type="number" name="slot" x-model="eventForm.quota"
+                                            placeholder="100"
+                                            class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white">
+                                    </div>
+                                </div>
+
+                                {{-- Baris 4: Deskripsi & Tombol Aksi --}}
+                                <div>
+                                    <label class="block text-xs font-bold text-neutral-700 mb-1">Deskripsi Singkat &
+                                        Materi
+                                        Pembelajaran</label>
+                                    <textarea name="description" x-model="eventForm.description" rows="3"
+                                        placeholder="Tulis ringkasan topik yang akan dipelajari oleh peserta selama sesi pelatihan..."
+                                        class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl p-3.5 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white"></textarea>
+                                </div>
+
+                                <div class="flex items-center justify-end gap-3 pt-3 border-t border-neutral-100">
+                                    <button type="button" @click="showEventModal = false"
+                                        class="px-5 py-2.5 rounded-xl text-xs font-semibold text-neutral-600 hover:bg-neutral-100 transition cursor-pointer">
+                                        Batal
+                                    </button>
+                                    <button type="submit"
+                                        class="bg-[#5F8C72] hover:bg-[#4f755e] text-white font-bold py-2.5 px-6 rounded-xl text-xs flex items-center gap-2 transition shadow-sm cursor-pointer">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span>Publikasikan Pelatihan ke Website</span>
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    @endif
 
                     {{-- ── FILTER PER BULAN & ACTION BAR ── --}}
                     <div class="bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/70 shadow-2xs space-y-4">

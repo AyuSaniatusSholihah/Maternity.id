@@ -1,5 +1,45 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-27 02:00] Separate admin event creation page
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - added `resources/views/admin/events/create.blade.php`
+    - modified `app/Http/Controllers/AdminEventController.php`
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Added protected `GET /admin/event/add` and moved the add-training form into its own page.
+    - Changed the `/admin/event` action button to navigate to `/admin/event/add`; the listing no longer renders the inline form.
+    - Aligned the standalone form with the `events` schema: category, title, description, event date, registration open/close dates, location, image URL, slot, fee, and speaker.
+    - `POST /admin/event` now generates a collision-safe slug automatically and assigns the authenticated account ID to `created_by`.
+
+- **Why:** Event creation should be a separate admin workflow, and form fields must match the database contract without exposing `slug` or `created_by` as user inputs.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - `GET /admin/event` and `GET /admin/event/add` returned HTTP 200.
+    - Temporary POST persistence check created an event with generated slug `dedicated-page-check` and matching admin `created_by`, then removed it.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics and `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The old inline form markup remains disabled in the shared dashboard source for minimal-risk preservation; it is not rendered on `/admin/event`.
+
+- **Suggestions / next steps:** Add update/delete endpoints if the existing event table actions should persist changes.
+
+- **Commit:** Not committed
+
 ## [2026-10-27 01:45] Fix escaped JSON in admin Alpine state
 
 - **Agent/Session:** GitHub Copilot
@@ -84,7 +124,7 @@
 
 - **What changed:**
     - Admin event page now loads events, categories, registration counts, dates, fees, slots, availability, locations, speakers, descriptions, and image URLs from the database.
-    - Added protected `POST /admin/event` persistence with validation, slug generation, category validation, and the authenticated admin as `created_by`.
+    - Added protected `POST /admin/event` persistence with validation, collision-safe automatic slug generation, category validation, and the authenticated admin as `created_by`.
     - Replaced mock category options and non-persisted form fields with the actual `events` table columns.
     - Derived month filters from the event dates stored in the database.
 

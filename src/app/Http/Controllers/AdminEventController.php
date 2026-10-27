@@ -7,10 +7,18 @@ use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AdminEventController extends Controller
 {
+    public function create(): View
+    {
+        return view('admin.events.create', [
+            'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
+        ]);
+    }
+
     public function index(): View
     {
         $registrationCounts = DB::table('event_registration')
@@ -64,9 +72,17 @@ class AdminEventController extends Controller
             'speaker' => ['required', 'string', 'max:255'],
         ]);
 
+        $slug = Str::slug($validated['title']);
+        $baseSlug = $slug;
+        $suffix = 2;
+
+        while (Event::query()->where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $suffix++;
+        }
+
         Event::create([
             ...$validated,
-            'slug' => str($validated['title'])->slug()->value(),
+            'slug' => $slug,
             'created_by' => $request->user()->id,
         ]);
 
