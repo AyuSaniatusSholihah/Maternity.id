@@ -1099,7 +1099,7 @@
                                 <p class="text-xs text-neutral-500 mt-0.5">Daftar materi digital yang tersimpan di
                                     database.</p>
                             </div>
-                            <a href="#"
+                            <a href="{{ route('admin.ebook.create') }}"
                                 class="bg-[#5F8C72] hover:bg-[#4f755e] text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition shadow-xs">
                                 <i class="fa-solid fa-plus"></i>
                                 <span>Tambah E-Book</span>

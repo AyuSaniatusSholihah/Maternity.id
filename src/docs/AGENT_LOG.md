@@ -1,5 +1,46 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-28 01:30] Add validated ebook creation workflow
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - added `resources/views/admin/materials/create.blade.php`
+    - modified `app/Http/Controllers/AdminMaterialController.php`
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Connected the ebook list's Add button to `GET /admin/ebook/add`.
+    - Added a complete materials-schema form for category, title, description, content, and optional image URL.
+    - Added `POST /admin/ebook` validation and persistence.
+    - Generates a collision-safe slug automatically, assigns the authenticated admin account to `uploaded_by`, and lets Laravel set timestamps.
+
+- **Why:** Ebook creation must use a dedicated page, collect every user-supplied materials field, and reject incomplete or invalid data before database insertion.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - `GET /admin/ebook/add` returned HTTP 200.
+    - Empty submission validation rejected missing title/content fields.
+    - Temporary valid submission returned 302, generated slug `creation-flow-check`, assigned the current admin as `uploaded_by`, and was removed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics and `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** Related event attachment is not included because the requested creation form maps to the `materials` table columns; event relationships can be added as a separate workflow.
+
+- **Suggestions / next steps:** Add ebook edit and event-attachment management when required.
+
+- **Commit:** Not committed
+
 ## [2026-10-28 01:00] Integrate admin ebook list with database
 
 - **Agent/Session:** GitHub Copilot

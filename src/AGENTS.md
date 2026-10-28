@@ -304,6 +304,7 @@ vendor/bin/pint
 - [x] Dedicated `/admin/event/add` page for schema-aligned event creation
 - [x] Slug-based admin event editing with prefilled values
 - [x] Database-backed admin ebook list with relationship details
+- [x] Validated admin ebook creation page at `/admin/ebook/add`
 - [x] Admin dashboard document structure restored for browser rendering
 - [x] Articles feature complete: Admin protection, seeded data (20 articles), DB integration, category filtering
 

@@ -73,6 +73,8 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
     Route::put('/event/{slug}', [AdminEventController::class, 'update'])->name('admin.event.update');
 
     Route::get('/ebook', [AdminMaterialController::class, 'index'])->name('admin.ebook');
+    Route::get('/ebook/add', [AdminMaterialController::class, 'create'])->name('admin.ebook.create');
+    Route::post('/ebook', [AdminMaterialController::class, 'store'])->name('admin.ebook.store');
 });
 
 // Member Protected Routes
