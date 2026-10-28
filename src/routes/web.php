@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AdminEventController;
 use App\Http\Controllers\AdminMaterialController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EbookController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LoginController;
@@ -57,6 +58,15 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.home');
+
+    Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
+    Route::get('/users/deleted', [AdminUserController::class, 'deleted'])->name('admin.users.deleted');
+    Route::post('/users/{user_id}/restore', [AdminUserController::class, 'restore'])->name('admin.users.restore');
+    Route::get('/user/add', [AdminUserController::class, 'create'])->name('admin.users.create');
+    Route::post('/users', [AdminUserController::class, 'store'])->name('admin.users.store');
+    Route::get('/users/{user_id}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/{user_id}', [AdminUserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user_id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::get('/approval', function () {
         return view('admin.dashboard');

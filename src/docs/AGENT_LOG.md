@@ -1,5 +1,63 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-28 03:30] Derive Member Provisioner From Admin Session
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `app/Http/Controllers/AdminUserController.php`
+    - Modified: `resources/views/admin/users/create.blade.php`
+    - Modified: `resources/views/admin/users/edit.blade.php`
+    - Modified: `tests/Feature/AdminUserCreationTest.php`
+    - Modified: `tests/Feature/AdminUserEditPageTest.php`
+
+- **What changed:**
+    1. Set `members.provisioned_by` from the authenticated admin's session when creating a member account.
+    2. Removed manual provisioner inputs and request validation from the add and edit forms.
+    3. Preserve a member's original provisioner during edits; assign the acting admin when a role change creates a new member profile.
+    4. Added regression checks that submitted provisioner IDs cannot spoof creation or change existing attribution.
+
+- **Verification:** `php84 artisan test --filter=AdminUser` and Pint passed.
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Commit:** Not committed
+
+## [2026-10-28 03:00] Add Admin User Creation
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `app/Http/Controllers/AdminUserController.php`
+    - Modified: `routes/web.php`
+    - Modified: `resources/views/admin/dashboard.blade.php`
+    - Added: `resources/views/admin/users/create.blade.php`
+    - Added: `tests/Feature/AdminUserCreationTest.php`
+
+- **What changed:**
+    1. Added the admin user creation form at `GET /admin/user/add` and linked the existing Add User control to it.
+    2. Added `POST /admin/users` to validate and create the base account plus its selected member/admin profile in a database transaction.
+    3. Added conditional role-specific form fields based on the account role.
+    4. Allowed an optional password, validated confirmation and minimum length, and hashed it before storage.
+
+- **Why:** The admin user list's Add User control was not connected to a create workflow; accounts also require a matching record in the selected role table.
+
+- **Verification:**
+    - Ran `php84 artisan test --filter=AdminUserCreationTest` → passed (1 test, 12 assertions)
+    - Confirmed the feature test creates both member and admin accounts with matching role records
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Commit:** Not committed
+
 ## [2026-10-28 02:00] Store ebook content as PDFs
 
 - **Agent/Session:** GitHub Copilot

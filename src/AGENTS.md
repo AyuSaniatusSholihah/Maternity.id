@@ -286,6 +286,7 @@ vendor/bin/pint
 **Done:**
 
 - [x] Basic Laravel 13.8 project setup
+- [x] Admin manage users page available at `/admin/users` with list, add user, edit, and delete actions
 - [x] MySQL database schema (migrations fully aligned with DBML specification)
 - [x] All migration files updated: accounts (ID, auth fields), admins (account_id PK), members (proper FKs), categories (timestamps), materials (DBML fields), articles (DBML fields), events (DBML fields), products (new table)
 - [x] Foreign keys defined in rewritten migration (`2026_09_12_034032_foreign_key_relationship.php`) with event_registration, subscription_plans, subscription_payments tables

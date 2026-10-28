@@ -1,5 +1,168 @@
 # Agent Work Log — Maternity.id
 
+## [2026-10-28 00:45] Add Admin User Soft Delete and Recovery
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+  - Modified: `src/app/Models/Account.php`
+  - Modified: `src/app/Http/Controllers/AdminUserController.php`
+  - Modified: `src/routes/web.php`
+  - Modified: `src/resources/views/admin/dashboard.blade.php`
+  - Added: `src/resources/views/admin/users/deleted.blade.php`
+  - Added: `src/tests/Feature/AdminUserDeletionTest.php`
+
+- **What changed:**
+  1. Enabled Laravel soft-delete scoping for accounts, keeping deleted accounts out of normal account queries.
+  2. Added a DELETE action that updates only `accounts.deleted_at`; it does not remove account/profile data or modify `updated_at`.
+  3. Added a Deleted Users page with deletion timestamps and a Restore action; restoration clears only `deleted_at`.
+  4. Added the Deleted Users navigation button next to Add User and connected the active list's Delete button to the controller.
+  5. Added a feature test covering retained account data, active-query exclusion, deleted-user visibility, restore behavior, and unchanged `updated_at`.
+
+- **Why:**
+  - The requested workflow is reversible and must preserve account data; soft deletion uses the existing `deleted_at` column without schema changes.
+
+- **Verification:**
+  - Ran `php84 artisan test --filter=AdminUser` → passed (2 tests, 16 assertions)
+  - Ran `php84 artisan route:list --path=admin/users` → confirmed all six user-management routes
+  - Ran Pint on the changed PHP model, controller, and feature test
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Side effects / risks:**
+  - Normal Eloquent `Account` queries now exclude soft-deleted accounts by design.
+
+- **Commit:** Not yet committed
+
+## [2026-10-28 00:15] Fix Admin User Route to Follow MVC Separation
+
+- **Agent/Session:** GitHub Copilot (MAI-Code-1.1-Flash)
+
+- **Type:** refactor
+
+- **Status:** Done
+
+- **Files changed:**
+  - Added: `src/app/Http/Controllers/AdminUserController.php`
+  - Modified: `src/routes/web.php`
+
+- **What changed:**
+  1. Moved the `/admin/users` list-building logic out of the route closure and into a dedicated controller.
+  2. Kept the route file focused on registering routes only, following the project’s controller-first structure.
+
+- **Why:**
+  - The previous version worked, but it violated the project convention of keeping routes separate from model/data access logic.
+  - This change keeps the request flow consistent with the rest of the app, where controllers handle business logic and routes only delegate to them.
+
+- **Progress detail:**
+  - User management page remains available at `/admin/users`.
+  - Route logic is now cleanly separated from the model query and view preparation.
+
+- **Verification:**
+  - Ran `php84 artisan route:list --path=admin/users` and confirmed the route is still registered successfully.
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Side effects / risks:**
+  - None beyond keeping the code aligned with the project’s architecture rules.
+
+- **Suggestions / next steps:**
+  1. Continue using controller methods for any CRUD logic tied to `/admin/users`.
+  2. If the page needs add/edit/delete actions, implement those in the same controller pattern.
+
+- **Commit:** Not yet committed
+
+## [2026-10-28 00:30] Add Role-Aware User Edit Form
+
+- **Agent/Session:** GitHub Copilot (MAI-Code-1.1-Flash)
+
+- **Type:** feat | refactor
+
+- **Status:** Done
+
+- **Files changed:**
+  - Modified: `src/app/Http/Controllers/AdminUserController.php`
+  - Modified: `src/routes/web.php`
+  - Added: `src/resources/views/admin/users/edit.blade.php`
+  - Added: `src/tests/Feature/AdminUserEditPageTest.php`
+
+- **What changed:**
+  1. Added the `/admin/users/{user_id}/edit` route and controller action for editing user records.
+  2. Built a complete admin edit form for the real schema in `accounts`, `admins`, and `members` tables.
+  3. Implemented role-aware field rendering so selecting `member` shows member-only fields and selecting `admin` shows admin-only fields.
+  4. Updated the account and role-specific records in the controller during save, while keeping the route file clean and MVC-aligned.
+  5. Added a focused regression test for the edit page for a member account.
+
+- **Why:**
+  - The role model is split across separate tables, so a single form needs to present different fields depending on the selected account role.
+  - The request specifically required this behavior and the app schema confirms that admin/member information is stored in different tables.
+
+- **Progress detail:**
+  - `/admin/users/{user_id}/edit` is live and returns the user edit form.
+  - The form includes account fields plus role-specific `member` or `admin` details.
+  - Role switching in the UI reveals the correct fields without changing the underlying migration structure.
+
+- **Verification:**
+  - Ran `php84 artisan test --filter=AdminUserEditPageTest` → passed (1 test, 4 assertions)
+  - Ran `php84 artisan route:list --path=admin/users` → confirmed routes for list, edit, and update are registered
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Side effects / risks:**
+  - None. The edit form and update logic follow the existing database schema and controller pattern.
+
+- **Suggestions / next steps:**
+  1. If needed, extend the same pattern to a dedicated user create page.
+  2. Add a delete action for `/admin/users/{user_id}` using the same controller pattern.
+
+- **Commit:** Not yet committed
+
+## [2026-10-28 00:00] Add Admin Manage Users Page
+
+- **Agent/Session:** GitHub Copilot (MAI-Code-1.1-Flash)
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+  - Modified: `src/routes/web.php`
+  - Modified: `src/resources/views/admin/dashboard.blade.php`
+  - Modified: `src/AGENTS.md`
+
+- **What changed:**
+  1. Added the `/admin/users` admin route and passed the account list into the dashboard view.
+  2. Added a new sidebar item labeled “Manage Users” in the admin navigation.
+  3. Added a user management tab to the admin dashboard with an “Add User” button, a data table, and row-level “Edit” and “Delete” actions.
+  4. Updated the admin dashboard tab detection so the route correctly opens the users section.
+
+- **Why:**
+  - The request required a dedicated admin user management page that matched the current admin dashboard structure and navigation patterns.
+  - The implementation keeps the existing dashboard layout intact while adding the new route and content in the same style as the rest of the admin pages.
+
+- **Progress detail:**
+  - Route exists at `/admin/users`.
+  - Sidebar includes the new navigation entry.
+  - Table displays user key information and action buttons.
+
+- **Verification:**
+  - Ran `php84 artisan route:list --path=admin/users` and it returned the route successfully.
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Side effects / risks:**
+  - The list is backed by live `accounts` data and uses existing user fields; no schema or migration changes were made.
+
+- **Suggestions / next steps:**
+  1. Hook the Add/Edit/Delete buttons to real CRUD actions once the backend user management endpoints are implemented.
+  2. Add role-specific filters or search refinements if needed for larger user counts.
+
+- **Commit:** Not yet committed
+
 ## [2026-10-18 15:45] Fix Seeder Order and Populate Articles
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -14,7 +177,7 @@
 
 - **What changed:**
   1. **DatabaseSeeder Seeder Order**: Reordered seeders to run MaterialSeeder BEFORE EventSeeder, so the event-material N:M pivot table can be properly populated. Also added ArticleSeeder to the call stack (was missing).
-  2. **ArticleSeeder Fix**: 
+  2. **ArticleSeeder Fix**:
      - Rewrote ArticleSeeder to use correct schema: articles table has single `categories` FK (not N:M pivot)
      - Updated all 20 articles to use only existing categories from CategorySeeder (Nutrisi & Gizi, Kesehatan Mental, Olahraga & Kebugaran, Persalinan & Kelahiran, Perawatan Bayi, Gejala & Tanda, Perubahan Tubuh, Pemeriksaan Medis, Keamanan & Bahaya, Gaya Hidup)
      - Removed `keywords` field from Article::create() call (not in articles table schema)
@@ -562,11 +725,11 @@
 - **What changed:**
   1. **Event Model**: Added `protected $casts` with `date` cast to `datetime:Y-m-d` and `is_available` cast to `boolean`. This ensures dates from the database are automatically converted to Carbon instances, preventing "Call to a member function format() on string" errors.
   2. **EventController**: Completely rewrote the controller to fetch published events from database instead of hardcoded arrays.
-  3. **index() Method**: 
+  3. **index() Method**:
      - Queries only published events: `Event::where('status', 'published')->get()`
      - Transforms each event to match view structure with proper formatting
      - Date formatting: `$event->date->format('d M Y')` (e.g., "07 Jul 2026")
-     - Month extraction: `$event->date->format('M')` 
+     - Month extraction: `$event->date->format('M')`
      - Format field: Simple "ONLINE" or "OFFLINE" based on venue
      - Price formatting: "Rp" + number_format with comma/period localization
      - Fallback image handling for null poster_img
@@ -737,7 +900,6 @@
 
 - **Commit:** Pending (awaiting user confirmation to commit)
 
-
 ## [2026-10-18 14:45] Database Migration Alignment with DBML Specification
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -762,7 +924,7 @@
   1. **Accounts table**: Changed from UUID to auto-incrementing ID. Added email_verified_at, password, remember_token fields (standard Laravel auth). Added deleted_at for soft deletes. Removed profile_img and account_type (per DBML).
   2. **Admins table**: Complete redesign. Primary key is account_id (FK to accounts). Added name, email (unique), phone (20 chars), profile_img (nullable), role (50 chars, default 'active'), timestamps. Removed assigned_at, position, number_contact.
   3. **Members table**: Added auto-incrementing id. Added account_id and provisioned_by foreign keys. Updated field names: gender (1 char), date_of_birth, city, province, image_url. Removed salutation, job, zip_code, institution enum fields. All timestamps included.
-  4. **Categories table**: Changed from UUID to auto-incrementing ID. Made name and slug unique. Added description (text, nullable), timestamps. 
+  4. **Categories table**: Changed from UUID to auto-incrementing ID. Made name and slug unique. Added description (text, nullable), timestamps.
   5. **Materials table**: Changed from UUID to auto-incrementing ID. Changed categories (FK reference). Changed thumbnail_image → image_url. Changed content_link to content (text). Removed viewer_count. Added categories foreign key reference.
   6. **Articles table**: Changed from UUID to auto-incrementing ID. Changed categories (FK reference). Removed keywords, short_description, views_count, status fields. Simplified to title, slug, description, content, image_url, author string. Added categories foreign key reference.
   7. **Events table**: Changed from UUID to auto-incrementing ID. Renamed name → title, poster_img → image_url. Changed mentor_name, venue, status fields to match DBML. Added categories (FK), materials (FK), slot fields. Updated date field to event_date, added open_registration_date, close_registration_date, close_registration_date. Removed price, gc_invitation_link.
@@ -820,7 +982,6 @@
   - Verify all relationships work: Account→Admin, Account→Member, Event→Materials, etc.
 
 - **Commit:** Pending (awaiting next agent run for final validation)
-
 
 ## [2026-10-18 15:30] Comprehensive Seeding for All Database Tables
 
@@ -895,7 +1056,6 @@
 
 - **Commit:** Pending (includes 10 seeder files, 1 deleted, 1 modified DatabaseSeeder)
 
-
 ## [2026-10-18 16:35] Model and Seeder Fixes - UUID to Auto-Increment Migration
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -936,12 +1096,13 @@
   - SubscriptionPaymentsSeeder was randomly generating duplicate composite keys, violating PK constraint
 
 - **Verification:**
+
   ```
   ✅ php84 artisan migrate:fresh --seed PASSED (exit code 0)
-  
+
   Migrations: 11/11 completed in 3.2s
   Seeders: 10/10 completed in 1.9s
-  
+
   Account: 8 records
   Admin: 3 records
   Member: 5 records
@@ -1023,7 +1184,6 @@
   4. Implement admin CRUD for content management (events, articles, materials)
   5. Next feature: admin dashboard with data management, or payment verification workflow
 
-
 ## [2026-10-18 14:45] Fix: Foreign Key Type Mismatch in Products Table + Seeder Column Alignment
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -1071,7 +1231,6 @@
   2. Test that controllers can query articles by category using the `categories` column
   3. If true N:M relationships are needed in future, implement pivot tables via separate migrations
   4. Next feature: admin dashboard with CRUD operations, or event enrollment workflow
-
 
 ## [2026-10-18 14:50] Fix: Remove UUID 'id' from Composite-Key Tables (event_registration, subscription_payments)
 
@@ -1127,8 +1286,6 @@
   3. Implement admin dashboard with CRUD operations
   4. Build event enrollment and payment verification workflows
   5. Create member profile management features
-
-
 
 ## [2026-10-18 15:00] Update: Add Author/Creator FK Fields to Articles, Materials, Events
 
@@ -1201,8 +1358,6 @@
   3. Add authorization checks in controllers to ensure only article authors or admins can edit content
   4. Consider adding `keywords` and `thumbnail_image` fields to Articles if needed for SEO
 
-
-
 ## [2026-10-18 15:05] Fix: /library Page Schema Alignment
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -1246,8 +1401,6 @@
   1. Test /library page in browser to verify no runtime errors
   2. Verify ebook cards display correctly with admin author information
   3. Test sorting and filtering by date
-
-
 
 ## [2026-10-18 15:10] Fix: /articles Route Schema Alignment
 
@@ -1306,8 +1459,6 @@
   3. Test article detail page with related articles
   4. Check featured article and popular sidebar display
 
-
-
 ## [2026-10-18 15:12] Fix: Remove status Field Checks from ArticleController
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -1351,8 +1502,6 @@
 - **Suggestions / next steps:**
   1. Test /articles page in browser to verify it loads without errors
   2. Verify article listing and filtering work correctly
-
-
 
 ## [2026-10-18 15:15] Fix: /events Route Complete Schema Alignment
 
@@ -1414,8 +1563,6 @@
   3. Test event detail, checkout, verification, and approved pages
   4. Consider if price and speaker fields should be added to schema
 
-
-
 ## [2026-10-18 15:20] Feature: Add fee Column to Events Table
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -1461,8 +1608,6 @@
   2. Update views to display fee amount formatted as currency
   3. Add fee-based filtering/sorting if needed
 
-
-
 ## [2026-10-18 15:22] Update: Vary Event Fees in Seeder
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -1500,8 +1645,6 @@
   1. Verify fees display correctly in /events page
   2. Update EventController to use actual fee values instead of hardcoded 0
 
-
-
 ## [2026-10-18 15:25] Feature: Add speaker Column to Events Table
 
 - **Agent/Session:** Kiro (Claude Haiku 4.5)
@@ -1518,7 +1661,7 @@
 - **What changed:**
   1. **Events migration**: Added `$table->string('speaker', 255);` column before `created_by`
   2. **Event model**: Added `'speaker'` to fillable array
-  3. **EventSeeder**: 
+  3. **EventSeeder**:
      - Added speakers array with 6 professional names
      - Rotate speakers through events using modulo
      - Each event gets assigned a speaker name
@@ -1549,4 +1692,3 @@
   1. Update EventController to use `event->speaker` instead of null values
   2. Display speaker name in event cards and detail pages
   3. Consider adding speaker bio/description field
-

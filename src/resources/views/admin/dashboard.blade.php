@@ -46,11 +46,13 @@
             if (path.includes('/article')) return 'articles';
             if (path.includes('/event')) return 'events';
             if (path.includes('/ebook')) return 'library';
+            if (path.includes('/users')) return 'users';
             return new URLSearchParams(window.location.search).get('tab') || 'approvals';
         })(),
         mobileSidebar: false,
         searchQuery: '',
         approvalFilter: 'all',
+        users: {{ Illuminate\Support\Js::from($adminUsers ?? [])->toHtml() }},
         selectedVerification: null,
         showProofModal: false,
         verifications: [{
@@ -135,6 +137,14 @@
         get approvedCount() {
             return this.verifications.filter(v => v.status === 'approved').length;
         },
+        get filteredUsers() {
+            const term = this.searchQuery.toLowerCase();
+            return (this.users || []).filter(user => {
+                return (user.name || '').toLowerCase().includes(term) ||
+                    (user.email || '').toLowerCase().includes(term) ||
+                    (user.role || '').toLowerCase().includes(term);
+            });
+        },
         get filteredVerifications() {
             return this.verifications.filter(v => {
                 const matchStatus = (this.approvalFilter === 'all' || v.status === this.approvalFilter);
@@ -216,7 +226,19 @@
                             x-text="pendingCount"></span>
                     </a>
 
-                    {{-- 2. Tulis & Kelola Artikel Ketikan --}}
+                    {{-- 2. Kelola User --}}
+                    <a href="{{ route('admin.users') }}" @click="mobileSidebar = false"
+                        :class="activeTab === 'users' ? 'bg-[#B8E6B8] text-neutral-900 font-bold shadow-xs' :
+                            'text-neutral-600 hover:bg-[#FAF5F2] hover:text-neutral-900 font-medium'"
+                        class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition text-xs cursor-pointer text-left">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-users-gear text-xs text-emerald-800"></i>
+                            <span>Manage Users</span>
+                        </div>
+                        <span class="text-[10px] text-neutral-400 font-semibold" x-text="(users || []).length"></span>
+                    </a>
+
+                    {{-- 3. Tulis & Kelola Artikel Ketikan --}}
                     <a href="{{ route('admin.article') }}" @click="mobileSidebar = false"
                         :class="activeTab === 'articles' ? 'bg-[#B8E6B8] text-neutral-900 font-bold shadow-xs' :
                             'text-neutral-600 hover:bg-[#FAF5F2] hover:text-neutral-900 font-medium'"
@@ -228,7 +250,7 @@
                         <span class="text-[10px] text-neutral-400 font-semibold" x-text="articles.length"></span>
                     </a>
 
-                    {{-- 3. Jadwal Event & Pelatihan --}}
+                    {{-- 4. Jadwal Event & Pelatihan --}}
                     <a href="{{ route('admin.event') }}" @click="mobileSidebar = false"
                         :class="activeTab === 'events' ? 'bg-[#B8E6B8] text-neutral-900 font-bold shadow-xs' :
                             'text-neutral-600 hover:bg-[#FAF5F2] hover:text-neutral-900 font-medium'"
@@ -240,7 +262,7 @@
                         <span class="text-[10px] text-neutral-400 font-semibold" x-text="events.length"></span>
                     </a>
 
-                    {{-- 4. E-book & Modul PDF --}}
+                    {{-- 5. E-book & Modul PDF --}}
                     <a href="{{ route('admin.ebook') }}" @click="mobileSidebar = false"
                         :class="activeTab === 'library' ? 'bg-[#B8E6B8] text-neutral-900 font-bold shadow-xs' :
                             'text-neutral-600 hover:bg-[#FAF5F2] hover:text-neutral-900 font-medium'"
@@ -285,6 +307,7 @@
                     <div>
                         <h1 class="text-lg sm:text-xl font-extrabold text-neutral-900 tracking-tight font-serif-brand">
                             <span x-show="activeTab === 'approvals'">Verifikasi Pendaftaran & Pembayaran</span>
+                            <span x-show="activeTab === 'users'">Manage Users</span>
                             <span x-show="activeTab === 'articles'">Upload & Manajemen Artikel Edukasi</span>
                             <span x-show="activeTab === 'events'">Jadwal Seminar & Pelatihan</span>
                             <span x-show="activeTab === 'library'">Knowledge Library (E-Book PDF)</span>
@@ -292,6 +315,8 @@
                         <p class="text-[11px] text-neutral-500 hidden sm:block">
                             <span x-show="activeTab === 'approvals'">Verifikasi bukti transfer user untuk mengaktifkan
                                 akses pelatihan & ebook</span>
+                            <span x-show="activeTab === 'users'">Kelola akun, peran, dan data pengguna platform dengan
+                                cepat.</span>
                             <span x-show="activeTab === 'articles'">Tulis artikel ketikan berbasis SEO untuk
                                 ditampilkan di portal publik</span>
                             <span x-show="activeTab === 'events'">Atur jadwal seminar, kuota pendaftaran, dan informasi
@@ -523,7 +548,103 @@
                 </div>
 
                 {{-- ═════════════════════════════════════════════════════════
-                     TAB 2: UPLOAD & TULIS ARTIKEL KETIKAN
+                     TAB 2: MANAGE USERS
+                ═════════════════════════════════════════════════════════ --}}
+                <div x-show="activeTab === 'users'" class="space-y-6">
+                    @if (session('status'))
+                        <div
+                            class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-800">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                    <div
+                        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white rounded-3xl p-6 border border-neutral-200/70 shadow-2xs">
+                        <div>
+                            <h2 class="text-base font-bold text-neutral-900">Manage Users</h2>
+                            <p class="text-xs text-neutral-500 mt-0.5">Review account activity, permissions, and user
+                                details from one place.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a href="{{ route('admin.users.deleted') }}"
+                                class="border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-700 text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition shrink-0">
+                                <i class="fa-solid fa-trash-can text-red-500"></i>
+                                <span>Deleted Users</span>
+                            </a>
+                            <a href="{{ route('admin.users.create') }}"
+                                class="bg-[#5F8C72] hover:bg-[#4f755e] text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition shadow-xs shrink-0">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Add User</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 border border-neutral-200/70 shadow-2xs">
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="text-neutral-500 font-semibold text-[11px] border-b border-neutral-100">
+                                        <th class="py-3 px-3">User</th>
+                                        <th class="py-3 px-3">Email</th>
+                                        <th class="py-3 px-3">Role</th>
+                                        <th class="py-3 px-3">Joined</th>
+                                        <th class="py-3 px-3">Status</th>
+                                        <th class="py-3 px-3 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-neutral-100">
+                                    <template x-for="user in filteredUsers" :key="user.id">
+                                        <tr class="hover:bg-[#FAF5F2]/60 transition">
+                                            <td class="py-3.5 px-3">
+                                                <div class="flex items-center gap-3">
+                                                    <img :src="user.profile_img" alt="User avatar"
+                                                        class="w-10 h-10 rounded-full object-cover border border-neutral-200">
+                                                    <div>
+                                                        <p class="font-bold text-neutral-900" x-text="user.name"></p>
+                                                        <p class="text-[10px] text-neutral-500"
+                                                            x-text="user.id.substring(0, 8)"></p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="py-3.5 px-3 text-neutral-600" x-text="user.email"></td>
+                                            <td class="py-3.5 px-3">
+                                                <span
+                                                    class="inline-flex rounded-full bg-[#E4F5E6] px-2.5 py-1 text-[10px] font-bold text-[#428E53] uppercase"
+                                                    x-text="user.role"></span>
+                                            </td>
+                                            <td class="py-3.5 px-3 text-neutral-600" x-text="user.created_at"></td>
+                                            <td class="py-3.5 px-3">
+                                                <span
+                                                    class="inline-flex rounded-full bg-[#E4F5E6] px-2.5 py-1 text-[10px] font-bold text-[#428E53]"
+                                                    x-text="user.status"></span>
+                                            </td>
+                                            <td class="py-3.5 px-3 whitespace-nowrap text-right">
+                                                <div class="flex items-center justify-end gap-2">
+                                                    <a :href="'{{ url('/admin/users') }}/' + user.id + '/edit'"
+                                                        class="bg-[#FAF5F2] hover:bg-[#F3E1DC] text-neutral-700 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold transition cursor-pointer inline-flex items-center">
+                                                        Edit
+                                                    </a>
+                                                    <form method="POST"
+                                                        :action="'{{ url('/admin/users') }}/' + user.id"
+                                                        onsubmit="return confirm('Move this account to deleted users?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="bg-red-50 hover:bg-red-100 text-red-600 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold transition cursor-pointer">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ═════════════════════════════════════════════════════════
+                     TAB 3: UPLOAD & TULIS ARTIKEL KETIKAN
                 ═════════════════════════════════════════════════════════ --}}
                 <div x-show="activeTab === 'articles'" class="space-y-6">
 
@@ -706,7 +827,7 @@
                 </div>
 
                 {{-- ═════════════════════════════════════════════════════════
-                     TAB 3: JADWAL EVENT & PELATIHAN (EVENT LIBRARY)
+                     TAB 4: JADWAL EVENT & PELATIHAN (EVENT LIBRARY)
                 ═════════════════════════════════════════════════════════ --}}
                 <div x-show="activeTab === 'events'" class="space-y-6">
 
@@ -1088,7 +1209,7 @@
                 </div>
 
                 {{-- ═════════════════════════════════════════════════════════
-                     TAB 4: E-BOOK & KNOWLEDGE LIBRARY (PDF MODUL)
+                     TAB 5: E-BOOK & KNOWLEDGE LIBRARY (PDF MODUL)
                 ═════════════════════════════════════════════════════════ --}}
                 <div x-show="activeTab === 'library'" class="space-y-6">
                     <div class="bg-white rounded-3xl p-6 border border-neutral-200/70 shadow-2xs space-y-5">
