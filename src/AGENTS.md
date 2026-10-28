@@ -172,11 +172,18 @@ vendor/bin/pint
 7. Logs user in with `Auth::login($user)`
 8. Redirects to home page
 
-**Account Types:**
+**Account Roles:**
 
-- Existing accounts with `account_type = 'admin'` → Admin access
-- New accounts or accounts with `account_type = 'member'` → Member access
+- Existing accounts with `role = 'admin'` → Admin access
+- New accounts or accounts with `role = 'member'` → Member access
 - Admin accounts are created via seeders (AccountSeeder)
+
+**Admin Routes:**
+
+- Every `/admin` route uses `EnsureUserIsAdmin`.
+- Only authenticated accounts with `role = 'admin'` may access admin routes.
+- Unauthenticated users and members are redirected to the homepage.
+- There is no separate admin login; all accounts use the single login flow.
 
 **Protected Routes:**
 
@@ -279,6 +286,7 @@ vendor/bin/pint
 **Done:**
 
 - [x] Basic Laravel 13.8 project setup
+- [x] Admin manage users page available at `/admin/users` with list, add user, edit, and delete actions
 - [x] MySQL database schema (migrations fully aligned with DBML specification)
 - [x] All migration files updated: accounts (ID, auth fields), admins (account_id PK), members (proper FKs), categories (timestamps), materials (DBML fields), articles (DBML fields), events (DBML fields), products (new table)
 - [x] Foreign keys defined in rewritten migration (`2026_09_12_034032_foreign_key_relationship.php`) with event_registration, subscription_plans, subscription_payments tables
@@ -293,6 +301,13 @@ vendor/bin/pint
 - [x] Seeders for initial data (AccountSeeder, AdminSeeder, MemberSeeder, EventSeeder, ArticleSeeder, MaterialSeeder)
 - [x] Account role enum (`admin`, `member`) and role-aware account seeding
 - [x] Optional member profile fields with account-synchronized name/email creation
+- [x] Admin event page synchronized with event and category database data
+- [x] Dedicated `/admin/event/add` page for schema-aligned event creation
+- [x] Slug-based admin event editing with prefilled values
+- [x] Database-backed admin ebook list with relationship details
+- [x] Validated admin ebook creation page at `/admin/ebook/add`
+- [x] PDF ebook storage and protected download fallback
+- [x] Admin dashboard document structure restored for browser rendering
 - [x] Articles feature complete: Admin protection, seeded data (20 articles), DB integration, category filtering
 
 **In Progress:**

@@ -1,5 +1,544 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-28 03:30] Derive Member Provisioner From Admin Session
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `app/Http/Controllers/AdminUserController.php`
+    - Modified: `resources/views/admin/users/create.blade.php`
+    - Modified: `resources/views/admin/users/edit.blade.php`
+    - Modified: `tests/Feature/AdminUserCreationTest.php`
+    - Modified: `tests/Feature/AdminUserEditPageTest.php`
+
+- **What changed:**
+    1. Set `members.provisioned_by` from the authenticated admin's session when creating a member account.
+    2. Removed manual provisioner inputs and request validation from the add and edit forms.
+    3. Preserve a member's original provisioner during edits; assign the acting admin when a role change creates a new member profile.
+    4. Added regression checks that submitted provisioner IDs cannot spoof creation or change existing attribution.
+
+- **Verification:** `php84 artisan test --filter=AdminUser` and Pint passed.
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Commit:** Not committed
+
+## [2026-10-28 03:00] Add Admin User Creation
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `app/Http/Controllers/AdminUserController.php`
+    - Modified: `routes/web.php`
+    - Modified: `resources/views/admin/dashboard.blade.php`
+    - Added: `resources/views/admin/users/create.blade.php`
+    - Added: `tests/Feature/AdminUserCreationTest.php`
+
+- **What changed:**
+    1. Added the admin user creation form at `GET /admin/user/add` and linked the existing Add User control to it.
+    2. Added `POST /admin/users` to validate and create the base account plus its selected member/admin profile in a database transaction.
+    3. Added conditional role-specific form fields based on the account role.
+    4. Allowed an optional password, validated confirmation and minimum length, and hashed it before storage.
+
+- **Why:** The admin user list's Add User control was not connected to a create workflow; accounts also require a matching record in the selected role table.
+
+- **Verification:**
+    - Ran `php84 artisan test --filter=AdminUserCreationTest` → passed (1 test, 12 assertions)
+    - Confirmed the feature test creates both member and admin accounts with matching role records
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Commit:** Not committed
+
+## [2026-10-28 02:00] Store ebook content as PDFs
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Controllers/AdminMaterialController.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `resources/views/admin/materials/create.blade.php`
+    - modified `routes/web.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Replaced text content display in the ebook admin list with a description-only column and a PDF filename/download action.
+    - Replaced the text content textarea on the upload page with a PDF file drop zone using multipart upload.
+    - Validates required PDF uploads (`pdf`, maximum 50 MB), stores the binary in Laravel's `public` filesystem disk under `ebooks/`, and stores only the generated file path in `materials.content` metadata.
+    - Added a protected slug-based download route.
+
+- **Why:** Ebook content is now PDF-based and should not be stored as text in the database; the database retains the material metadata and storage path only.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - Fake PDF upload returned 302, stored the file under `storage/app/public/ebooks`, and persisted its path in `materials.content`; temporary record was removed.
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors after using `response()->download()`.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** Existing seeded materials whose `content` values are text will show “Belum ada PDF” until they are replaced with uploaded PDFs.
+
+- **Suggestions / next steps:** Add ebook edit/replacement support to migrate existing text-backed materials to PDF files.
+
+- **Commit:** Not committed
+
+## [2026-10-28 01:30] Add validated ebook creation workflow
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - added `resources/views/admin/materials/create.blade.php`
+    - modified `app/Http/Controllers/AdminMaterialController.php`
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Connected the ebook list's Add button to `GET /admin/ebook/add`.
+    - Added a complete materials-schema form for category, title, description, content, and optional image URL.
+    - Added `POST /admin/ebook` validation and persistence.
+    - Generates a collision-safe slug automatically, assigns the authenticated admin account to `uploaded_by`, and lets Laravel set timestamps.
+
+- **Why:** Ebook creation must use a dedicated page, collect every user-supplied materials field, and reject incomplete or invalid data before database insertion.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - `GET /admin/ebook/add` returned HTTP 200.
+    - Empty submission validation rejected missing title/content fields.
+    - Temporary valid submission returned 302, generated slug `creation-flow-check`, assigned the current admin as `uploaded_by`, and was removed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics and `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** Related event attachment is not included because the requested creation form maps to the `materials` table columns; event relationships can be added as a separate workflow.
+
+- **Suggestions / next steps:** Add ebook edit and event-attachment management when required.
+
+- **Commit:** Not committed
+
+## [2026-10-28 01:00] Integrate admin ebook list with database
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - added `app/Http/Controllers/AdminMaterialController.php`
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - `/admin/ebook` now loads all materials from the database with category, uploader/account, and attached event relationships.
+    - Replaced the mock PDF list and inline upload form with a detailed responsive table showing title, slug, image, category, description, content size, uploader, related events, and timestamps.
+    - Added a visually consistent “Tambah E-Book” button placeholder above the list; it does not create an add page yet.
+
+- **Why:** The ebook admin page needed the same database-backed listing behavior as the event page while preserving the existing admin visual system.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - `GET /admin/ebook` returned HTTP 200 and rendered all 8 seeded materials.
+    - Rendered list includes material fields and relationships: ID, slug, title, image, category, description, content preview, uploader/account ID, related events, and timestamps.
+    - Static diagnostics reported no errors in the material controller, dashboard view, or routes.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The Add button intentionally points to `#` until the separate ebook creation page is requested.
+
+- **Suggestions / next steps:** Add ebook create/edit endpoints and pages when the ebook authoring workflow is ready.
+
+- **Commit:** Not committed
+
+## [2026-10-28 00:45] Add event thumbnail placeholder fallback
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Controllers/AdminEventController.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+
+- **What changed:**
+    - Empty event image URLs now resolve to `/images/placeholder.jpg`.
+    - Event thumbnails with broken non-empty URLs also switch to the placeholder through an Alpine `x-on:error` handler, avoiding Blade's reserved `@error` directive.
+
+- **Why:** The admin event dashboard must show a consistent local placeholder whenever an event image is missing or cannot load.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - Static diagnostics reported no errors in the event controller or dashboard view.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Placeholder asset exists at `public/images/placeholder.jpg`.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The placeholder asset is expected at `public/images/placeholder.jpg`.
+
+- **Suggestions / next steps:** Confirm the fallback visually on `/admin/event` with an event that has an empty or invalid image URL.
+
+- **Commit:** Not committed
+
+## [2026-10-28 00:30] Add slug-based admin event editing
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `routes/web.php`
+    - modified `app/Http/Controllers/AdminEventController.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `resources/views/admin/events/create.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Added `GET /admin/event/{slug}/edit` and `PUT /admin/event/{slug}` routes.
+    - Changed each event list Edit button into a link to the slug-based edit page.
+    - Reused the add-event layout for edit mode with current database values prefilled.
+    - Added validated event update logic with automatic collision-safe slug generation while preserving `created_by`.
+
+- **Why:** Admins need to edit each event from the list through a dedicated page rather than an in-place placeholder action.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - Route list shows the edit GET and PUT endpoints.
+    - Normal HTTP request to an existing event edit page returned HTTP 200 with the prefilled form.
+    - Temporary update round-trip verified title, fee, generated slug, and preserved `created_by`; temporary records were removed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics and `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** Updating an event title also updates its slug; external links to the old slug may no longer resolve.
+
+- **Suggestions / next steps:** Add a redirect history strategy if old public event slugs must remain valid after title edits.
+
+- **Commit:** Not committed
+
+## [2026-10-27 02:00] Separate admin event creation page
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - added `resources/views/admin/events/create.blade.php`
+    - modified `app/Http/Controllers/AdminEventController.php`
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Added protected `GET /admin/event/add` and moved the add-training form into its own page.
+    - Changed the `/admin/event` action button to navigate to `/admin/event/add`; the listing no longer renders the inline form.
+    - Aligned the standalone form with the `events` schema: category, title, description, event date, registration open/close dates, location, image URL, slot, fee, and speaker.
+    - `POST /admin/event` now generates a collision-safe slug automatically and assigns the authenticated account ID to `created_by`.
+
+- **Why:** Event creation should be a separate admin workflow, and form fields must match the database contract without exposing `slug` or `created_by` as user inputs.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - `GET /admin/event` and `GET /admin/event/add` returned HTTP 200.
+    - Temporary POST persistence check created an event with generated slug `dedicated-page-check` and matching admin `created_by`, then removed it.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics and `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The old inline form markup remains disabled in the shared dashboard source for minimal-risk preservation; it is not rendered on `/admin/event`.
+
+- **Suggestions / next steps:** Add update/delete endpoints if the existing event table actions should persist changes.
+
+- **Commit:** Not committed
+
+## [2026-10-27 01:45] Fix escaped JSON in admin Alpine state
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `resources/views/admin/dashboard.blade.php`
+
+- **What changed:** HTML-escaped the category and event JSON injected into the dashboard's double-quoted Alpine `x-data` attribute using JSON hex encoding.
+
+- **Why:** Raw JSON quotes closed the `x-data` HTML attribute early, causing the remaining Alpine payload to appear as visible text above the admin page and preventing normal Alpine rendering.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - Replaced raw JSON/hex encoding with Laravel `Js::from(...)->toHtml()` for the Alpine event/category payloads.
+    - Rendered `GET /admin/event` output now contains `JSON.parse(...)` inside the `x-data` attribute and no serialized payload after `</body>`.
+    - `php84 artisan view:clear` and `php84 artisan view:cache` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics and `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** JSON values are decoded by the browser's HTML parser before Alpine evaluates the `x-data` expression.
+
+- **Suggestions / next steps:** Refresh the authenticated `/admin/event` page and confirm the dashboard begins at the sidebar without a visible serialized payload.
+
+- **Commit:** Not committed
+
+## [2026-10-27 01:30] Restore blank admin dashboard rendering
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Restored the missing CSS closing tags, document head closing tags, body opening tag, and Alpine `x-data` declaration at the top of the dashboard view.
+    - Restored the minimum verification and article state required by the existing admin sections.
+    - Kept the database-backed event/category state as the active event source.
+
+- **Why:** The view had been truncated after the opening `<style>` declaration, leaving JavaScript fragments inside CSS and removing the document body/Alpine boundary. Laravel returned HTTP 200, but the browser could not render the admin page.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - Rendered `GET /admin/event` as an admin returned HTTP 200.
+    - Rendered output contains valid `</head>`, `<body>`, and `</body>` boundaries.
+    - `php84 artisan view:cache` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in the dashboard view.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The article and approval sections retain their existing in-memory UI data; this fix restores rendering and does not change those data sources.
+
+- **Suggestions / next steps:** Verify `/admin/event` in an authenticated browser session after refreshing cached assets.
+
+- **Commit:** Not committed
+
+## [2026-10-27 01:00] Integrate admin event page with database
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - added `app/Http/Controllers/AdminEventController.php`
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+
+- **What changed:**
+    - Admin event page now loads events, categories, registration counts, dates, fees, slots, availability, locations, speakers, descriptions, and image URLs from the database.
+    - Added protected `POST /admin/event` persistence with validation, collision-safe automatic slug generation, category validation, and the authenticated admin as `created_by`.
+    - Replaced mock category options and non-persisted form fields with the actual `events` table columns.
+    - Derived month filters from the event dates stored in the database.
+
+- **Why:** The event admin UI previously displayed hardcoded data and only changed Alpine state; event creation did not reach the database and the UI fields did not match the schema.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 -l app/Http/Controllers/AdminEventController.php` and `php84 -l app/Models/Event.php` passed.
+    - `php84 artisan view:cache` passed.
+    - Authenticated `GET /admin/event` returned HTTP 200.
+    - Direct controller persistence check created a temporary event with the admin account as `created_by`, then removed it.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in the event controller, model, route, or dashboard view.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The existing event page remains a shared dashboard shell; edit/delete controls are still UI-only and were not expanded beyond the requested database synchronization.
+
+- **Suggestions / next steps:** Add dedicated update/delete endpoints if event editing and deletion should persist to the database.
+
+- **Commit:** Not committed
+
+## [2026-10-27 00:45] Add dedicated admin content routes
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `resources/views/admin/login.blade.php`
+
+- **What changed:**
+    - Added dedicated protected routes `/admin/approval`, `/admin/article`, `/admin/event`, and `/admin/ebook`.
+    - Replaced sidebar tab buttons with links to those routes.
+    - Updated URL-based tab selection so refreshing a dedicated route opens its matching admin section.
+    - Updated the unused legacy admin login view to reference the shared login and ebook routes instead of removed admin-only routes.
+
+- **Why:** Each admin sidebar page now has its own addressable route instead of relying only on one dashboard URL and client-side tab state.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:cache` passed.
+    - `php84 artisan route:list --path=admin` shows dedicated approval, article, event, and ebook routes.
+    - Authenticated admin requests to all four dedicated routes returned HTTP 200.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in the routes or dashboard view.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The admin sections still share the existing dashboard shell and in-memory UI data; navigation is now route-based and refresh-safe.
+
+- **Suggestions / next steps:** Replace the shared dashboard shell with dedicated Blade views when each admin page needs independent backend data or CRUD behavior.
+
+- **Commit:** Not committed
+
+## [2026-10-27 00:30] Fix stale admin login link
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `resources/views/admin/library/index.blade.php`
+
+- **What changed:** Replaced the removed `admin.login` route reference in the admin sidebar with the shared `logout` route.
+
+- **Why:** The admin portal now uses one login page and no longer defines `admin.login`; the stale route reference caused `/admin` to fail with a route-not-found 500 during dashboard rendering.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - Authenticated admin request to `GET /admin` returned HTTP 200.
+    - `php84 artisan view:cache` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in the dashboard view, admin middleware, or web routes.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The portal exit link now logs the current user out through the existing shared logout flow.
+
+- **Suggestions / next steps:** Verify the admin dashboard and logout link in the browser.
+
+- **Commit:** Not committed
+
+## [2026-10-27 00:15] Fix admin dashboard role display
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `resources/views/admin/dashboard.blade.php`
+
+- **What changed:** Replaced the admin dashboard's obsolete `account_type` display with the current `role` attribute from the authenticated account and replaced stale `admin.login` links with the shared `logout` route.
+
+- **Why:** The accounts schema now stores `admin` and `member` in `role`; `account_type` no longer exists, and the separate `admin.login` route was removed from the unified login design.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - Authenticated requests to `/admin`, `/admin/dashboard`, `/admin/approval`, `/admin/article`, `/admin/event`, and `/admin/ebook` returned HTTP 200 with full dashboard HTML.
+    - `php84 artisan view:cache` passed.
+    - Static diagnostics reported no errors in the dashboard view or event controller.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Browser access without an authenticated admin correctly redirected away from the protected page.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** None identified.
+
+- **Suggestions / next steps:** Verify the dashboard as a seeded admin account and confirm member accounts remain redirected by the admin middleware.
+
+- **Commit:** Not committed
+
+## [2026-10-27 00:00] Protect admin routes by account role
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Middleware/EnsureUserIsAdmin.php`
+    - modified `routes/web.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Changed `EnsureUserIsAdmin` to authorize only authenticated accounts whose `role` is `admin`.
+    - Removed the separate `/admin/login` GET and POST routes.
+    - Applied the custom middleware as the sole middleware for the complete `/admin` route group, so guests and members both redirect to the homepage.
+
+- **Why:** The application has one login flow and two account roles. Admin access must be determined by the authenticated account role, not the removed `account_type` field or a separate admin login page.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan route:list --path=admin` shows 7 protected admin routes and no `/admin/login` route.
+    - Middleware check confirmed guests and members redirect to the homepage, while an admin receives status 200.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors in `routes/web.php`; the middleware helper typing issue was resolved by using the `Auth` facade.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** Requests to `/admin` while logged out now redirect to `/` instead of the default `/login`; members receive the same homepage redirect.
+
+- **Suggestions / next steps:** Exercise `/admin` with a seeded admin and member account in the browser to confirm the dashboard is available only to admins.
+
+- **Commit:** Not committed
+
 ## [2026-10-26 17:50] Use account ID as the member primary key
 
 - **Agent/Session:** GitHub Copilot

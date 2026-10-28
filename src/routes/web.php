@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminEventController;
+use App\Http\Controllers\AdminMaterialController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EbookController;
 use App\Http\Controllers\EventController;
@@ -47,7 +50,7 @@ Route::get('/mitra', function () {
 })->name('mitra.index');
 
 // Admin Knowledge & Portal Routes
-Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admin')->group(function () {
+Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admin')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
@@ -56,33 +59,33 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->pref
         return view('admin.dashboard');
     })->name('admin.home');
 
-    Route::get('/approvals', function () {
-        return view('admin.dashboard');
-    })->name('admin.approvals');
+    Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
+    Route::get('/users/deleted', [AdminUserController::class, 'deleted'])->name('admin.users.deleted');
+    Route::post('/users/{user_id}/restore', [AdminUserController::class, 'restore'])->name('admin.users.restore');
+    Route::get('/user/add', [AdminUserController::class, 'create'])->name('admin.users.create');
+    Route::post('/users', [AdminUserController::class, 'store'])->name('admin.users.store');
+    Route::get('/users/{user_id}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/{user_id}', [AdminUserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user_id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 
-    Route::get('/articles', function () {
+    Route::get('/approval', function () {
         return view('admin.dashboard');
-    })->name('admin.articles');
+    })->name('admin.approval');
 
-    Route::get('/events', function () {
+    Route::get('/article', function () {
         return view('admin.dashboard');
-    })->name('admin.events');
+    })->name('admin.article');
 
-    Route::get('/library', function () {
-        return view('admin.dashboard');
-    })->name('admin.library');
+    Route::get('/event', [AdminEventController::class, 'index'])->name('admin.event');
+    Route::get('/event/add', [AdminEventController::class, 'create'])->name('admin.event.create');
+    Route::get('/event/{slug}/edit', [AdminEventController::class, 'edit'])->name('admin.event.edit');
+    Route::post('/event', [AdminEventController::class, 'store'])->name('admin.event.store');
+    Route::put('/event/{slug}', [AdminEventController::class, 'update'])->name('admin.event.update');
 
-    Route::get('/content-library', function () {
-        return view('admin.dashboard');
-    })->name('admin.content-library');
-});
-
-// Admin Login (Guest only)
-Route::middleware(['guest'])->group(function () {
-    Route::get('/admin/login', function () {
-        return view('admin.login');
-    })->name('admin.login');
-    Route::post('/admin/login', [LoginController::class, 'adminLogin'])->name('admin.login.post');
+    Route::get('/ebook', [AdminMaterialController::class, 'index'])->name('admin.ebook');
+    Route::get('/ebook/add', [AdminMaterialController::class, 'create'])->name('admin.ebook.create');
+    Route::post('/ebook', [AdminMaterialController::class, 'store'])->name('admin.ebook.store');
+    Route::get('/ebook/{slug}/download', [AdminMaterialController::class, 'download'])->name('admin.ebook.download');
 });
 
 // Member Protected Routes

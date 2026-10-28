@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
 {
@@ -34,5 +33,6 @@ class Event extends Model
     public function materials(): BelongsToMany {
         return $this->belongsToMany(Material::class, 'event_material', 'event_id', 'material_id');
     }
+
 }
 
