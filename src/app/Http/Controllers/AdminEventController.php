@@ -55,7 +55,7 @@ class AdminEventController extends Controller
                 'quota' => $event->slot,
                 'registered' => (int) ($registrationCounts[$event->id] ?? 0),
                 'status' => $event->is_available ? 'open' : 'closed',
-                'posterUrl' => $event->image_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0287e6c?auto=format&fit=crop&q=80&w=400',
+                'posterUrl' => $event->image_url ?: asset('images/placeholder.jpg'),
             ])
             ->values();
 

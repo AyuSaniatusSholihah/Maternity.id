@@ -983,6 +983,7 @@
                                             <td class="py-3.5 px-3">
                                                 <div class="flex items-center gap-3">
                                                     <img :src="ev.posterUrl" alt="Poster"
+                                                        x-on:error="$event.target.src = '{{ asset('images/placeholder.jpg') }}'"
                                                         class="w-12 h-12 rounded-xl object-cover border border-neutral-200 shrink-0">
                                                     <div class="min-w-0">
                                                         <p class="font-bold text-neutral-900 group-hover:text-[#5F8C72] transition leading-snug"

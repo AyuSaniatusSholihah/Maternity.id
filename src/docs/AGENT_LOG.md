@@ -1,5 +1,40 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-28 00:45] Add event thumbnail placeholder fallback
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Controllers/AdminEventController.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+
+- **What changed:**
+    - Empty event image URLs now resolve to `/images/placeholder.jpg`.
+    - Event thumbnails with broken non-empty URLs also switch to the placeholder through an Alpine `x-on:error` handler, avoiding Blade's reserved `@error` directive.
+
+- **Why:** The admin event dashboard must show a consistent local placeholder whenever an event image is missing or cannot load.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - Static diagnostics reported no errors in the event controller or dashboard view.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Placeholder asset exists at `public/images/placeholder.jpg`.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The placeholder asset is expected at `public/images/placeholder.jpg`.
+
+- **Suggestions / next steps:** Confirm the fallback visually on `/admin/event` with an event that has an empty or invalid image URL.
+
+- **Commit:** Not committed
+
 ## [2026-10-28 00:30] Add slug-based admin event editing
 
 - **Agent/Session:** GitHub Copilot
