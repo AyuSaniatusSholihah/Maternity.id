@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AdminEventController;
+use App\Http\Controllers\AdminMaterialController;
 use App\Http\Controllers\EbookController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LoginController;
@@ -71,9 +72,7 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
     Route::post('/event', [AdminEventController::class, 'store'])->name('admin.event.store');
     Route::put('/event/{slug}', [AdminEventController::class, 'update'])->name('admin.event.update');
 
-    Route::get('/ebook', function () {
-        return view('admin.dashboard');
-    })->name('admin.ebook');
+    Route::get('/ebook', [AdminMaterialController::class, 'index'])->name('admin.ebook');
 });
 
 // Member Protected Routes

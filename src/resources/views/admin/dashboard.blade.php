@@ -114,31 +114,7 @@
         },
     
         // ── DATA E-BOOK PDF ──
-        pdfResources: [{
-                id: 1,
-                title: 'Nutritional Guide for Expectant Mothers v2.pdf',
-                type: 'Nutrisi',
-                categoryColor: 'bg-[#FCEBE7] text-[#C97A70]',
-                size: '4.8 MB',
-                date: '12 Okt 2024',
-                uploader: 'Sarah Admin',
-                views: 450,
-                downloads: 120,
-                linkedEvent: 'Seminar Gizi 1000 Hari Pertama'
-            },
-            {
-                id: 2,
-                title: 'Prenatal Yoga & Breathing Techniques.pdf',
-                type: 'Yoga',
-                categoryColor: 'bg-[#E4F5E6] text-[#428E53]',
-                size: '7.2 MB',
-                date: '08 Okt 2024',
-                uploader: 'Bidan Ratna',
-                views: 320,
-                downloads: 98,
-                linkedEvent: 'Mindful Motherhood Workshop'
-            }
-        ],
+        pdfResources: {{ Illuminate\Support\Js::from($adminMaterials ?? [])->toHtml() }},
     
         // ── METHOD APPROVAL ACTION ──
         approveVerification(item) {
@@ -1115,72 +1091,110 @@
                      TAB 4: E-BOOK & KNOWLEDGE LIBRARY (PDF MODUL)
                 ═════════════════════════════════════════════════════════ --}}
                 <div x-show="activeTab === 'library'" class="space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                        {{-- Kolom Kiri: Tabel PDF --}}
+                    <div class="bg-white rounded-3xl p-6 border border-neutral-200/70 shadow-2xs space-y-5">
                         <div
-                            class="lg:col-span-8 bg-white rounded-3xl p-6 border border-neutral-200/70 shadow-2xs space-y-4">
-                            <div class="flex items-center justify-between pb-3 border-b border-neutral-100">
-                                <h3 class="font-bold text-sm text-neutral-900">Repositori Modul PDF E-Library</h3>
-                                <span class="text-xs text-neutral-500">Total: <strong
-                                        x-text="pdfResources.length"></strong> dokumen</span>
+                            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-100">
+                            <div>
+                                <h2 class="text-base font-bold text-neutral-900">Repositori E-Book & Modul</h2>
+                                <p class="text-xs text-neutral-500 mt-0.5">Daftar materi digital yang tersimpan di
+                                    database.</p>
                             </div>
-                            <div class="divide-y divide-neutral-100">
-                                <template x-for="pdf in pdfResources" :key="pdf.id">
-                                    <div class="py-3 flex items-center justify-between gap-3">
-                                        <div class="flex items-start gap-3 min-w-0">
-                                            <div
-                                                class="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
-                                                <i class="fa-solid fa-file-pdf"></i>
-                                            </div>
-                                            <div class="min-w-0">
-                                                <p class="font-bold text-xs text-neutral-900 truncate"
-                                                    x-text="pdf.title"></p>
-                                                <div
-                                                    class="flex items-center gap-2 text-[10px] text-neutral-500 mt-0.5">
-                                                    <span :class="pdf.categoryColor"
-                                                        class="px-2 py-0.5 rounded-full font-bold"
-                                                        x-text="pdf.type"></span>
-                                                    <span class="font-mono" x-text="pdf.size"></span>
-                                                    <span x-text="pdf.date"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center gap-1.5 shrink-0">
-                                            <button type="button"
-                                                class="p-1.5 text-neutral-500 hover:text-emerald-700"><i
-                                                    class="fa-solid fa-download text-xs"></i></button>
-                                            <button type="button"
-                                                @click="pdfResources = pdfResources.filter(p => p.id !== pdf.id)"
-                                                class="p-1.5 text-neutral-500 hover:text-red-700"><i
-                                                    class="fa-solid fa-trash text-xs"></i></button>
-                                        </div>
-                                    </div>
-                                </template>
-                            </div>
+                            <a href="#"
+                                class="bg-[#5F8C72] hover:bg-[#4f755e] text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition shadow-xs">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Tambah E-Book</span>
+                            </a>
                         </div>
 
-                        {{-- Kolom Kanan: Upload PDF Panel --}}
-                        <div
-                            class="lg:col-span-4 bg-white rounded-3xl p-6 border border-neutral-200/70 shadow-2xs space-y-4">
-                            <h3 class="font-bold text-sm text-neutral-900 flex items-center gap-2">
-                                <i class="fa-solid fa-cloud-arrow-up text-[#5F8C72]"></i>
-                                <span>Upload PDF Baru</span>
-                            </h3>
-                            <div
-                                class="border-2 border-dashed border-neutral-300 rounded-2xl p-6 text-center hover:border-[#5F8C72] transition cursor-pointer">
-                                <i class="fa-regular fa-file-pdf text-3xl text-neutral-400 mb-2"></i>
-                                <p class="text-xs font-bold text-neutral-800">Pilih File PDF</p>
-                                <p class="text-[10px] text-neutral-400 mt-1">Maksimal ukuran file 50 MB</p>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-neutral-700 mb-1">Judul E-Book</label>
-                                <input type="text" placeholder="Contoh: Panduan Nutrisi.pdf"
-                                    class="w-full bg-[#FAF5F2] border border-neutral-300 rounded-xl px-3.5 py-2 text-xs text-neutral-800">
-                            </div>
-                            <button type="button" @click="alert('File PDF berhasil diupload ke Knowledge Library!')"
-                                class="w-full bg-[#5F8C72] hover:bg-[#4f755e] text-white font-bold py-2.5 px-4 rounded-xl text-xs transition cursor-pointer">
-                                Simpan ke Library
-                            </button>
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full min-w-[1240px] text-left text-xs">
+                                <thead>
+                                    <tr class="text-neutral-500 font-semibold text-[11px] border-b border-neutral-100">
+                                        <th class="py-3 px-3">E-Book / ID</th>
+                                        <th class="py-3 px-3">Kategori</th>
+                                        <th class="py-3 px-3">Deskripsi & Konten</th>
+                                        <th class="py-3 px-3">Uploader</th>
+                                        <th class="py-3 px-3">Event Terkait</th>
+                                        <th class="py-3 px-3">Dibuat / Diubah</th>
+                                        <th class="py-3 px-3 text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-neutral-100">
+                                    @forelse (($adminMaterials ?? collect()) as $material)
+                                        <tr class="hover:bg-[#FAF5F2]/60 transition align-top">
+                                            <td class="py-4 px-3 max-w-[230px]">
+                                                <div class="flex items-start gap-3">
+                                                    <img src="{{ $material['imageUrl'] }}"
+                                                        alt="{{ $material['title'] }}"
+                                                        x-on:error="$event.target.src = '{{ asset('images/placeholder.jpg') }}'"
+                                                        class="w-12 h-12 rounded-xl object-cover border border-neutral-200 shrink-0">
+                                                    <div class="min-w-0">
+                                                        <p class="font-bold text-neutral-900 leading-snug">
+                                                            {{ $material['title'] }}</p>
+                                                        <p
+                                                            class="mt-1 text-[10px] text-neutral-500 font-mono break-all">
+                                                            {{ $material['slug'] }}</p>
+                                                        <p
+                                                            class="mt-1 text-[9px] text-neutral-400 font-mono break-all">
+                                                            ID: {{ $material['id'] }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-3 whitespace-nowrap">
+                                                <span
+                                                    class="inline-flex rounded-full bg-[#FAF5F2] px-2.5 py-1 text-[10px] font-bold text-[#8C433C]">{{ $material['category'] }}</span>
+                                            </td>
+                                            <td
+                                                class="py-4 px-3 max-w-[240px] text-[11px] leading-relaxed text-neutral-600">
+                                                <p><span class="font-semibold text-neutral-700">Deskripsi:</span>
+                                                    {{ $material['description'] }}</p>
+                                                <p class="mt-1"><span
+                                                        class="font-semibold text-neutral-700">Konten:</span>
+                                                    {{ mb_substr($material['content'], 0, 180) }}{{ strlen($material['content']) > 180 ? '...' : '' }}
+                                                </p>
+                                            </td>
+                                            <td class="py-4 px-3 whitespace-nowrap">
+                                                <p class="font-semibold text-neutral-800">{{ $material['uploader'] }}
+                                                </p>
+                                                <p class="mt-1 text-[10px] text-neutral-500">
+                                                    {{ $material['uploaderEmail'] }}</p>
+                                                <p class="mt-1 text-[9px] text-neutral-400 font-mono break-all">ID:
+                                                    {{ $material['uploadedBy'] }}</p>
+                                            </td>
+                                            <td class="py-4 px-3 max-w-[200px]">
+                                                @if (count($material['events']))
+                                                    <div class="space-y-1">
+                                                        @foreach ($material['events'] as $eventTitle)
+                                                            <p class="text-[11px] text-neutral-600">
+                                                                {{ $eventTitle }}</p>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <span class="text-[11px] text-neutral-400">Belum terhubung</span>
+                                                @endif
+                                            </td>
+                                            <td class="py-4 px-3 whitespace-nowrap text-[10px] text-neutral-500">
+                                                <p>{{ $material['createdAt'] }}</p>
+                                                <p class="mt-1">{{ $material['updatedAt'] }}</p>
+                                            </td>
+                                            <td class="py-4 px-3 whitespace-nowrap text-right">
+                                                <a href="#"
+                                                    class="p-1.5 text-neutral-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                                    title="Edit E-Book">
+                                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="py-12 text-center text-neutral-400">
+                                                <i class="fa-regular fa-folder-open text-2xl mb-2"></i>
+                                                <p class="font-bold text-xs text-neutral-700">Belum ada e-book</p>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

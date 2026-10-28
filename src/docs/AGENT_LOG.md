@@ -1,5 +1,43 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-28 01:00] Integrate admin ebook list with database
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - added `app/Http/Controllers/AdminMaterialController.php`
+    - modified `routes/web.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - `/admin/ebook` now loads all materials from the database with category, uploader/account, and attached event relationships.
+    - Replaced the mock PDF list and inline upload form with a detailed responsive table showing title, slug, image, category, description, content size, uploader, related events, and timestamps.
+    - Added a visually consistent “Tambah E-Book” button placeholder above the list; it does not create an add page yet.
+
+- **Why:** The ebook admin page needed the same database-backed listing behavior as the event page while preserving the existing admin visual system.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - `GET /admin/ebook` returned HTTP 200 and rendered all 8 seeded materials.
+    - Rendered list includes material fields and relationships: ID, slug, title, image, category, description, content preview, uploader/account ID, related events, and timestamps.
+    - Static diagnostics reported no errors in the material controller, dashboard view, or routes.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** The Add button intentionally points to `#` until the separate ebook creation page is requested.
+
+- **Suggestions / next steps:** Add ebook create/edit endpoints and pages when the ebook authoring workflow is ready.
+
+- **Commit:** Not committed
+
 ## [2026-10-28 00:45] Add event thumbnail placeholder fallback
 
 - **Agent/Session:** GitHub Copilot
