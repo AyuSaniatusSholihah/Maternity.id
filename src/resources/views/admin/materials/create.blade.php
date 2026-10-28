@@ -42,7 +42,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.ebook.store') }}" method="POST"
+        <form action="{{ route('admin.ebook.store') }}" method="POST" enctype="multipart/form-data"
             class="space-y-6 rounded-3xl border border-neutral-200/70 bg-white p-5 shadow-sm sm:p-8">
             @csrf
             <div class="grid gap-5 md:grid-cols-2">
@@ -66,6 +66,18 @@
                         placeholder="Contoh: Panduan Nutrisi Ibu Hamil">
                 </div>
                 <div class="md:col-span-2">
+                    <label for="pdf_file" class="mb-1.5 block text-xs font-bold text-neutral-700">File PDF <span
+                            class="text-red-500">*</span></label>
+                    <label for="pdf_file"
+                        class="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-300 bg-[#FAF5F2] p-8 text-center transition hover:border-[#5F8C72] hover:bg-white">
+                        <i class="fa-regular fa-file-pdf mb-2 text-3xl text-[#B96A5C]"></i>
+                        <span class="text-xs font-bold text-neutral-800">Pilih file PDF atau tarik ke area ini</span>
+                        <span class="mt-1 text-[10px] text-neutral-500">Maksimal ukuran 50 MB</span>
+                        <input id="pdf_file" type="file" name="pdf_file" accept="application/pdf,.pdf" required
+                            class="sr-only">
+                    </label>
+                </div>
+                <div class="md:col-span-2">
                     <label for="image_url" class="mb-1.5 block text-xs font-bold text-neutral-700">URL Gambar</label>
                     <input id="image_url" type="url" name="image_url" value="{{ old('image_url') }}" maxlength="255"
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20"
@@ -77,13 +89,6 @@
                     <textarea id="description" name="description" rows="4" required
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20"
                         placeholder="Ringkasan isi e-book">{{ old('description') }}</textarea>
-                </div>
-                <div class="md:col-span-2">
-                    <label for="content" class="mb-1.5 block text-xs font-bold text-neutral-700">Konten E-Book <span
-                            class="text-red-500">*</span></label>
-                    <textarea id="content" name="content" rows="12" required
-                        class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20"
-                        placeholder="Tulis atau tempel konten materi e-book">{{ old('content') }}</textarea>
                 </div>
             </div>
             <div class="flex items-center justify-end gap-3 border-t border-neutral-100 pt-5">

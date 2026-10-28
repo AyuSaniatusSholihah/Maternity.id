@@ -6,8 +6,10 @@ use App\Models\Category;
 use App\Models\Material;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AdminMaterialController extends Controller
 {
@@ -29,7 +31,12 @@ class AdminMaterialController extends Controller
                 'title' => $material->title,
                 'slug' => $material->slug,
                 'description' => $material->description,
-                'content' => $material->content,
+                'fileName' => $material->content && Storage::disk('public')->exists($material->content)
+                    ? basename($material->content)
+                    : null,
+                'downloadUrl' => $material->content && Storage::disk('public')->exists($material->content)
+                    ? route('admin.ebook.download', $material->slug)
+                    : null,
                 'uploadedBy' => $material->uploaded_by,
                 'imageUrl' => $material->image_url ?: asset('images/placeholder.jpg'),
                 'category' => $material->category?->name ?? 'Tanpa kategori',
@@ -52,14 +59,19 @@ class AdminMaterialController extends Controller
             'categories' => ['required', 'uuid', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'content' => ['required', 'string'],
+            'pdf_file' => ['required', 'file', 'mimes:pdf', 'max:51200'],
             'image_url' => ['nullable', 'url', 'max:255'],
         ]);
 
         $slug = $this->uniqueSlug($validated['title']);
+        $filePath = $request->file('pdf_file')->store('ebooks', 'public');
 
         Material::create([
-            ...$validated,
+            'categories' => $validated['categories'],
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'content' => $filePath,
+            'image_url' => $validated['image_url'] ?? null,
             'slug' => $slug,
             'uploaded_by' => $request->user()->id,
         ]);
@@ -67,6 +79,19 @@ class AdminMaterialController extends Controller
         return redirect()
             ->route('admin.ebook')
             ->with('status', 'E-book berhasil ditambahkan.');
+    }
+
+    public function download(string $slug): BinaryFileResponse
+    {
+        $material = Material::query()->where('slug', $slug)->firstOrFail();
+
+        abort_unless(Storage::disk('public')->exists($material->content), 404);
+
+        return response()->download(
+            Storage::disk('public')->path($material->content),
+            basename($material->content),
+            ['Content-Type' => 'application/pdf'],
+        );
     }
 
     private function uniqueSlug(string $title): string

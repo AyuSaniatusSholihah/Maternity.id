@@ -1,5 +1,45 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-28 02:00] Store ebook content as PDFs
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat / refactor
+
+- **Status:** Done
+
+- **Files changed:**
+    - modified `app/Http/Controllers/AdminMaterialController.php`
+    - modified `resources/views/admin/dashboard.blade.php`
+    - modified `resources/views/admin/materials/create.blade.php`
+    - modified `routes/web.php`
+    - modified `AGENTS.md`
+
+- **What changed:**
+    - Replaced text content display in the ebook admin list with a description-only column and a PDF filename/download action.
+    - Replaced the text content textarea on the upload page with a PDF file drop zone using multipart upload.
+    - Validates required PDF uploads (`pdf`, maximum 50 MB), stores the binary in Laravel's `public` filesystem disk under `ebooks/`, and stores only the generated file path in `materials.content` metadata.
+    - Added a protected slug-based download route.
+
+- **Why:** Ebook content is now PDF-based and should not be stored as text in the database; the database retains the material metadata and storage path only.
+
+- **Progress detail:** Fully completed.
+
+- **Verification:**
+    - Fake PDF upload returned 302, stored the file under `storage/app/public/ebooks`, and persisted its path in `materials.content`; temporary record was removed.
+    - `php84 artisan view:clear && php84 artisan view:cache` passed.
+    - `php84 artisan test` passed: 2 tests, 2 assertions.
+    - Static diagnostics reported no errors after using `response()->download()`.
+    - `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched.
+
+- **Side effects / risks:** Existing seeded materials whose `content` values are text will show “Belum ada PDF” until they are replaced with uploaded PDFs.
+
+- **Suggestions / next steps:** Add ebook edit/replacement support to migrate existing text-backed materials to PDF files.
+
+- **Commit:** Not committed
+
 ## [2026-10-28 01:30] Add validated ebook creation workflow
 
 - **Agent/Session:** GitHub Copilot

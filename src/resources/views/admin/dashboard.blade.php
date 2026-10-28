@@ -1112,7 +1112,8 @@
                                     <tr class="text-neutral-500 font-semibold text-[11px] border-b border-neutral-100">
                                         <th class="py-3 px-3">E-Book / ID</th>
                                         <th class="py-3 px-3">Kategori</th>
-                                        <th class="py-3 px-3">Deskripsi & Konten</th>
+                                        <th class="py-3 px-3">Deskripsi</th>
+                                        <th class="py-3 px-3">File PDF</th>
                                         <th class="py-3 px-3">Uploader</th>
                                         <th class="py-3 px-3">Event Terkait</th>
                                         <th class="py-3 px-3">Dibuat / Diubah</th>
@@ -1146,12 +1147,18 @@
                                             </td>
                                             <td
                                                 class="py-4 px-3 max-w-[240px] text-[11px] leading-relaxed text-neutral-600">
-                                                <p><span class="font-semibold text-neutral-700">Deskripsi:</span>
-                                                    {{ $material['description'] }}</p>
-                                                <p class="mt-1"><span
-                                                        class="font-semibold text-neutral-700">Konten:</span>
-                                                    {{ mb_substr($material['content'], 0, 180) }}{{ strlen($material['content']) > 180 ? '...' : '' }}
-                                                </p>
+                                                {{ $material['description'] }}
+                                            </td>
+                                            <td class="py-4 px-3 max-w-[190px]">
+                                                @if ($material['downloadUrl'])
+                                                    <a href="{{ $material['downloadUrl'] }}"
+                                                        class="inline-flex items-center gap-2 rounded-xl bg-[#FAF5F2] px-3 py-2 text-[10px] font-bold text-[#8C433C] hover:bg-[#F3E1DC]">
+                                                        <i class="fa-solid fa-download"></i>
+                                                        <span class="break-all">{{ $material['fileName'] }}</span>
+                                                    </a>
+                                                @else
+                                                    <span class="text-[11px] text-neutral-400">Belum ada PDF</span>
+                                                @endif
                                             </td>
                                             <td class="py-4 px-3 whitespace-nowrap">
                                                 <p class="font-semibold text-neutral-800">{{ $material['uploader'] }}

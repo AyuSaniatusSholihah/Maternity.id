@@ -75,6 +75,7 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
     Route::get('/ebook', [AdminMaterialController::class, 'index'])->name('admin.ebook');
     Route::get('/ebook/add', [AdminMaterialController::class, 'create'])->name('admin.ebook.create');
     Route::post('/ebook', [AdminMaterialController::class, 'store'])->name('admin.ebook.store');
+    Route::get('/ebook/{slug}/download', [AdminMaterialController::class, 'download'])->name('admin.ebook.download');
 });
 
 // Member Protected Routes
