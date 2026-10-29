@@ -89,10 +89,12 @@
                 </div>
                 <div class="md:col-span-2">
                     <span class="mb-1.5 block text-xs font-bold text-neutral-700">File PDF</span>
-                    <div class="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-neutral-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div
+                        class="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-neutral-50 p-4 sm:flex-row sm:items-center sm:justify-between">
                         <div class="flex min-w-0 items-center gap-3">
                             <i class="fa-regular fa-file-pdf text-xl text-[#B96A5C]"></i>
-                            <span class="break-all text-xs font-semibold text-neutral-700">{{ basename($material->content) }}</span>
+                            <span
+                                class="break-all text-xs font-semibold text-neutral-700">{{ basename($material->content) }}</span>
                         </div>
                         @if ($material->content && \Illuminate\Support\Facades\Storage::disk('public')->exists($material->content))
                             <a href="{{ route('admin.ebook.download', $material->slug) }}"
