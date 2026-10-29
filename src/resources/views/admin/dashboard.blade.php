@@ -1306,11 +1306,24 @@
                                                 <p class="mt-1">{{ $material['updatedAt'] }}</p>
                                             </td>
                                             <td class="py-4 px-3 whitespace-nowrap text-right">
-                                                <a href="#"
-                                                    class="p-1.5 text-neutral-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                                                    title="Edit E-Book">
-                                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
-                                                </a>
+                                                <div class="inline-flex items-center gap-1">
+                                                    <a href="{{ route('admin.ebook.edit', $material['id']) }}"
+                                                        class="p-1.5 text-neutral-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                                        title="Edit E-Book">
+                                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                                    </a>
+                                                    <form action="{{ route('admin.ebook.destroy', $material['id']) }}"
+                                                        method="POST"
+                                                        onsubmit="return confirm('Hapus e-book ini secara permanen beserta file PDF-nya?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="p-1.5 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                                                            title="Hapus E-Book">
+                                                            <i class="fa-solid fa-trash-can text-xs"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
