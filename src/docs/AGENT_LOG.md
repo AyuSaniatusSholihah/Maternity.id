@@ -1,5 +1,80 @@
 # Agent Log - Maternity.id Project
 
+## [2026-10-30 02:00] Fix Empty E-Book Dropdown on Event Edit
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `resources/views/admin/events/create.blade.php`
+    - Modified: `tests/Feature/AdminEventMaterialsTest.php`
+
+- **What changed:**
+    1. Loaded Alpine.js on the standalone event form, where the material dropdown and table rely on Alpine directives.
+    2. Extended the event-material feature test to verify the Alpine script is included in the edit response.
+
+- **Why:** The page previously used `x-data`, `x-for`, and `x-model` without loading Alpine.js, leaving the dynamic material option list uninitialized.
+
+- **Verification:** `php84 artisan test --filter=AdminEventMaterialsTest` passed (1 test, 14 assertions).
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Commit:** Not committed
+
+## [2026-10-30 01:30] Replace Event E-Book Checkboxes With Table
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** refactor / feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `resources/views/admin/events/create.blade.php`
+    - Modified: `tests/Feature/AdminEventMaterialsTest.php`
+
+- **What changed:**
+    1. Replaced the edit form's checkbox grid with a table showing the e-books currently linked to the event.
+    2. Added an X action to remove a linked e-book from the pending selection.
+    3. Added a dropdown and Add button that puts unlinked e-books into the table before saving.
+    4. Kept the existing `materials[]` submission and event pivot synchronization behavior.
+
+- **Verification:** `php84 artisan test --filter=AdminEventMaterialsTest` passed (1 test, 13 assertions); Blade compilation and `git diff --check` passed.
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Commit:** Not committed
+
+## [2026-10-30 01:00] Manage E-Books on Event Edit Page
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `app/Http/Controllers/AdminEventController.php`
+    - Modified: `app/Models/Event.php`
+    - Modified: `app/Models/Material.php`
+    - Modified: `resources/views/admin/events/create.blade.php`
+    - Added: `tests/Feature/AdminEventMaterialsTest.php`
+
+- **What changed:**
+    1. Added an e-book selection section below the event fields on the event edit form.
+    2. Existing event attachments are preselected; saving synchronizes checked e-books and removes unchecked attachments.
+    3. Validated submitted material IDs and performed event updates plus attachment synchronization in a transaction.
+    4. Enabled timestamps on both sides of the event-material pivot relationship to match the pivot schema.
+
+- **Verification:** `php84 artisan test --filter=AdminEventMaterialsTest` passed (1 test, 10 assertions).
+
+- **Migration check:** Confirmed: no migration files touched
+
+- **Commit:** Not committed
+
 ## [2026-10-30 00:30] Lock E-Book Uploader and Add Permanent Delete
 
 - **Agent/Session:** GitHub Copilot

@@ -22,17 +22,18 @@ class Event extends Model
         'is_available' => 'boolean',
     ];
 
-    public function category(): BelongsTo {
+    public function category(): BelongsTo
+    {
         return $this->belongsTo(Category::class, 'categories', 'id');
     }
 
-    public function creator(): BelongsTo {
+    public function creator(): BelongsTo
+    {
         return $this->belongsTo(Admin::class, 'created_by', 'account_id');
     }
 
-    public function materials(): BelongsToMany {
-        return $this->belongsToMany(Material::class, 'event_material', 'event_id', 'material_id');
+    public function materials(): BelongsToMany
+    {
+        return $this->belongsToMany(Material::class, 'event_material', 'event_id', 'material_id')->withTimestamps();
     }
-
 }
-
