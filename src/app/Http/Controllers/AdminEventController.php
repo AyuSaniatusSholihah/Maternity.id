@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Event;
+use App\Models\Material;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,9 +23,12 @@ class AdminEventController extends Controller
 
     public function edit(string $slug): View
     {
+        $event = Event::query()->with('materials')->where('slug', $slug)->firstOrFail();
+
         return view('admin.events.create', [
             'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
-            'event' => Event::query()->where('slug', $slug)->firstOrFail(),
+            'adminMaterials' => Material::query()->orderBy('title')->get(['id', 'title', 'description']),
+            'event' => $event,
         ]);
     }
 
@@ -48,10 +52,10 @@ class AdminEventController extends Controller
                 'month' => $event->event_date->format('Y-m'),
                 'monthLabel' => $event->event_date->format('F Y'),
                 'date' => $event->event_date->translatedFormat('d M Y'),
-                'registrationPeriod' => $event->open_registration_date->format('d M Y') . ' - ' . $event->close_registration_date->format('d M Y'),
+                'registrationPeriod' => $event->open_registration_date->format('d M Y').' - '.$event->close_registration_date->format('d M Y'),
                 'location' => $event->location,
                 'speaker' => $event->speaker,
-                'price' => $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis',
+                'price' => $event->fee > 0 ? 'Rp '.number_format($event->fee, 0, ',', '.') : 'Gratis',
                 'quota' => $event->slot,
                 'registered' => (int) ($registrationCounts[$event->id] ?? 0),
                 'status' => $event->is_available ? 'open' : 'closed',
@@ -86,10 +90,18 @@ class AdminEventController extends Controller
     {
         $event = Event::query()->where('slug', $slug)->firstOrFail();
         $validated = $this->validateEvent($request);
-        $event->update([
-            ...$validated,
-            'slug' => $this->uniqueSlug($validated['title'], $event->id),
+        $validatedMaterials = $request->validate([
+            'materials' => ['sometimes', 'array'],
+            'materials.*' => ['uuid', 'distinct', 'exists:materials,id'],
         ]);
+
+        DB::transaction(function () use ($event, $validated, $validatedMaterials): void {
+            $event->update([
+                ...$validated,
+                'slug' => $this->uniqueSlug($validated['title'], $event->id),
+            ]);
+            $event->materials()->sync($validatedMaterials['materials'] ?? []);
+        });
 
         return redirect()
             ->route('admin.event')
@@ -123,7 +135,7 @@ class AdminEventController extends Controller
             ->where('slug', $slug)
             ->when($ignoreId, fn ($query) => $query->where('id', '!=', $ignoreId))
             ->exists()) {
-            $slug = $baseSlug . '-' . $suffix++;
+            $slug = $baseSlug.'-'.$suffix++;
         }
 
         return $slug;

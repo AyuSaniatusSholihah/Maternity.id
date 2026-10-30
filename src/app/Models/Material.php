@@ -15,15 +15,18 @@ class Material extends Model
 
     protected $table = 'materials';
 
-    public function category(): BelongsTo {
+    public function category(): BelongsTo
+    {
         return $this->belongsTo(Category::class, 'categories', 'id');
     }
 
-    public function uploader(): BelongsTo {
+    public function uploader(): BelongsTo
+    {
         return $this->belongsTo(Admin::class, 'uploaded_by', 'account_id');
     }
 
-    public function events(): BelongsToMany {
-        return $this->belongsToMany(Event::class, 'event_material', 'material_id', 'event_id');
+    public function events(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'event_material', 'material_id', 'event_id')->withTimestamps();
     }
 }

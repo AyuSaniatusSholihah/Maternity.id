@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event ? 'Edit Event' : 'Tambah Event' }} - Maternity.id</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -150,6 +151,107 @@
                         placeholder="Jelaskan materi dan tujuan event">{{ old('description', $event?->description) }}</textarea>
                 </div>
             </div>
+
+            @if ($event)
+                @php
+                    $selectedMaterials = old('materials', $event->materials->pluck('id')->all());
+                    $materialOptions = $adminMaterials
+                        ->map(
+                            fn($material) => [
+                                'id' => $material->id,
+                                'title' => $material->title,
+                                'description' => $material->description,
+                            ],
+                        )
+                        ->values();
+                @endphp
+                <section x-data="{
+                    availableMaterials: {{ Illuminate\Support\Js::from($materialOptions)->toHtml() }},
+                    selectedIds: {{ Illuminate\Support\Js::from($selectedMaterials)->toHtml() }},
+                    selectedForAdd: '',
+                    get linkedMaterials() {
+                        return this.selectedIds
+                            .map(id => this.availableMaterials.find(material => material.id === id))
+                            .filter(Boolean);
+                    },
+                    get unlinkedMaterials() {
+                        return this.availableMaterials.filter(material => !this.selectedIds.includes(material.id));
+                    },
+                    addMaterial() {
+                        if (this.selectedForAdd && !this.selectedIds.includes(this.selectedForAdd)) {
+                            this.selectedIds.push(this.selectedForAdd);
+                            this.selectedForAdd = '';
+                        }
+                    },
+                    removeMaterial(id) {
+                        this.selectedIds = this.selectedIds.filter(materialId => materialId !== id);
+                    }
+                }" class="space-y-4 border-t border-neutral-100 pt-5">
+                    <div>
+                        <h2 class="text-sm font-bold text-neutral-900">E-Book untuk Event</h2>
+                        <p class="mt-1 text-xs text-neutral-500">Daftar e-book yang saat ini terkait dengan event.</p>
+                    </div>
+                    @if ($adminMaterials->isNotEmpty())
+                        <div class="overflow-x-auto rounded-xl border border-neutral-200">
+                            <table class="w-full min-w-[520px] text-left text-xs">
+                                <thead>
+                                    <tr
+                                        class="border-b border-neutral-100 bg-neutral-50 text-[11px] font-semibold text-neutral-500">
+                                        <th class="px-4 py-3">E-Book</th>
+                                        <th class="px-4 py-3">Deskripsi</th>
+                                        <th class="px-4 py-3 text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-neutral-100">
+                                    <template x-for="material in linkedMaterials" :key="material.id">
+                                        <tr>
+                                            <td class="px-4 py-3 font-semibold text-neutral-800"
+                                                x-text="material.title"></td>
+                                            <td class="px-4 py-3 text-neutral-600" x-text="material.description"></td>
+                                            <td class="px-4 py-3 text-right">
+                                                <button type="button" @click="removeMaterial(material.id)"
+                                                    :aria-label="'Remove ' + material.title"
+                                                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-neutral-500 transition hover:bg-red-50 hover:text-red-600"
+                                                    title="Hapus e-book dari event">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template x-if="linkedMaterials.length === 0">
+                                        <tr>
+                                            <td colspan="3" class="px-4 py-8 text-center text-neutral-500">Belum
+                                                ada e-book yang terkait.</td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <template x-for="materialId in selectedIds" :key="'selected-' + materialId">
+                            <input type="hidden" name="materials[]" :value="materialId">
+                        </template>
+
+                        <div class="flex flex-col gap-2 sm:flex-row">
+                            <select x-model="selectedForAdd"
+                                class="min-w-0 flex-1 rounded-xl border border-neutral-300 bg-[#FAF5F2] px-3 py-2.5 text-xs focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
+                                <option value="">Pilih e-book untuk ditambahkan</option>
+                                <template x-for="material in unlinkedMaterials" :key="'option-' + material.id">
+                                    <option :value="material.id" x-text="material.title"></option>
+                                </template>
+                            </select>
+                            <button type="button" @click="addMaterial" :disabled="!selectedForAdd"
+                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#5F8C72] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#4f755e] disabled:cursor-not-allowed disabled:opacity-50">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Tambah E-Book</span>
+                            </button>
+                        </div>
+                    @else
+                        <p class="rounded-xl bg-neutral-50 p-4 text-xs text-neutral-500">Belum ada e-book. Tambahkan
+                            e-book terlebih dahulu melalui halaman E-Book.</p>
+                    @endif
+                </section>
+            @endif
 
             <div class="flex items-center justify-end gap-3 border-t border-neutral-100 pt-5">
                 <a href="{{ route('admin.event') }}"

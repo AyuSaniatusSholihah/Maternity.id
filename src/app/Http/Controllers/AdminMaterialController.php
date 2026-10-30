@@ -20,6 +20,14 @@ class AdminMaterialController extends Controller
         ]);
     }
 
+    public function edit(string $id): View
+    {
+        return view('admin.materials.edit', [
+            'material' => Material::query()->findOrFail($id),
+            'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
+        ]);
+    }
+
     public function index(): View
     {
         $materials = Material::query()
@@ -81,6 +89,47 @@ class AdminMaterialController extends Controller
             ->with('status', 'E-book berhasil ditambahkan.');
     }
 
+    public function update(Request $request, string $id): RedirectResponse
+    {
+        $material = Material::query()->findOrFail($id);
+
+        $validated = $request->validate([
+            'categories' => ['required', 'uuid', 'exists:categories,id'],
+            'title' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'max:255', 'unique:materials,slug,'.$material->id],
+            'description' => ['required', 'string'],
+            'image_url' => ['nullable', 'url', 'max:255'],
+        ]);
+
+        $material->update([
+            'categories' => $validated['categories'],
+            'title' => $validated['title'],
+            'slug' => $validated['slug'],
+            'description' => $validated['description'],
+            'image_url' => $validated['image_url'] ?? null,
+        ]);
+
+        return redirect()
+            ->route('admin.ebook')
+            ->with('status', 'E-book berhasil diperbarui.');
+    }
+
+    public function destroy(string $id): RedirectResponse
+    {
+        $material = Material::query()->findOrFail($id);
+        $filePath = $material->content;
+
+        $material->delete();
+
+        if ($filePath) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        return redirect()
+            ->route('admin.ebook')
+            ->with('status', 'E-book berhasil dihapus secara permanen.');
+    }
+
     public function download(string $slug): BinaryFileResponse
     {
         $material = Material::query()->where('slug', $slug)->firstOrFail();
@@ -101,7 +150,7 @@ class AdminMaterialController extends Controller
         $suffix = 2;
 
         while (Material::query()->where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $suffix++;
+            $slug = $baseSlug.'-'.$suffix++;
         }
 
         return $slug;
