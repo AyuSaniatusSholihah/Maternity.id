@@ -1,5 +1,69 @@
 # Agent Log - Maternity.id Project
 
+## [2026-11-01 02:00] Rebuild DBML Using Existing Reference Syntax
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** docs / fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database.dbml`
+    - Modified: `src/docs/AGENT_LOG.md`
+
+- **What changed:** Rebuilt the rolled-back DBML in its existing quoted-identifier format, retaining inline `ref` attributes, `Note:` annotations, and `Indexes` blocks. Updated the schema to migration-backed columns and relationships, used `char(36)` for Laravel UUID columns, and included all migration-created tables.
+
+- **Why:** The DBML had been rolled back to an older schema; the schema needed to match current migrations without introducing top-level enum or reference constructs outside the existing format.
+
+- **Verification:** Official `@dbml/cli` generated MySQL SQL successfully; confirmed 19 tables, 20 inline references, and `git diff --check`.
+
+- **Migration check:** Confirmed: migrations read only; no migration or schema files were modified.
+
+- **Commit:** Not committed
+
+## [2026-11-01 01:00] Align DBML Types With MySQL Migrations
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** docs / fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database.dbml`
+    - Modified: `src/docs/AGENT_LOG.md`
+
+- **What changed:** Represented Laravel UUID columns as MySQL `char(36)` in DBML, including all corresponding FK columns, so exported MySQL DDL uses the concrete type created by Laravel migrations. Retained unsigned numeric types as quoted multiword DBML types and indexes in standard `Indexes` blocks.
+
+- **Verification:** Official `@dbml/cli` generated MySQL SQL successfully. Reviewed generated SQL: 19 tables, 20 foreign-key constraints, indexes, and `char(36)` UUID columns; no UUID type declarations remain. `git diff --check` passed.
+
+- **Migration check:** Confirmed: migrations read only; no migration or schema files were modified.
+
+- **Commit:** Not committed
+
+## [2026-11-01 00:00] Synchronize DBML With Migrations
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** docs
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database.dbml`
+    - Modified: `src/docs/AGENT_LOG.md`
+
+- **What changed:** Rebuilt the DBML schema from all 12 migration files. It now includes all 19 migration-defined tables, exact column types, nullability and defaults, primary and unique keys, indexes, composite keys, and all 20 foreign keys with delete actions. Corrected DBML syntax by quoting multiword unsigned types and defining indexes in `Indexes` blocks.
+
+- **Why:** The previous DBML described an obsolete schema, including incorrect integer IDs, removed or renamed fields, and inaccurate relationships.
+
+- **Verification:** Compared DBML definitions against each migration; confirmed 19 tables and 20 declared foreign keys. Parsed successfully with `npx --yes --package @dbml/cli dbml2sql ... --mysql`; `git diff --check` passed.
+
+- **Migration check:** Confirmed: migration files were read only; no migration or database schema files were modified.
+
+- **Commit:** Not committed
+
 ## [2026-10-30 02:00] Fix Empty E-Book Dropdown on Event Edit
 
 - **Agent/Session:** GitHub Copilot
