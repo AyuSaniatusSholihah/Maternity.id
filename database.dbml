@@ -215,6 +215,7 @@ Table "event_registration" {
   "reviewer_id" char(36) [note: 'on delete set null', ref: > "admins"."account_id"]
   "payment_status" text [not null, note: 'enum: accepted, declined, hold, blocked']
   "proof_img_url" varchar(500)
+  "voucher_id" char(36) [ref: > "vouchers"."id"]
   "reviewed_at" timestamp
   "message" varchar(255)
   "created_at" timestamp

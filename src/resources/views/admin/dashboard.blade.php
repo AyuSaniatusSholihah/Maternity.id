@@ -46,6 +46,7 @@
             if (path.includes('/article')) return 'articles';
             if (path.includes('/event')) return 'events';
             if (path.includes('/ebook')) return 'library';
+            if (path.includes('/voucher')) return 'vouchers';
             if (path.includes('/users')) return 'users';
             return new URLSearchParams(window.location.search).get('tab') || 'approvals';
         })(),
@@ -273,6 +274,19 @@
                         </div>
                         <span class="text-[10px] text-neutral-400 font-semibold" x-text="pdfResources.length"></span>
                     </a>
+
+                    {{-- 6. Voucher Management --}}
+                    <a href="{{ route('admin.voucher') }}" @click="mobileSidebar = false"
+                        :class="activeTab === 'vouchers' ? 'bg-[#B8E6B8] text-neutral-900 font-bold shadow-xs' :
+                            'text-neutral-600 hover:bg-[#FAF5F2] hover:text-neutral-900 font-medium'"
+                        class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition text-xs cursor-pointer text-left">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-ticket text-xs text-emerald-800"></i>
+                            <span>Voucher</span>
+                        </div>
+                        <span
+                            class="text-[10px] text-neutral-400 font-semibold">{{ count($adminVouchers ?? []) }}</span>
+                    </a>
                 </div>
             </div>
 
@@ -311,6 +325,7 @@
                             <span x-show="activeTab === 'articles'">Upload & Manajemen Artikel Edukasi</span>
                             <span x-show="activeTab === 'events'">Jadwal Seminar & Pelatihan</span>
                             <span x-show="activeTab === 'library'">Knowledge Library (E-Book PDF)</span>
+                            <span x-show="activeTab === 'vouchers'">Voucher Management</span>
                         </h1>
                         <p class="text-[11px] text-neutral-500 hidden sm:block">
                             <span x-show="activeTab === 'approvals'">Verifikasi bukti transfer user untuk mengaktifkan
@@ -323,6 +338,8 @@
                                 pemateri</span>
                             <span x-show="activeTab === 'library'">Kelola repositori berkas PDF digital materi
                                 kehamilan & nifas</span>
+                            <span x-show="activeTab === 'vouchers'">Kelola voucher dan layanan yang memenuhi
+                                syarat.</span>
                         </p>
                     </div>
                 </div>
@@ -1337,6 +1354,83 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                {{-- TAB 6: VOUCHERS --}}
+                <div x-show="activeTab === 'vouchers'" class="space-y-6">
+                    @if (session('status'))
+                        <div
+                            class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-800">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    <div
+                        class="bg-white rounded-3xl p-6 border border-neutral-200/70 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-base font-bold text-neutral-900">Manajemen Voucher</h2>
+                            <p class="text-xs text-neutral-500 mt-0.5">Pantau diskon, layanan berlaku, dan sisa
+                                penukaran voucher.</p>
+                        </div>
+                        <a href="{{ route('admin.voucher.create') }}"
+                            class="bg-[#5F8C72] hover:bg-[#4f755e] text-white text-xs font-bold px-4 py-2.5 rounded-xl inline-flex items-center gap-2 transition shadow-xs shrink-0">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tambah Voucher</span>
+                        </a>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-2xl border border-neutral-200/70 bg-white shadow-2xs">
+                        <table class="w-full min-w-[980px] text-left text-xs">
+                            <thead>
+                                <tr class="border-b border-neutral-100 text-[11px] font-semibold text-neutral-500">
+                                    <th class="px-4 py-3">No.</th>
+                                    <th class="px-4 py-3">Jumlah Layanan</th>
+                                    <th class="px-4 py-3">Diskon</th>
+                                    <th class="px-4 py-3">Maks. Diskon</th>
+                                    <th class="px-4 py-3">Berlaku Dari</th>
+                                    <th class="px-4 py-3">Berlaku Sampai</th>
+                                    <th class="px-4 py-3">Sisa Penukaran</th>
+                                    <th class="px-4 py-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-neutral-100">
+                                @forelse (($adminVouchers ?? collect()) as $voucher)
+                                    <tr class="hover:bg-[#FAF5F2]/60">
+                                        <td class="px-4 py-3.5 font-semibold text-neutral-800">
+                                            {{ $voucher['number'] }}</td>
+                                        <td class="px-4 py-3.5 text-neutral-700">{{ $voucher['service_count'] }}</td>
+                                        <td class="px-4 py-3.5 font-bold text-[#5F8C72]">
+                                            {{ rtrim(rtrim(number_format((float) $voucher['discount'], 2), '0'), '.') }}%
+                                        </td>
+                                        <td class="px-4 py-3.5 text-neutral-700">
+                                            {{ $voucher['maximum_discount'] === null ? 'Tanpa batas' : 'Rp ' . number_format($voucher['maximum_discount'], 0, ',', '.') }}
+                                        </td>
+                                        <td class="px-4 py-3.5 whitespace-nowrap text-neutral-600">
+                                            {{ \Illuminate\Support\Carbon::parse($voucher['valid_from'])->format('d M Y') }}
+                                        </td>
+                                        <td class="px-4 py-3.5 whitespace-nowrap text-neutral-600">
+                                            {{ $voucher['valid_until'] ? \Illuminate\Support\Carbon::parse($voucher['valid_until'])->format('d M Y') : 'Tanpa batas' }}
+                                        </td>
+                                        <td class="px-4 py-3.5 font-semibold text-neutral-800">
+                                            {{ $voucher['remaining_redemptions'] }} <span
+                                                class="font-normal text-neutral-500">/
+                                                {{ $voucher['max_redemptions'] }}</span></td>
+                                        <td class="px-4 py-3.5">
+                                            <span
+                                                class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold {{ $voucher['is_usable'] ? 'bg-[#E4F5E6] text-[#428E53]' : 'bg-neutral-100 text-neutral-500' }}">{{ $voucher['is_usable'] ? 'Aktif' : 'Nonaktif' }}</span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="px-4 py-14 text-center text-neutral-500">
+                                            <i class="fa-solid fa-ticket mb-3 block text-2xl text-neutral-300"></i>
+                                            <span class="font-semibold">Belum ada voucher</span>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

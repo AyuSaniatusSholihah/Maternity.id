@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminEventController;
 use App\Http\Controllers\AdminMaterialController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminVoucherController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EbookController;
 use App\Http\Controllers\EventController;
@@ -89,6 +90,10 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
     Route::put('/ebook/{id}', [AdminMaterialController::class, 'update'])->name('admin.ebook.update');
     Route::delete('/ebook/{id}', [AdminMaterialController::class, 'destroy'])->name('admin.ebook.destroy');
     Route::get('/ebook/{slug}/download', [AdminMaterialController::class, 'download'])->name('admin.ebook.download');
+
+    Route::get('/voucher', [AdminVoucherController::class, 'index'])->name('admin.voucher');
+    Route::get('/voucher/add', [AdminVoucherController::class, 'create'])->name('admin.voucher.create');
+    Route::post('/voucher', [AdminVoucherController::class, 'store'])->name('admin.voucher.store');
 });
 
 // Member Protected Routes

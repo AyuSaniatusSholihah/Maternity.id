@@ -1,5 +1,52 @@
 # Agent Log - Maternity.id Project
 
+## [2026-11-01 05:30] Add Searchable Event Selector to Voucher Form
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** refactor / feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `resources/views/admin/vouchers/create.blade.php`
+    - Modified: `tests/Feature/AdminVoucherManagementTest.php`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Replaced the event checkbox grid with a searchable multi-select dropdown, removable selected-event chips, and hidden `events[]` inputs. Subscription-plan checkbox selection remains unchanged.
+
+- **Verification:** `php84 artisan test --filter=AdminVoucherManagementTest` passed (2 tests, 22 assertions).
+
+- **Migration check:** No migration files changed.
+
+- **Commit:** Not committed
+
+## [2026-11-01 05:00] Add Admin Voucher Management
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Added: `app/Http/Controllers/AdminVoucherController.php`
+    - Added: `resources/views/admin/vouchers/create.blade.php`
+    - Added: `tests/Feature/AdminVoucherManagementTest.php`
+    - Modified: `routes/web.php`
+    - Modified: `resources/views/admin/dashboard.blade.php`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Added `/admin/voucher` and `/admin/voucher/add` under admin middleware. The management tab lists voucher number, eligible service count, discount, maximum discount, validity, remaining redemptions across event registrations and subscription payments, and active state. Added a creation form that associates vouchers with selected events and subscription plans through `associated_voucher`.
+
+- **Why:** Admins need a dedicated page to review vouchers and manage their eligible services.
+
+- **Verification:** `php84 artisan test --filter=AdminVoucherManagementTest` passed (2 tests, 18 assertions).
+
+- **Migration check:** No migration files changed.
+
+- **Commit:** Not committed
+
 ## [2026-11-01 04:00] Link Event Registrations to Vouchers
 
 - **Agent/Session:** GitHub Copilot
