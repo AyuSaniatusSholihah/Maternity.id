@@ -1,5 +1,68 @@
 # Agent Log - Maternity.id Project
 
+## [2026-11-01 03:30] Update Subscription Payment Seeder for Voucher Columns
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database/seeders/SubscriptionPaymentsSeeder.php`
+    - Added: `tests/Feature/SubscriptionPaymentsSeederTest.php`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** The payment seeder now reads price and period from the matching subscription plan, populates `subamount` and `total_amount` from the plan price, and explicitly sets `voucher_id` to null when no voucher applies. It limits generated payments to plans that exist in the database.
+
+- **Verification:** `php84 artisan test --filter=SubscriptionPaymentsSeederTest` passed (1 test, 1 assertion).
+
+- **Migration check:** No migration files changed.
+
+- **Commit:** Not committed
+
+## [2026-11-01 03:00] Add Voucher Schema Migration
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Added: `database/migrations/2026_11_01_030000_add_voucher_schema_and_subscription_amounts.php`
+    - Added: `tests/Feature/VoucherSchemaMigrationTest.php`
+    - Modified: `database.dbml`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Added `vouchers` and `associated_voucher` using Laravel UUID columns, added voucher amount/ID fields to subscription payments, and backfilled existing payment rows before making amount columns non-null. `associated_voucher` has the composite key `(voucher_id, item_id, item_type)` and only a foreign key on `voucher_id`; `item_id` remains polymorphic. Used `string` for `item_type` so it can participate in a MySQL primary key, and aligned the DBML column type.
+
+- **Why:** The DBML includes voucher schema not present in the existing migrations. The event, event-registration, and event-material tables already have migrations, so no duplicate event tables were added.
+
+- **Verification:** `php84 artisan test --filter=VoucherSchemaMigrationTest` passed (1 test, 8 assertions). Full suite: 8 passed; existing `ExampleTest` failed because `public/build/manifest.json` is missing. `git diff --check` and Pint passed. MySQL `migrate:status` was unavailable because the local MySQL server refused the connection.
+
+- **Migration check:** Added a new migration; existing migration files were not changed.
+
+- **Commit:** Not committed
+
+## [2026-11-01 02:30] Review Voucher Polymorphic Association
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** docs / fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database.dbml`
+    - Modified: `src/docs/AGENT_LOG.md`
+
+- **What changed:** Confirmed `associated_voucher.voucher_id` is its only foreign-key relationship. Kept `item_id` polymorphic and without a foreign key, retained the composite key `(voucher_id, item_id, item_type)`, and clarified the item type note to `events, subscription_plans`.
+
+- **Verification:** Official DBML CLI accepted the schema. Voucher-specific migrations are not present in the current migrations directory, so voucher column definitions could not be independently checked against migration source.
+
+- **Commit:** Not committed
+
 ## [2026-11-01 02:00] Rebuild DBML Using Existing Reference Syntax
 
 - **Agent/Session:** GitHub Copilot

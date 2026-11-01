@@ -1,3 +1,89 @@
+Table "cache_locks" {
+  "key" varchar(255) [pk, not null]
+  "owner" varchar(255) [not null]
+  "expiration" bigint [not null]
+
+  Indexes {
+    expiration [name: "idx_cache_locks_expiration"]
+  }
+}
+
+Table "subscription_payments" {
+  "subcription_code" char(8) [not null, note: 'on delete restrict', ref: > "subscription_plans"."code"]
+  "user_id" char(36) [not null, note: 'on delete cascade', ref: > "members"."account_id"]
+  "reviewer_id" char(36) [note: 'on delete set null', ref: > "admins"."account_id"]
+  "payment_status" text [not null, note: 'enum: accepted, declined, hold, blocked']
+  "proof_img_url" varchar(500)
+  "subamount" int [not null]
+  "voucher_id" char(36) [ref: > "vouchers"."id"]
+  "total_amount" int [not null]
+  "reviewed_at" timestamp
+  "message" varchar(255)
+  "started_at" timestamp [not null]
+  "ended_at" timestamp [not null]
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Indexes {
+    (subcription_code, user_id) [pk]
+  }
+}
+
+Table "password_reset_tokens" {
+  "email" varchar(255) [pk, not null]
+  "token" varchar(255) [not null]
+  "created_at" timestamp
+}
+
+Table "failed_jobs" {
+  "id" bigint [pk, not null, increment, note: 'unsigned']
+  "uuid" varchar(255) [unique, not null]
+  "connection" varchar(255) [not null]
+  "queue" varchar(255) [not null]
+  "payload" text [not null]
+  "exception" text [not null]
+  "failed_at" timestamp [not null, note: 'default: CURRENT_TIMESTAMP']
+
+  Indexes {
+    (connection, queue, failed_at) [name: "idx_failed_jobs_connection_queue_failed_at"]
+  }
+}
+
+Table "jobs" {
+  "id" bigint [pk, not null, increment, note: 'unsigned']
+  "queue" varchar(255) [not null]
+  "payload" text [not null]
+  "attempts" smallint [not null, note: 'unsigned']
+  "reserved_at" int [note: 'unsigned']
+  "available_at" int [not null, note: 'unsigned']
+  "created_at" int [not null, note: 'unsigned']
+
+  Indexes {
+    queue [name: "idx_jobs_queue"]
+  }
+}
+
+Table "products" {
+  "id" char(36) [pk, not null]
+  "categories" char(36) [not null, note: 'on delete restrict', ref: > "categories"."id"]
+  "name" varchar(255) [not null]
+  "slug" varchar(255) [unique, not null]
+  "description" text [not null]
+  "price" decimal(10,2) [not null]
+  "thumbnail_img" varchar(255)
+  "click_count" int [note: 'unsigned']
+  "tiktok_url" varchar(255)
+  "tokopedia_url" varchar(255)
+  "shopee_url" varchar(255)
+  "whatsapp_url" varchar(255)
+  "created_by" char(36) [not null, note: 'on delete restrict', ref: > "admins"."account_id"]
+  "created_at" timestamp
+  "updated_at" timestamp
+  "deleted_at" timestamp
+
+  Note: 'Products for sale'
+}
+
 Table "accounts" {
   "id" char(36) [pk, not null]
   "name" varchar(255) [not null]
@@ -14,7 +100,7 @@ Table "accounts" {
 }
 
 Table "admins" {
-  "account_id" char(36) [pk, not null, ref: > "accounts"."id", note: 'on delete cascade']
+  "account_id" char(36) [pk, not null, note: 'on delete cascade', ref: > "accounts"."id"]
   "name" varchar(255) [not null]
   "email" varchar(255) [unique, not null]
   "phone" varchar(20) [not null]
@@ -26,8 +112,59 @@ Table "admins" {
   Note: 'Administrator users'
 }
 
+Table "job_batches" {
+  "id" varchar(255) [pk, not null]
+  "name" varchar(255) [not null]
+  "total_jobs" int [not null]
+  "pending_jobs" int [not null]
+  "failed_jobs" int [not null]
+  "failed_job_ids" text [not null]
+  "options" text
+  "cancelled_at" int
+  "created_at" int [not null]
+  "finished_at" int
+}
+
+Table "cache" {
+  "key" varchar(255) [pk, not null]
+  "value" text [not null]
+  "expiration" bigint [not null]
+
+  Indexes {
+    expiration [name: "idx_cache_expiration"]
+  }
+
+  Note: 'Application cache table'
+}
+
+Table "sessions" {
+  "id" varchar(255) [pk, not null]
+  "user_id" bigint
+  "ip_address" varchar(45)
+  "user_agent" text
+  "payload" text [not null]
+  "last_activity" int [not null]
+
+  Indexes {
+    last_activity [name: "idx_sessions_last_activity"]
+    user_id [name: "idx_sessions_user_id"]
+  }
+}
+
+Table "subscription_plans" {
+  "code" char(8) [pk, not null]
+  "name" varchar(50)
+  "benefits" text [not null, note: 'comma separated (x, y, z)']
+  "price" int [not null, note: 'unsigned']
+  "period" int [not null, note: 'unsigned; in months']
+  "updated_by" char(36) [not null, note: 'on delete restrict', ref: > "admins"."account_id"]
+  "updated_at" timestamp [not null]
+  "created_at" timestamp [not null]
+  "deleted_at" timestamp
+}
+
 Table "members" {
-  "account_id" char(36) [pk, not null, ref: > "accounts"."id", note: 'on delete cascade']
+  "account_id" char(36) [pk, not null, note: 'on delete cascade', ref: > "accounts"."id"]
   "name" varchar(255) [not null]
   "email" varchar(255) [unique, not null]
   "phone" varchar(20)
@@ -37,11 +174,103 @@ Table "members" {
   "city" varchar(100)
   "province" varchar(100)
   "image_url" varchar(255)
-  "provisioned_by" char(36) [ref: > "admins"."account_id", note: 'on delete restrict']
+  "provisioned_by" char(36) [note: 'on delete restrict', ref: > "admins"."account_id"]
   "created_at" timestamp
   "updated_at" timestamp
 
   Note: 'Regular members / users'
+}
+
+Table "materials" {
+  "id" char(36) [pk, not null]
+  "categories" char(36) [not null, note: 'on delete restrict', ref: > "categories"."id"]
+  "title" varchar(255) [not null]
+  "slug" varchar(255) [unique, not null]
+  "description" text [not null]
+  "content" text [not null]
+  "image_url" varchar(255)
+  "uploaded_by" char(36) [not null, note: 'on delete restrict', ref: > "admins"."account_id"]
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Note: 'Educational materials'
+}
+
+Table "vouchers" {
+  "id" char(36) [pk, not null]
+  "maximum_discount" int
+  "discount" decimal(5,2) [not null]
+  "is_usable" boolean [not null, default: true]
+  "valid_from" datetime [not null]
+  "valid_until" datetime
+  "max_redem" smallint [not null]
+  "created_at" timestamp [not null]
+  "updated_at" timestamp [not null]
+  "created_by" char(36) [not null]
+}
+
+Table "event_registration" {
+  "event_id" char(36) [not null, note: 'on delete cascade', ref: > "events"."id"]
+  "user_id" char(36) [not null, note: 'on delete cascade', ref: > "members"."account_id"]
+  "reviewer_id" char(36) [note: 'on delete set null', ref: > "admins"."account_id"]
+  "payment_status" text [not null, note: 'enum: accepted, declined, hold, blocked']
+  "proof_img_url" varchar(500)
+  "reviewed_at" timestamp
+  "message" varchar(255)
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Indexes {
+    (event_id, user_id) [pk]
+  }
+}
+
+Table "event_material" {
+  "event_id" char(36) [not null, note: 'on delete cascade', ref: > "events"."id"]
+  "material_id" char(36) [not null, note: 'on delete cascade', ref: > "materials"."id"]
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Indexes {
+    (event_id, material_id) [pk]
+  }
+}
+
+Table "articles" {
+  "id" char(36) [pk, not null]
+  "categories" char(36) [not null, note: 'on delete restrict', ref: > "categories"."id"]
+  "title" varchar(255) [not null]
+  "slug" varchar(255) [unique, not null]
+  "description" text [not null]
+  "content" text [not null]
+  "image_url" varchar(255)
+  "author" char(36) [not null, note: 'on delete restrict', ref: > "admins"."account_id"]
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Note: 'Articles and blog posts'
+}
+
+Table "events" {
+  "id" char(36) [pk, not null]
+  "categories" char(36) [not null, note: 'on delete restrict', ref: > "categories"."id"]
+  "title" varchar(255) [not null]
+  "slug" varchar(255) [unique, not null]
+  "description" text [not null]
+  "event_date" date [not null]
+  "open_registration_date" date [not null]
+  "close_registration_date" date [not null]
+  "location" varchar(255) [not null]
+  "image_url" varchar(255)
+  "slot" int [not null, note: 'unsigned']
+  "is_available" boolean [not null, default: true]
+  "fee" int [not null, default: 0]
+  "speaker" varchar(255) [not null]
+  "created_by" char(36) [not null, note: 'on delete restrict', ref: > "admins"."account_id"]
+  "created_at" timestamp
+  "updated_at" timestamp
+
+  Note: 'Events and webinars'
 }
 
 Table "categories" {
@@ -55,215 +284,12 @@ Table "categories" {
   Note: 'Content categories for articles, ebooks, materials'
 }
 
-Table "materials" {
-  "id" char(36) [pk, not null]
-  "categories" char(36) [not null, ref: > "categories"."id", note: 'on delete restrict']
-  "title" varchar(255) [not null]
-  "slug" varchar(255) [unique, not null]
-  "description" text [not null]
-  "content" text [not null]
-  "image_url" varchar(255)
-  "uploaded_by" char(36) [not null, ref: > "admins"."account_id", note: 'on delete restrict']
-  "created_at" timestamp
-  "updated_at" timestamp
-
-  Note: 'Educational materials'
-}
-
-Table "articles" {
-  "id" char(36) [pk, not null]
-  "categories" char(36) [not null, ref: > "categories"."id", note: 'on delete restrict']
-  "title" varchar(255) [not null]
-  "slug" varchar(255) [unique, not null]
-  "description" text [not null]
-  "content" text [not null]
-  "image_url" varchar(255)
-  "author" char(36) [not null, ref: > "admins"."account_id", note: 'on delete restrict']
-  "created_at" timestamp
-  "updated_at" timestamp
-
-  Note: 'Articles and blog posts'
-}
-
-Table "events" {
-  "id" char(36) [pk, not null]
-  "categories" char(36) [not null, ref: > "categories"."id", note: 'on delete restrict']
-  "title" varchar(255) [not null]
-  "slug" varchar(255) [unique, not null]
-  "description" text [not null]
-  "event_date" date [not null]
-  "open_registration_date" date [not null]
-  "close_registration_date" date [not null]
-  "location" varchar(255) [not null]
-  "image_url" varchar(255)
-  "slot" int [not null, note: 'unsigned']
-  "is_available" boolean [not null, default: true]
-  "fee" int [not null, default: 0]
-  "speaker" varchar(255) [not null]
-  "created_by" char(36) [not null, ref: > "admins"."account_id", note: 'on delete restrict']
-  "created_at" timestamp
-  "updated_at" timestamp
-
-  Note: 'Events and webinars'
-}
-
-Table "products" {
-  "id" char(36) [pk, not null]
-  "categories" char(36) [not null, ref: > "categories"."id", note: 'on delete restrict']
-  "name" varchar(255) [not null]
-  "slug" varchar(255) [unique, not null]
-  "description" text [not null]
-  "price" decimal(10,2) [not null]
-  "thumbnail_img" varchar(255)
-  "click_count" int [note: 'unsigned']
-  "tiktok_url" varchar(255)
-  "tokopedia_url" varchar(255)
-  "shopee_url" varchar(255)
-  "whatsapp_url" varchar(255)
-  "created_by" char(36) [not null, ref: > "admins"."account_id", note: 'on delete restrict']
-  "created_at" timestamp
-  "updated_at" timestamp
-  "deleted_at" timestamp
-
-  Note: 'Products for sale'
-}
-
-Table "cache" {
-  "key" varchar(255) [pk, not null]
-  "value" mediumtext [not null]
-  "expiration" bigint [not null]
+Table "associated_voucher" {
+  "voucher_id" char(36) [not null, ref: > "vouchers"."id"]
+  "item_id" char(36) [not null]
+  "item_type" varchar(255) [not null, note: 'events, subscription_plans']
 
   Indexes {
-    "expiration"
-  }
-
-  Note: 'Application cache table'
-}
-
-Table "cache_locks" {
-  "key" varchar(255) [pk, not null]
-  "owner" varchar(255) [not null]
-  "expiration" bigint [not null]
-
-  Indexes {
-    "expiration"
-  }
-}
-
-Table "jobs" {
-  "id" bigint [pk, not null, increment, note: 'unsigned']
-  "queue" varchar(255) [not null]
-  "payload" longtext [not null]
-  "attempts" smallint [not null, note: 'unsigned']
-  "reserved_at" int [note: 'unsigned']
-  "available_at" int [not null, note: 'unsigned']
-  "created_at" int [not null, note: 'unsigned']
-
-  Indexes {
-    "queue"
-  }
-}
-
-Table "job_batches" {
-  "id" varchar(255) [pk, not null]
-  "name" varchar(255) [not null]
-  "total_jobs" int [not null]
-  "pending_jobs" int [not null]
-  "failed_jobs" int [not null]
-  "failed_job_ids" longtext [not null]
-  "options" mediumtext
-  "cancelled_at" int
-  "created_at" int [not null]
-  "finished_at" int
-}
-
-Table "failed_jobs" {
-  "id" bigint [pk, not null, increment, note: 'unsigned']
-  "uuid" varchar(255) [unique, not null]
-  "connection" varchar(255) [not null]
-  "queue" varchar(255) [not null]
-  "payload" longtext [not null]
-  "exception" longtext [not null]
-  "failed_at" timestamp [not null, note: 'default: CURRENT_TIMESTAMP']
-
-  Indexes {
-    ("connection", "queue", "failed_at")
-  }
-}
-
-Table "password_reset_tokens" {
-  "email" varchar(255) [pk, not null]
-  "token" varchar(255) [not null]
-  "created_at" timestamp
-}
-
-Table "sessions" {
-  "id" varchar(255) [pk, not null]
-  "user_id" bigint
-  "ip_address" varchar(45)
-  "user_agent" text
-  "payload" longtext [not null]
-  "last_activity" int [not null]
-
-  Indexes {
-    "user_id"
-    "last_activity"
-  }
-}
-
-Table "event_registration" {
-  "event_id" char(36) [not null, ref: > "events"."id", note: 'on delete cascade']
-  "user_id" char(36) [not null, ref: > "members"."account_id", note: 'on delete cascade']
-  "reviewer_id" char(36) [ref: > "admins"."account_id", note: 'on delete set null']
-  "payment_status" text [not null, note: 'enum: accepted, declined, hold, blocked']
-  "proof_img_url" varchar(500)
-  "reviewed_at" timestamp
-  "message" varchar(255)
-  "created_at" timestamp
-  "updated_at" timestamp
-
-  Indexes {
-    ("event_id", "user_id") [pk]
-  }
-}
-
-Table "subscription_plans" {
-  "code" char(8) [pk, not null]
-  "name" varchar(50)
-  "benefits" text [not null, note: 'comma separated (x, y, z)']
-  "price" int [not null, note: 'unsigned']
-  "period" int [not null, note: 'unsigned; in months']
-  "updated_by" char(36) [not null, ref: > "admins"."account_id", note: 'on delete restrict']
-  "updated_at" timestamp [not null]
-  "created_at" timestamp [not null]
-  "deleted_at" timestamp
-}
-
-Table "subscription_payments" {
-  "subcription_code" char(8) [not null, ref: > "subscription_plans"."code", note: 'on delete restrict']
-  "user_id" char(36) [not null, ref: > "members"."account_id", note: 'on delete cascade']
-  "reviewer_id" char(36) [ref: > "admins"."account_id", note: 'on delete set null']
-  "payment_status" text [not null, note: 'enum: accepted, declined, hold, blocked']
-  "proof_img_url" varchar(500)
-  "reviewed_at" timestamp
-  "message" varchar(255)
-  "started_at" timestamp [not null]
-  "ended_at" timestamp [not null]
-  "created_at" timestamp
-  "updated_at" timestamp
-
-  Indexes {
-    ("subcription_code", "user_id") [pk]
-  }
-}
-
-Table "event_material" {
-  "event_id" char(36) [not null, ref: > "events"."id", note: 'on delete cascade']
-  "material_id" char(36) [not null, ref: > "materials"."id", note: 'on delete cascade']
-  "created_at" timestamp
-  "updated_at" timestamp
-
-  Indexes {
-    ("event_id", "material_id") [pk]
+    (voucher_id, item_id, item_type) [pk]
   }
 }
