@@ -1392,6 +1392,7 @@
                                     <th class="px-4 py-3">Berlaku Sampai</th>
                                     <th class="px-4 py-3">Sisa Penukaran</th>
                                     <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3 text-right">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-neutral-100">
@@ -1420,10 +1421,17 @@
                                             <span
                                                 class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold {{ $voucher['is_usable'] ? 'bg-[#E4F5E6] text-[#428E53]' : 'bg-neutral-100 text-neutral-500' }}">{{ $voucher['is_usable'] ? 'Aktif' : 'Nonaktif' }}</span>
                                         </td>
+                                        <td class="px-4 py-3.5 text-right">
+                                            <a href="{{ route('admin.voucher.show', $voucher['id']) }}"
+                                                class="inline-flex items-center gap-2 rounded-lg bg-[#FAF5F2] px-3 py-2 text-[11px] font-bold text-neutral-700 transition hover:bg-[#F3E1DC]">
+                                                <i class="fa-solid fa-eye"></i>
+                                                <span>View Details</span>
+                                            </a>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="px-4 py-14 text-center text-neutral-500">
+                                        <td colspan="9" class="px-4 py-14 text-center text-neutral-500">
                                             <i class="fa-solid fa-ticket mb-3 block text-2xl text-neutral-300"></i>
                                             <span class="font-semibold">Belum ada voucher</span>
                                         </td>

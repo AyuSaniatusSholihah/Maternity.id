@@ -16,6 +16,11 @@
 </head>
 
 <body class="min-h-screen bg-[#FAF5F2] text-neutral-800 antialiased">
+    @php
+        $isEditing = $voucher !== null;
+        $selectedEventValues = collect(old('events', $selectedEvents ?? []))->map(fn ($id) => (string) $id)->values();
+        $selectedPlanValues = collect(old('subscription_plans', $selectedSubscriptionPlans ?? []))->map(fn ($code) => (string) $code)->values();
+    @endphp
     <main class="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
         <div class="mb-6 flex items-center justify-between gap-4">
             <div>
@@ -24,9 +29,8 @@
                     <i class="fa-solid fa-arrow-left"></i>
                     Kembali ke daftar voucher
                 </a>
-                <h1 class="font-serif-brand text-2xl font-bold text-neutral-900">Tambah Voucher</h1>
-                <p class="mt-1 text-xs text-neutral-500">Atur diskon, masa berlaku, dan layanan yang dapat menggunakan
-                    voucher.</p>
+                <h1 class="font-serif-brand text-2xl font-bold text-neutral-900">{{ $isEditing ? 'Edit Voucher' : 'Tambah Voucher' }}</h1>
+                <p class="mt-1 text-xs text-neutral-500">Atur diskon, masa berlaku, dan layanan yang dapat menggunakan voucher.</p>
             </div>
             <span
                 class="hidden rounded-full bg-[#E4F5E6] px-3 py-1.5 text-[10px] font-bold text-[#428E53] sm:inline-flex">Admin
@@ -44,23 +48,26 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.voucher.store') }}" method="POST"
+        <form action="{{ $isEditing ? route('admin.voucher.update', $voucher->id) : route('admin.voucher.store') }}" method="POST"
             class="space-y-6 rounded-3xl border border-neutral-200/70 bg-white p-5 shadow-sm sm:p-8">
             @csrf
+            @if ($isEditing)
+                @method('PUT')
+            @endif
 
             <div class="grid gap-5 md:grid-cols-2">
                 <div>
                     <label for="discount" class="mb-1.5 block text-xs font-bold text-neutral-700">Diskon (%) <span
                             class="text-red-500">*</span></label>
                     <input id="discount" name="discount" type="number" min="0.01" max="100" step="0.01"
-                        required value="{{ old('discount') }}"
+                        required value="{{ old('discount', $voucher ? number_format((float) $voucher->discount, 2, '.', '') : '') }}"
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
                 </div>
                 <div>
                     <label for="maximum_discount" class="mb-1.5 block text-xs font-bold text-neutral-700">Maksimum
                         Diskon (Rp)</label>
                     <input id="maximum_discount" name="maximum_discount" type="number" min="0" step="1"
-                        value="{{ old('maximum_discount') }}"
+                        value="{{ old('maximum_discount', $voucher?->maximum_discount) }}"
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20"
                         placeholder="Kosongkan untuk tanpa batas">
                 </div>
@@ -68,20 +75,21 @@
                     <label for="valid_from" class="mb-1.5 block text-xs font-bold text-neutral-700">Berlaku Dari <span
                             class="text-red-500">*</span></label>
                     <input id="valid_from" name="valid_from" type="datetime-local" required
-                        value="{{ old('valid_from') }}"
+                        value="{{ old('valid_from', $voucher ? \Illuminate\Support\Carbon::parse($voucher->valid_from)->format('Y-m-d\TH:i') : '') }}"
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
                 </div>
                 <div>
                     <label for="valid_until" class="mb-1.5 block text-xs font-bold text-neutral-700">Berlaku
                         Sampai</label>
-                    <input id="valid_until" name="valid_until" type="datetime-local" value="{{ old('valid_until') }}"
+                    <input id="valid_until" name="valid_until" type="datetime-local"
+                        value="{{ old('valid_until', $voucher?->valid_until ? \Illuminate\Support\Carbon::parse($voucher->valid_until)->format('Y-m-d\TH:i') : '') }}"
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
                 </div>
                 <div>
                     <label for="max_redem" class="mb-1.5 block text-xs font-bold text-neutral-700">Maksimum Penukaran
                         <span class="text-red-500">*</span></label>
                     <input id="max_redem" name="max_redem" type="number" min="0" step="1" required
-                        value="{{ old('max_redem') }}"
+                        value="{{ old('max_redem', $voucher?->max_redem) }}"
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
                 </div>
                 <div>
@@ -89,8 +97,8 @@
                             class="text-red-500">*</span></label>
                     <select id="is_usable" name="is_usable" required
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-3 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
-                        <option value="1" @selected(old('is_usable', '1') === '1')>Aktif</option>
-                        <option value="0" @selected(old('is_usable') === '0')>Nonaktif</option>
+                        <option value="1" @selected((string) old('is_usable', $voucher ? (int) $voucher->is_usable : 1) === '1')>Aktif</option>
+                        <option value="0" @selected((string) old('is_usable', $voucher ? (int) $voucher->is_usable : 1) === '0')>Nonaktif</option>
                     </select>
                 </div>
             </div>
@@ -109,7 +117,7 @@
                             $eventOptions = $events
                                 ->map(fn($event) => ['id' => $event->id, 'title' => $event->title])
                                 ->values();
-                            $selectedEventIds = collect(old('events', []))->map(fn($id) => (string) $id)->values();
+                            $selectedEventIds = $selectedEventValues;
                         @endphp
                         <div x-data="{
                             events: {{ Illuminate\Support\Js::from($eventOptions)->toHtml() }},
@@ -191,7 +199,7 @@
                             <label for="plan-{{ $plan->code }}"
                                 class="flex items-start gap-3 rounded-xl border border-neutral-200 bg-[#FAF5F2]/60 p-3 text-xs">
                                 <input id="plan-{{ $plan->code }}" type="checkbox" name="subscription_plans[]"
-                                    value="{{ $plan->code }}" @checked(in_array($plan->code, old('subscription_plans', []), true))
+                                    value="{{ $plan->code }}" @checked($selectedPlanValues->contains((string) $plan->code))
                                     class="mt-0.5 h-4 w-4 rounded border-neutral-300 text-[#5F8C72] focus:ring-[#5F8C72]">
                                 <span>
                                     <span
@@ -213,7 +221,7 @@
                     class="rounded-xl px-5 py-3 text-xs font-semibold text-neutral-600 hover:bg-neutral-100">Batal</a>
                 <button type="submit"
                     class="rounded-xl bg-[#5F8C72] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#4f755e]">
-                    <i class="fa-solid fa-ticket mr-2"></i>Simpan Voucher
+                    <i class="fa-solid fa-ticket mr-2"></i>{{ $isEditing ? 'Simpan Perubahan' : 'Simpan Voucher' }}
                 </button>
             </div>
         </form>

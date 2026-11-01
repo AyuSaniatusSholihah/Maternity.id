@@ -1,5 +1,30 @@
 # Agent Log - Maternity.id Project
 
+## [2026-11-01 06:00] Add Voucher Details and Actions
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `app/Http/Controllers/AdminVoucherController.php`
+    - Modified: `routes/web.php`
+    - Modified: `resources/views/admin/dashboard.blade.php`
+    - Modified: `resources/views/admin/vouchers/create.blade.php`
+    - Added: `resources/views/admin/vouchers/show.blade.php`
+    - Modified: `tests/Feature/AdminVoucherManagementTest.php`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Added voucher detail, edit/update, enable/disable, and delete actions. Details show voucher metadata, applicable events and subscription plans, and redemptions from both payment tables. The edit view reuses the Add Voucher form with saved values and service selections. Delete detaches service associations and nulls nullable payment voucher references before removing the voucher.
+
+- **Verification:** `php84 artisan test --filter=AdminVoucherManagementTest` passed (5 tests, 50 assertions). Blade compilation, Pint, routes, and `git diff --check` passed.
+
+- **Migration check:** No migration files changed.
+
+- **Commit:** Not committed
+
 ## [2026-11-01 05:30] Add Searchable Event Selector to Voucher Form
 
 - **Agent/Session:** GitHub Copilot

@@ -94,6 +94,11 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
     Route::get('/voucher', [AdminVoucherController::class, 'index'])->name('admin.voucher');
     Route::get('/voucher/add', [AdminVoucherController::class, 'create'])->name('admin.voucher.create');
     Route::post('/voucher', [AdminVoucherController::class, 'store'])->name('admin.voucher.store');
+    Route::get('/voucher/{id}', [AdminVoucherController::class, 'show'])->name('admin.voucher.show');
+    Route::get('/voucher/{id}/edit', [AdminVoucherController::class, 'edit'])->name('admin.voucher.edit');
+    Route::put('/voucher/{id}', [AdminVoucherController::class, 'update'])->name('admin.voucher.update');
+    Route::patch('/voucher/{id}/toggle', [AdminVoucherController::class, 'toggle'])->name('admin.voucher.toggle');
+    Route::delete('/voucher/{id}', [AdminVoucherController::class, 'destroy'])->name('admin.voucher.destroy');
 });
 
 // Member Protected Routes

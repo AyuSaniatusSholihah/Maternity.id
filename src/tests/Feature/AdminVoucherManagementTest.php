@@ -82,6 +82,105 @@ class AdminVoucherManagementTest extends TestCase
         ]);
     }
 
+    public function test_voucher_details_show_eligible_services_and_both_redemption_types(): void
+    {
+        [$admin, $event, $planCode, $voucherId] = $this->createVoucherFixtures();
+        $member = $this->createMember($admin);
+        $this->attachVoucher($voucherId, $event->id, 'events');
+        $this->attachVoucher($voucherId, $planCode, 'subscription_plans');
+        $this->createEventRegistration($event->id, $member, $admin, $voucherId);
+        $this->createSubscriptionPayment($planCode, $member, $admin, $voucherId);
+
+        $this->actingAs($admin)
+            ->get(route('admin.voucher.show', $voucherId))
+            ->assertOk()
+            ->assertSee('Informasi Voucher')
+            ->assertSee('Layanan yang Dapat Ditukarkan')
+            ->assertSee('Penukaran Voucher')
+            ->assertSee($event->title)
+            ->assertSee('Basic Plan')
+            ->assertSee('Voucher Member')
+            ->assertSee('Nonaktifkan')
+            ->assertSee('Edit');
+    }
+
+    public function test_voucher_edit_is_prefilled_and_updates_metadata_and_services(): void
+    {
+        [$admin, $event, $planCode, $voucherId] = $this->createVoucherFixtures();
+        $this->attachVoucher($voucherId, $event->id, 'events');
+        $this->attachVoucher($voucherId, $planCode, 'subscription_plans');
+
+        $this->actingAs($admin)
+            ->get(route('admin.voucher.edit', $voucherId))
+            ->assertOk()
+            ->assertSee('Edit Voucher')
+            ->assertSee('value="10.00"', false)
+            ->assertSee($event->id)
+            ->assertSee($planCode);
+
+        $this->actingAs($admin)
+            ->put(route('admin.voucher.update', $voucherId), [
+                'maximum_discount' => 65000,
+                'discount' => 15,
+                'is_usable' => '0',
+                'valid_from' => '2026-11-02T10:00',
+                'valid_until' => '2026-12-02T23:59',
+                'max_redem' => 8,
+                'events' => [$event->id],
+                'subscription_plans' => [],
+            ])
+            ->assertRedirect(route('admin.voucher.show', $voucherId));
+
+        $this->assertDatabaseHas('vouchers', [
+            'id' => $voucherId,
+            'maximum_discount' => 65000,
+            'discount' => 15,
+            'is_usable' => false,
+            'max_redem' => 8,
+        ]);
+        $this->assertDatabaseHas('associated_voucher', [
+            'voucher_id' => $voucherId,
+            'item_id' => $event->id,
+            'item_type' => 'events',
+        ]);
+        $this->assertDatabaseMissing('associated_voucher', [
+            'voucher_id' => $voucherId,
+            'item_id' => $planCode,
+            'item_type' => 'subscription_plans',
+        ]);
+    }
+
+    public function test_voucher_can_be_toggled_and_deleted_without_orphaning_references(): void
+    {
+        [$admin, $event, $planCode, $voucherId] = $this->createVoucherFixtures();
+        $member = $this->createMember($admin);
+        $this->attachVoucher($voucherId, $event->id, 'events');
+        $this->createEventRegistration($event->id, $member, $admin, $voucherId);
+        $this->createSubscriptionPayment($planCode, $member, $admin, $voucherId);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.voucher.toggle', $voucherId))
+            ->assertRedirect(route('admin.voucher.show', $voucherId));
+        $this->assertDatabaseHas('vouchers', ['id' => $voucherId, 'is_usable' => false]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.voucher.destroy', $voucherId))
+            ->assertRedirect(route('admin.voucher'));
+
+        $this->assertDatabaseMissing('vouchers', ['id' => $voucherId]);
+        $this->assertDatabaseMissing('associated_voucher', ['voucher_id' => $voucherId]);
+        $this->assertDatabaseHas('event_registration', [
+            'event_id' => $event->id,
+            'user_id' => $member,
+            'voucher_id' => null,
+        ]);
+        $this->assertDatabaseHas('subscription_payments', [
+            'subcription_code' => $planCode,
+            'user_id' => $member,
+            'voucher_id' => null,
+        ]);
+    }
+
     private function createVoucherFixtures(): array
     {
         $adminAccount = Account::create([
