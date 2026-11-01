@@ -1,5 +1,226 @@
 # Agent Log - Maternity.id Project
 
+## [2026-11-01 06:00] Add Voucher Details and Actions
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `app/Http/Controllers/AdminVoucherController.php`
+    - Modified: `routes/web.php`
+    - Modified: `resources/views/admin/dashboard.blade.php`
+    - Modified: `resources/views/admin/vouchers/create.blade.php`
+    - Added: `resources/views/admin/vouchers/show.blade.php`
+    - Modified: `tests/Feature/AdminVoucherManagementTest.php`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Added voucher detail, edit/update, enable/disable, and delete actions. Details show voucher metadata, applicable events and subscription plans, and redemptions from both payment tables. The edit view reuses the Add Voucher form with saved values and service selections. Delete detaches service associations and nulls nullable payment voucher references before removing the voucher.
+
+- **Verification:** `php84 artisan test --filter=AdminVoucherManagementTest` passed (5 tests, 50 assertions). Blade compilation, Pint, routes, and `git diff --check` passed.
+
+- **Migration check:** No migration files changed.
+
+- **Commit:** Not committed
+
+## [2026-11-01 05:30] Add Searchable Event Selector to Voucher Form
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** refactor / feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `resources/views/admin/vouchers/create.blade.php`
+    - Modified: `tests/Feature/AdminVoucherManagementTest.php`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Replaced the event checkbox grid with a searchable multi-select dropdown, removable selected-event chips, and hidden `events[]` inputs. Subscription-plan checkbox selection remains unchanged.
+
+- **Verification:** `php84 artisan test --filter=AdminVoucherManagementTest` passed (2 tests, 22 assertions).
+
+- **Migration check:** No migration files changed.
+
+- **Commit:** Not committed
+
+## [2026-11-01 05:00] Add Admin Voucher Management
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Added: `app/Http/Controllers/AdminVoucherController.php`
+    - Added: `resources/views/admin/vouchers/create.blade.php`
+    - Added: `tests/Feature/AdminVoucherManagementTest.php`
+    - Modified: `routes/web.php`
+    - Modified: `resources/views/admin/dashboard.blade.php`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Added `/admin/voucher` and `/admin/voucher/add` under admin middleware. The management tab lists voucher number, eligible service count, discount, maximum discount, validity, remaining redemptions across event registrations and subscription payments, and active state. Added a creation form that associates vouchers with selected events and subscription plans through `associated_voucher`.
+
+- **Why:** Admins need a dedicated page to review vouchers and manage their eligible services.
+
+- **Verification:** `php84 artisan test --filter=AdminVoucherManagementTest` passed (2 tests, 18 assertions).
+
+- **Migration check:** No migration files changed.
+
+- **Commit:** Not committed
+
+## [2026-11-01 04:00] Link Event Registrations to Vouchers
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Added: `database/migrations/2026_11_01_040000_add_voucher_id_to_event_registration.php`
+    - Modified: `tests/Feature/VoucherSchemaMigrationTest.php`
+    - Modified: `database.dbml`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Added nullable `event_registration.voucher_id` using Laravel's UUID column helper and a foreign key to `vouchers.id`; added the matching DBML relationship and regression assertions.
+
+- **Verification:** `php84 artisan test --filter=VoucherSchemaMigrationTest` passed (1 test, 14 assertions).
+
+- **Migration check:** Added a new migration; existing migration files were not changed.
+
+- **Commit:** Not committed
+
+## [2026-11-01 03:30] Update Subscription Payment Seeder for Voucher Columns
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database/seeders/SubscriptionPaymentsSeeder.php`
+    - Added: `tests/Feature/SubscriptionPaymentsSeederTest.php`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** The payment seeder now reads price and period from the matching subscription plan, populates `subamount` and `total_amount` from the plan price, and explicitly sets `voucher_id` to null when no voucher applies. It limits generated payments to plans that exist in the database.
+
+- **Verification:** `php84 artisan test --filter=SubscriptionPaymentsSeederTest` passed (1 test, 1 assertion).
+
+- **Migration check:** No migration files changed.
+
+- **Commit:** Not committed
+
+## [2026-11-01 03:00] Add Voucher Schema Migration
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Added: `database/migrations/2026_11_01_030000_add_voucher_schema_and_subscription_amounts.php`
+    - Added: `tests/Feature/VoucherSchemaMigrationTest.php`
+    - Modified: `database.dbml`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Added `vouchers` and `associated_voucher` using Laravel UUID columns, added voucher amount/ID fields to subscription payments, and backfilled existing payment rows before making amount columns non-null. `associated_voucher` has the composite key `(voucher_id, item_id, item_type)` and only a foreign key on `voucher_id`; `item_id` remains polymorphic. Used `string` for `item_type` so it can participate in a MySQL primary key, and aligned the DBML column type.
+
+- **Why:** The DBML includes voucher schema not present in the existing migrations. The event, event-registration, and event-material tables already have migrations, so no duplicate event tables were added.
+
+- **Verification:** `php84 artisan test --filter=VoucherSchemaMigrationTest` passed (1 test, 8 assertions). Full suite: 8 passed; existing `ExampleTest` failed because `public/build/manifest.json` is missing. `git diff --check` and Pint passed. MySQL `migrate:status` was unavailable because the local MySQL server refused the connection.
+
+- **Migration check:** Added a new migration; existing migration files were not changed.
+
+- **Commit:** Not committed
+
+## [2026-11-01 02:30] Review Voucher Polymorphic Association
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** docs / fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database.dbml`
+    - Modified: `src/docs/AGENT_LOG.md`
+
+- **What changed:** Confirmed `associated_voucher.voucher_id` is its only foreign-key relationship. Kept `item_id` polymorphic and without a foreign key, retained the composite key `(voucher_id, item_id, item_type)`, and clarified the item type note to `events, subscription_plans`.
+
+- **Verification:** Official DBML CLI accepted the schema. Voucher-specific migrations are not present in the current migrations directory, so voucher column definitions could not be independently checked against migration source.
+
+- **Commit:** Not committed
+
+## [2026-11-01 02:00] Rebuild DBML Using Existing Reference Syntax
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** docs / fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database.dbml`
+    - Modified: `src/docs/AGENT_LOG.md`
+
+- **What changed:** Rebuilt the rolled-back DBML in its existing quoted-identifier format, retaining inline `ref` attributes, `Note:` annotations, and `Indexes` blocks. Updated the schema to migration-backed columns and relationships, used `char(36)` for Laravel UUID columns, and included all migration-created tables.
+
+- **Why:** The DBML had been rolled back to an older schema; the schema needed to match current migrations without introducing top-level enum or reference constructs outside the existing format.
+
+- **Verification:** Official `@dbml/cli` generated MySQL SQL successfully; confirmed 19 tables, 20 inline references, and `git diff --check`.
+
+- **Migration check:** Confirmed: migrations read only; no migration or schema files were modified.
+
+- **Commit:** Not committed
+
+## [2026-11-01 01:00] Align DBML Types With MySQL Migrations
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** docs / fix
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database.dbml`
+    - Modified: `src/docs/AGENT_LOG.md`
+
+- **What changed:** Represented Laravel UUID columns as MySQL `char(36)` in DBML, including all corresponding FK columns, so exported MySQL DDL uses the concrete type created by Laravel migrations. Retained unsigned numeric types as quoted multiword DBML types and indexes in standard `Indexes` blocks.
+
+- **Verification:** Official `@dbml/cli` generated MySQL SQL successfully. Reviewed generated SQL: 19 tables, 20 foreign-key constraints, indexes, and `char(36)` UUID columns; no UUID type declarations remain. `git diff --check` passed.
+
+- **Migration check:** Confirmed: migrations read only; no migration or schema files were modified.
+
+- **Commit:** Not committed
+
+## [2026-11-01 00:00] Synchronize DBML With Migrations
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** docs
+
+- **Status:** Done
+
+- **Files changed:**
+    - Modified: `database.dbml`
+    - Modified: `src/docs/AGENT_LOG.md`
+
+- **What changed:** Rebuilt the DBML schema from all 12 migration files. It now includes all 19 migration-defined tables, exact column types, nullability and defaults, primary and unique keys, indexes, composite keys, and all 20 foreign keys with delete actions. Corrected DBML syntax by quoting multiword unsigned types and defining indexes in `Indexes` blocks.
+
+- **Why:** The previous DBML described an obsolete schema, including incorrect integer IDs, removed or renamed fields, and inaccurate relationships.
+
+- **Verification:** Compared DBML definitions against each migration; confirmed 19 tables and 20 declared foreign keys. Parsed successfully with `npx --yes --package @dbml/cli dbml2sql ... --mysql`; `git diff --check` passed.
+
+- **Migration check:** Confirmed: migration files were read only; no migration or database schema files were modified.
+
+- **Commit:** Not committed
+
 ## [2026-10-30 02:00] Fix Empty E-Book Dropdown on Event Edit
 
 - **Agent/Session:** GitHub Copilot
