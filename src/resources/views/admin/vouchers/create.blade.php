@@ -18,8 +18,10 @@
 <body class="min-h-screen bg-[#FAF5F2] text-neutral-800 antialiased">
     @php
         $isEditing = $voucher !== null;
-        $selectedEventValues = collect(old('events', $selectedEvents ?? []))->map(fn ($id) => (string) $id)->values();
-        $selectedPlanValues = collect(old('subscription_plans', $selectedSubscriptionPlans ?? []))->map(fn ($code) => (string) $code)->values();
+        $selectedEventValues = collect(old('events', $selectedEvents ?? []))->map(fn($id) => (string) $id)->values();
+        $selectedPlanValues = collect(old('subscription_plans', $selectedSubscriptionPlans ?? []))
+            ->map(fn($code) => (string) $code)
+            ->values();
     @endphp
     <main class="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
         <div class="mb-6 flex items-center justify-between gap-4">
@@ -29,8 +31,10 @@
                     <i class="fa-solid fa-arrow-left"></i>
                     Kembali ke daftar voucher
                 </a>
-                <h1 class="font-serif-brand text-2xl font-bold text-neutral-900">{{ $isEditing ? 'Edit Voucher' : 'Tambah Voucher' }}</h1>
-                <p class="mt-1 text-xs text-neutral-500">Atur diskon, masa berlaku, dan layanan yang dapat menggunakan voucher.</p>
+                <h1 class="font-serif-brand text-2xl font-bold text-neutral-900">
+                    {{ $isEditing ? 'Edit Voucher' : 'Tambah Voucher' }}</h1>
+                <p class="mt-1 text-xs text-neutral-500">Atur diskon, masa berlaku, dan layanan yang dapat menggunakan
+                    voucher.</p>
             </div>
             <span
                 class="hidden rounded-full bg-[#E4F5E6] px-3 py-1.5 text-[10px] font-bold text-[#428E53] sm:inline-flex">Admin
@@ -48,8 +52,8 @@
             </div>
         @endif
 
-        <form action="{{ $isEditing ? route('admin.voucher.update', $voucher->id) : route('admin.voucher.store') }}" method="POST"
-            class="space-y-6 rounded-3xl border border-neutral-200/70 bg-white p-5 shadow-sm sm:p-8">
+        <form action="{{ $isEditing ? route('admin.voucher.update', $voucher->id) : route('admin.voucher.store') }}"
+            method="POST" class="space-y-6 rounded-3xl border border-neutral-200/70 bg-white p-5 shadow-sm sm:p-8">
             @csrf
             @if ($isEditing)
                 @method('PUT')
@@ -60,7 +64,8 @@
                     <label for="discount" class="mb-1.5 block text-xs font-bold text-neutral-700">Diskon (%) <span
                             class="text-red-500">*</span></label>
                     <input id="discount" name="discount" type="number" min="0.01" max="100" step="0.01"
-                        required value="{{ old('discount', $voucher ? number_format((float) $voucher->discount, 2, '.', '') : '') }}"
+                        required
+                        value="{{ old('discount', $voucher ? number_format((float) $voucher->discount, 2, '.', '') : '') }}"
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
                 </div>
                 <div>
