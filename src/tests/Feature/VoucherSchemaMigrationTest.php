@@ -38,6 +38,12 @@ class VoucherSchemaMigrationTest extends TestCase
             'total_amount',
         ]));
 
+        $this->assertTrue(Schema::hasColumn('event_registration', 'voucher_id'));
+        $registrationVoucher = collect(DB::select('PRAGMA table_info(event_registration)'))
+            ->firstWhere('name', 'voucher_id');
+        $this->assertNotNull($registrationVoucher);
+        $this->assertSame(0, $registrationVoucher->notnull);
+
         $columns = DB::select('PRAGMA table_info(associated_voucher)');
         $primaryKeyColumns = collect($columns)
             ->filter(fn (object $column): bool => $column->pk > 0)
@@ -54,5 +60,13 @@ class VoucherSchemaMigrationTest extends TestCase
         $this->assertSame('voucher_id', $foreignKeys[0]->from);
         $this->assertSame('vouchers', $foreignKeys[0]->table);
         $this->assertSame('id', $foreignKeys[0]->to);
+
+        $registrationForeignKeys = DB::select('PRAGMA foreign_key_list(event_registration)');
+        $voucherForeignKey = collect($registrationForeignKeys)
+            ->firstWhere('from', 'voucher_id');
+
+        $this->assertNotNull($voucherForeignKey);
+        $this->assertSame('vouchers', $voucherForeignKey->table);
+        $this->assertSame('id', $voucherForeignKey->to);
     }
 }

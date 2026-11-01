@@ -1,5 +1,27 @@
 # Agent Log - Maternity.id Project
 
+## [2026-11-01 04:00] Link Event Registrations to Vouchers
+
+- **Agent/Session:** GitHub Copilot
+
+- **Type:** feat
+
+- **Status:** Done
+
+- **Files changed:**
+    - Added: `database/migrations/2026_11_01_040000_add_voucher_id_to_event_registration.php`
+    - Modified: `tests/Feature/VoucherSchemaMigrationTest.php`
+    - Modified: `database.dbml`
+    - Modified: `docs/AGENT_LOG.md`
+
+- **What changed:** Added nullable `event_registration.voucher_id` using Laravel's UUID column helper and a foreign key to `vouchers.id`; added the matching DBML relationship and regression assertions.
+
+- **Verification:** `php84 artisan test --filter=VoucherSchemaMigrationTest` passed (1 test, 14 assertions).
+
+- **Migration check:** Added a new migration; existing migration files were not changed.
+
+- **Commit:** Not committed
+
 ## [2026-11-01 03:30] Update Subscription Payment Seeder for Voucher Columns
 
 - **Agent/Session:** GitHub Copilot
