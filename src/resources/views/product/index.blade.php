@@ -1,4 +1,4 @@
-<x-layout title="Produk Pilihan — Maternity.id" metaDescription="Temukan berbagai produk kesehatan, perlengkapan nakes, dan kebutuhan ibu & bayi berkualitas di Maternity.id.">
+<x-layout title="Maternityid_Produk" metaDescription="Temukan berbagai produk kesehatan, perlengkapan nakes, dan kebutuhan ibu & bayi berkualitas di Maternity.id.">
     <x-slot name="head">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
@@ -116,6 +116,9 @@
                 @foreach ($products as $product)
                     <x-product_card :product="$product" />
                 @endforeach
+            </div>
+            <div class="pt-4">
+                {{ $products->links() }}
             </div>
         @else
             <!-- Empty State -->

@@ -1,4 +1,4 @@
-<x-layout title="Artikel & Informasi — Maternity.id" metaDescription="Temukan informasi dan artikel kesehatan kehamilan, persalinan, nutrisi, hingga perawatan bayi terpercaya dari para ahli.">
+<x-layout title="Maternityid_Artikel" metaDescription="Temukan informasi dan artikel kesehatan kehamilan, persalinan, nutrisi, hingga perawatan bayi terpercaya dari para ahli.">
     <x-slot name="head">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>

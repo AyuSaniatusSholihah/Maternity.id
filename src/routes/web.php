@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminVoucherController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EbookController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\MyController;
@@ -20,9 +21,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Landing Page
-Route::get('/', function () {
-    return view('landing');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Guest & Member Journey Routes
 Route::get('/events', [EventController::class, 'index'])->name('events');

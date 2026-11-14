@@ -112,15 +112,9 @@
                 </h3>
                 <div class="space-y-2 text-xs md:text-sm text-[#3D2B2B]">
                     <!-- Instagram -->
-                    <a href="https://instagram.com/suara_kelas" target="_blank" class="flex items-center gap-2 hover:text-[#8C433C] transition-all">
+                    <a href="https://www.instagram.com/suarakelas_/?hl=en" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#8C433C] transition-all">
                         <i class="fa-brands fa-instagram text-[#8C433C] text-sm w-3.5"></i>
-                        <span class="text-xs sm:text-sm">suara_kelas</span>
-                    </a>
-
-                    <!-- TikTok -->
-                    <a href="https://tiktok.com/@Maternity" target="_blank" class="flex items-center gap-2 hover:text-[#8C433C] transition-all">
-                        <i class="fa-brands fa-tiktok text-[#8C433C] text-sm w-3.5"></i>
-                        <span class="text-xs sm:text-sm">Maternity</span>
+                        <span class="text-xs sm:text-sm">suarakelas_</span>
                     </a>
                 </div>
             </div>
@@ -151,8 +145,8 @@
                         <!-- Telepon / WA -->
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-phone text-[#8C433C] flex-shrink-0 w-3.5"></i>
-                            <a href="https://wa.me/6288985497133" target="_blank" class="hover:text-[#8C433C] hover:underline transition text-[11px] sm:text-xs">
-                                088985497133
+                            <a href="https://wa.me/6288985497133" target="_blank" rel="noopener noreferrer" class="hover:text-[#8C433C] hover:underline transition text-[11px] sm:text-xs">
+                                6288985497133
                             </a>
                         </div>
                     </div>

@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ asset('logologin.png') }}">
     <meta name="description"
-        content="{{ $metaDescription ?? 'Maternity.id — Platform seminar & pelatihan maternitas untuk ibu hamil dan nifas di Solo & Jogja.' }}">
+        content="{{ $metaDescription ?? 'Maternity.id — Mendampingi perjalanan siklus kehidupan dengan informasi dan dukungan yang terpercaya.' }}">
 
-    <title>{{ $title ?? 'Maternity.id' }} — Maternity Woman's Health</title>
+    <title>{{ $title ?? 'Maternityid_Home' }}</title>
 
     {{-- Preconnect Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">

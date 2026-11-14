@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class EventController extends Controller
 {
@@ -65,7 +66,7 @@ class EventController extends Controller
             ];
         })->toArray();
 
-        $month = $request->input('month', 'Jul');
+        $month = $request->input('month', 'all');
         $tab = $request->input('tab', 'all');
         $category = $request->input('category', 'all');
 
@@ -92,6 +93,16 @@ class EventController extends Controller
             });
         }
 
+        $events = collect(array_values($events));
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $events = new LengthAwarePaginator(
+            $events->forPage($currentPage, 9)->values(),
+            $events->count(),
+            9,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
         $months = [
             ['code' => 'Jan', 'name' => 'Jan'],
             ['code' => 'Feb', 'name' => 'Feb'],
@@ -115,7 +126,7 @@ class EventController extends Controller
         ];
 
         return view('events.index', [
-            'events' => array_values($events),
+            'events' => $events,
             'months' => $months,
             'currentMonth' => $month,
             'currentTab' => $tab,

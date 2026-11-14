@@ -35,10 +35,10 @@ class EbookController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        $allMaterials = $query->get();
+        $ebooks = $query->paginate(12)->withQueryString();
 
         // Transform Material model ke format yang dipakai view
-        $ebooks = $allMaterials->map(function ($material) {
+        $ebooks->getCollection()->transform(function ($material) {
             return [
                 'id' => $material->id,
                 'title' => $material->title,
@@ -52,7 +52,7 @@ class EbookController extends Controller
                 'btn_text' => 'Baca Sekarang',
                 'url' => $material->content_link,
             ];
-        })->values()->toArray();
+        });
 
         return view('library.index', [
             'ebooks' => $ebooks,

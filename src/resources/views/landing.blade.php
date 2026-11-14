@@ -1,4 +1,4 @@
-<x-layout title="Empowering Women's Health">
+<x-layout title="Maternityid_Home">
     <x-slot name="head">
         <!-- Google Fonts & FontAwesome -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -261,7 +261,7 @@
                 </p>
 
                 <p class="text-[#554846] text-xs sm:text-base lg:text-lg leading-relaxed mb-3 sm:mb-9 max-w-[280px] min-[380px]:max-w-md sm:max-w-xl mx-auto font-normal">
-                    Seminar, e-book, dan artikel terpercaya untuk mendampingi perjalanan dari kehamilan hingga tumbuh kembang buah hati.
+                    Mendampingi perjalanan siklus kehidupan dengan informasi dan dukungan yang terpercaya.
                 </p>
 
                 <!-- Action Buttons -->
@@ -428,47 +428,9 @@
             </div>
 
             <!-- Cards Container -->
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 pt-0.5">
-                @php
-                    $events = [
-                        [
-                            'tag' => 'OFFLINE · JKT',
-                            'tag_type' => 'offline',
-                            'image' => 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=800&q=80',
-                            'date' => '22 Sep · 13.00 WIB',
-                            'title' => 'Workshop Pijat Bayi untuk Ibu Baru',
-                            'price' => 'Rp 150.000',
-                            'category' => 'Workshop',
-                            'is_free' => false,
-                            'link' => route('events')
-                        ],
-                        [
-                            'tag' => 'ONLINE',
-                            'tag_type' => 'online',
-                            'image' => 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80',
-                            'date' => '30 Sep · 19.00 WIB',
-                            'title' => 'Nutrisi Ibu Hamil Trimester 3',
-                            'price' => 'Gratis',
-                            'category' => 'Webinar',
-                            'is_free' => true,
-                            'link' => route('events')
-                        ],
-                        [
-                            'tag' => 'ONLINE',
-                            'tag_type' => 'online',
-                            'image' => 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80',
-                            'date' => '12 Oct · 10.00 WIB',
-                            'title' => 'Mindful Motherhood & Relaksasi',
-                            'price' => 'Rp 75.000',
-                            'category' => 'Kelas Prenatal',
-                            'is_free' => false,
-                            'link' => route('events')
-                        ],
-                    ];
-                @endphp
-
+            <div class="flex gap-3.5 sm:gap-5 overflow-x-auto py-2 px-1 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:py-0">
                 @foreach ($events as $index => $event)
-                    <div class="reveal-on-scroll stagger-{{ $loop->iteration }} {{ $loop->iteration === 3 ? 'col-span-2 lg:col-span-1' : '' }}">
+                    <div class="shrink-0 w-[80vw] min-[400px]:w-[74vw] max-w-[330px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} lg:w-auto {{ $loop->iteration === 3 ? 'lg:col-span-1' : '' }}">
                         <x-event_card :event="$event" />
                     </div>
                 @endforeach
@@ -526,63 +488,9 @@
                 @endforeach
             </div>
 
-            {{-- Product Grid --}}
-            @php
-                $products = [
-                    [
-                        'id' => 1,
-                        'title' => "Panduan Nutrisi\nIbu Hamil",
-                        'cover' => 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=400&auto=format&fit=crop&q=80',
-                        'book_title' => 'Nutrisi Lengkap & Menu Sehat Trimester 1-3',
-                        'author' => 'Tim Ahli Gizi',
-                        'price' => 'Gratis',
-                        'link_text' => 'download pdf',
-                        'handle' => '@maternity.id',
-                        'btn_text' => 'Baca Sekarang',
-                        'url' => route('library')
-                    ],
-                    [
-                        'id' => 2,
-                        'title' => "Mindful\nMotherhood",
-                        'cover' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
-                        'book_title' => 'Mengelola Emosi & Kecemasan Menjelang Persalinan',
-                        'author' => 'Psikolog Maternitas',
-                        'price' => 'Gratis',
-                        'link_text' => 'download pdf',
-                        'handle' => '@maternity.id',
-                        'btn_text' => 'Baca Sekarang',
-                        'url' => route('library')
-                    ],
-                    [
-                        'id' => 3,
-                        'title' => "E-Book Pijat\nBayi Baru Lahir",
-                        'cover' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80',
-                        'book_title' => 'Langkah Praktis Stimulasi Motorik Bayi',
-                        'author' => 'Bidan Praktisi',
-                        'price' => 'Gratis',
-                        'link_text' => 'download pdf',
-                        'handle' => '@maternity.id',
-                        'btn_text' => 'Baca Sekarang',
-                        'url' => route('library')
-                    ],
-                    [
-                        'id' => 4,
-                        'title' => "Panduan ASI &\nMenyusui Sukses",
-                        'cover' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&auto=format&fit=crop&q=80',
-                        'book_title' => 'Kiat Mengatasi Masalah Pelekatan & Produksi ASI',
-                        'author' => 'Konselor Laktasi',
-                        'price' => 'Gratis',
-                        'link_text' => 'download pdf',
-                        'handle' => '@maternity.id',
-                        'btn_text' => 'Baca Sekarang',
-                        'url' => route('library')
-                    ],
-                ];
-            @endphp
-
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 pt-0.5">
-                @foreach ($products as $product)
-                    <div class="reveal-on-scroll stagger-{{ $loop->iteration }}">
+            <div class="flex gap-3.5 sm:gap-5 overflow-x-auto py-2 px-1 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:py-0">
+                @foreach ($ebooks as $product)
+                    <div class="shrink-0 w-[60vw] min-[400px]:w-[54vw] max-w-[260px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} lg:w-auto">
                         <x-ebook_card :ebook="$product" />
                     </div>
                 @endforeach
@@ -691,60 +599,6 @@
                 </button>
             </div>
 
-            <!-- Articles Grid (2 Kolom Bersih) -->
-            @php
-                $articles = [
-                    [
-                        'category_slug' => 'trimester-2',
-                        'category_name' => 'Trimester 2',
-                        'title' => '7 Gerakan Yoga Aman untuk Ibu Hamil di Trimester Kedua',
-                        'meta' => '5 Sep 2026 · 5 mnt baca',
-                        'image' => 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=500&q=80',
-                        'link' => route('articles.show', 'cara-mengelola-stres-pada-ibu-hamil'),
-                    ],
-                    [
-                        'category_slug' => 'nutrisi',
-                        'category_name' => 'Nutrisi Ibu',
-                        'title' => 'Asupan Zat Besi: Kunci Cegah Anemia Kehamilan',
-                        'meta' => '3 Sep 2026 · 7 mnt baca',
-                        'image' => 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=500&q=80',
-                        'link' => route('articles.show', 'nutrisi-seimbang-untuk-ibu-hamil'),
-                    ],
-                    [
-                        'category_slug' => 'trimester-1',
-                        'category_name' => 'Trimester 1',
-                        'title' => 'Mengatasi Morning Sickness di Awal Masa Kehamilan',
-                        'meta' => '1 Sep 2026 · 4 mnt baca',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=500&q=80',
-                        'link' => route('articles.show', 'nutrisi-seimbang-untuk-ibu-hamil'),
-                    ],
-                    [
-                        'category_slug' => 'trimester-3',
-                        'category_name' => 'Trimester 3',
-                        'title' => 'Tanda-Tanda Kontraksi Asli vs Palsu Menjelang HPL',
-                        'meta' => '28 Agu 2026 · 6 mnt baca',
-                        'image' => 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=500&q=80',
-                        'link' => route('articles.show', 'nutrisi-seimbang-untuk-ibu-hamil'),
-                    ],
-                    [
-                        'category_slug' => 'persalinan',
-                        'category_name' => 'Persalinan',
-                        'title' => 'Mengenal Metode Gentle Birth untuk Persalinan yang Tenang',
-                        'meta' => '25 Agu 2026 · 5 mnt baca',
-                        'image' => 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=500&q=80',
-                        'link' => route('articles.show', 'peran-suami-mendampingi-kehamilan'),
-                    ],
-                    [
-                        'category_slug' => 'bayi',
-                        'category_name' => 'Perawatan Bayi',
-                        'title' => 'Panduan Membangun Pola Tidur Teratur pada Bayi Baru Lahir',
-                        'meta' => '22 Agu 2026 · 6 mnt baca',
-                        'image' => 'https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=500&q=80',
-                        'link' => route('articles.show', 'pola-tidur-bayi-baru-lahir'),
-                    ],
-                ];
-            @endphp
-
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                 @foreach ($articles as $article)
                     <a href="{{ $article['link'] }}" 
@@ -838,55 +692,9 @@
                 @endforeach
             </div>
 
-            {{-- Product Grid --}}
-            @php
-                $physicalProducts = [
-                    [
-                        'id' => 1,
-                        'title' => 'Seragam Bidan Premium',
-                        'tag' => 'Nakes',
-                        'image' => 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&auto=format&fit=crop&q=80',
-                        'location' => 'Jakarta',
-                        'price' => 'Rp 285.000',
-                        'sold' => '120+',
-                        'tiktok_url' => route('product')
-                    ],
-                    [
-                        'id' => 2,
-                        'title' => 'Nursing Bra 2–Pack',
-                        'tag' => 'Wanita',
-                        'image' => 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&auto=format&fit=crop&q=80',
-                        'location' => 'Surabaya',
-                        'price' => 'Rp 179.000',
-                        'sold' => '85+',
-                        'tiktok_url' => route('product')
-                    ],
-                    [
-                        'id' => 3,
-                        'title' => 'Bantal Hamil Ergonomis U-Shape',
-                        'tag' => 'Ibu Hamil',
-                        'image' => 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&auto=format&fit=crop&q=80',
-                        'location' => 'Bandung',
-                        'price' => 'Rp 210.000',
-                        'sold' => '64+',
-                        'tiktok_url' => route('product')
-                    ],
-                    [
-                        'id' => 4,
-                        'title' => 'Maternity Care Herbal Oil 100ml',
-                        'tag' => 'Herbal',
-                        'image' => 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&auto=format&fit=crop&q=80',
-                        'location' => 'Yogyakarta',
-                        'price' => 'Rp 125.000',
-                        'sold' => '210+',
-                        'tiktok_url' => route('product')
-                    ],
-                ];
-            @endphp
-
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-                @foreach ($physicalProducts as $product)
-                    <div class="reveal-on-scroll stagger-{{ $loop->iteration }}">
+            <div class="flex gap-3 overflow-x-auto py-2 px-1 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:py-0">
+                @foreach ($products as $product)
+                    <div class="shrink-0 w-[72vw] min-[400px]:w-[62vw] max-w-[280px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} lg:w-auto">
                         <x-product_card :product="$product" />
                     </div>
                 @endforeach

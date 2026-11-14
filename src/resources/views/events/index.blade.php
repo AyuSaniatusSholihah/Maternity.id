@@ -1,4 +1,4 @@
-<x-layout title="Event & Kelas — Maternity.id" metaDescription="Temukan event, workshop, dan kelas prenatal serta nifas untuk mendukung kesehatan dan tumbuh kembangmu.">
+<x-layout title="Maternityid_Event" metaDescription="Temukan event, workshop, dan kelas prenatal serta nifas untuk mendukung kesehatan dan tumbuh kembangmu.">
     <x-slot name="head">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
@@ -220,6 +220,9 @@
                         @endforeach
                     </div>
                 </div>
+                <div class="pt-3">
+                    {{ $events->links() }}
+                </div>
             </div>
         @else
             <!-- Empty State -->
@@ -229,11 +232,7 @@
                 </div>
                 <h3 class="text-base font-bold text-[#2A1614]">Belum Ada Event di Bulan Ini</h3>
                 <p class="text-xs text-neutral-500">
-                    @if($currentMonth !== 'all' && $currentMonth !== 'Jul')
-                        Silakan pilih bulan lain atau hapus filter untuk melihat semua jadwal kelas dan seminar aktif.
-                    @else
-                        Silakan pilih bulan lain atau kembali ke bulan Juli untuk melihat jadwal kelas dan seminar aktif.
-                    @endif
+                    Silakan pilih bulan lain atau hapus filter untuk melihat semua jadwal kelas dan seminar aktif.
                 </p>
                 @if($currentMonth !== 'all')
                     <a href="{{ route('events', ['month' => 'all', 'tab' => $currentTab, 'category' => $currentCategory]) }}" 

@@ -1,4 +1,4 @@
-<x-layout title="Ebook & Panduan Digital — Maternity.id" metaDescription="Download ebook dan panduan praktis seputar kehamilan, persalinan, nutrisi, hingga perawatan bayi baru lahir secara gratis.">
+<x-layout title="Maternityid_Ebook" metaDescription="Download ebook dan panduan praktis seputar kehamilan, persalinan, nutrisi, hingga perawatan bayi baru lahir secara gratis.">
     <x-slot name="head">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
@@ -74,6 +74,9 @@
                         </div>
                         <span class="text-[10px] font-bold text-[#8C433C] text-center leading-tight">E-Library PDF</span>
                     </div>
+                </div>
+                <div class="pt-3">
+                    {{ $ebooks->links() }}
                 </div>
             </div>
         </div>

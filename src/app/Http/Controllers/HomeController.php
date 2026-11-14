@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Article;
+use App\Models\Event;
+use App\Models\Material;
+use App\Models\Product;
+
+class HomeController extends Controller
+{
+    public function index()
+    {
+        $fallbackImage = config('app.fallback_image_url');
+
+        $events = Event::with('category')
+            ->latest('event_date')
+            ->take(3)
+            ->get()
+            ->map(function (Event $event) use ($fallbackImage) {
+                $isOnline = str_contains(strtolower($event->location), 'online');
+
+                return [
+                    'id' => $event->id,
+                    'slug' => $event->slug,
+                    'title' => $event->title,
+                    'description' => $event->description,
+                    'date_string' => $event->event_date?->format('d M Y') ?? 'Jadwal Terbuka',
+                    'format' => $isOnline ? 'ONLINE' : 'OFFLINE',
+                    'format_type' => $isOnline ? 'online' : 'offline',
+                    'category' => $event->category?->name ?? 'Event',
+                    'price' => $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis',
+                    'thumbnail_image' => $event->image_url ?: $fallbackImage,
+                ];
+            })
+            ->all();
+
+        $ebooks = Material::with('uploader')
+            ->latest()
+            ->take(4)
+            ->get()
+            ->map(function (Material $material) {
+                return [
+                    'id' => $material->id,
+                    'title' => $material->title,
+                    'book_title' => $material->title,
+                    'cover' => $material->image_url,
+                    'author' => $material->uploader?->name ?? 'Maternity.id',
+                    'price' => 'Gratis',
+                    'link_text' => 'akses online',
+                    'btn_text' => 'Baca Sekarang',
+                    'url' => route('library'),
+                ];
+            })
+            ->all();
+
+        $articles = Article::with('category')
+            ->latest()
+            ->take(6)
+            ->get()
+            ->map(function (Article $article) use ($fallbackImage) {
+                return [
+                    'category_slug' => $article->category?->slug ?? 'artikel',
+                    'category_name' => $article->category?->name ?? 'Artikel',
+                    'title' => $article->title,
+                    'meta' => $article->created_at?->format('d M Y'),
+                    'image' => $article->image_url ?: $fallbackImage,
+                    'link' => route('articles.show', $article->slug),
+                ];
+            })
+            ->all();
+
+        $products = Product::with('category')
+            ->latest()
+            ->take(4)
+            ->get()
+            ->map(function (Product $product) use ($fallbackImage) {
+                return [
+                    'id' => $product->id,
+                    'title' => $product->name,
+                    'tag' => $product->category?->name ?? 'Produk',
+                    'image' => $product->thumbnail_img ?: $fallbackImage,
+                    'location' => 'Maternity.id',
+                    'price' => 'Rp ' . number_format($product->price, 0, ',', '.'),
+                    'tiktok_url' => $product->tiktok_url ?: ($product->whatsapp_url ?: '#'),
+                ];
+            })
+            ->all();
+
+        return view('landing', compact('events', 'ebooks', 'articles', 'products'));
+    }
+}
