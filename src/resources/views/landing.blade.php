@@ -538,47 +538,13 @@
                     Semua
                 </button>
 
-                <!-- 2. Trimester 1 -->
-                <button type="button" @click="activeTab = 'trimester-1'"
-                    :class="activeTab === 'trimester-1' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
-                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
-                    Trimester 1
-                </button>
-
-                <!-- 3. Trimester 2 -->
-                <button type="button" @click="activeTab = 'trimester-2'"
-                    :class="activeTab === 'trimester-2' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
-                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
-                    Trimester 2
-                </button>
-
-                <!-- 4. Trimester 3 -->
-                <button type="button" @click="activeTab = 'trimester-3'"
-                    :class="activeTab === 'trimester-3' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
-                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
-                    Trimester 3
-                </button>
-
-                <!-- 5. Nutrisi Ibu -->
-                <button type="button" @click="activeTab = 'nutrisi'"
-                    :class="activeTab === 'nutrisi' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
-                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
-                    Nutrisi Ibu
-                </button>
-
-                <!-- 6. Persalinan -->
-                <button type="button" @click="activeTab = 'persalinan'"
-                    :class="activeTab === 'persalinan' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
-                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
-                    Persalinan
-                </button>
-
-                <!-- 7. Perawatan Bayi -->
-                <button type="button" @click="activeTab = 'bayi'"
-                    :class="activeTab === 'bayi' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
-                    class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
-                    Perawatan Bayi
-                </button>
+                @foreach ($articleCategories as $category)
+                    <button type="button" @click="activeTab = '{{ $category['slug'] }}'"
+                        :class="activeTab === '{{ $category['slug'] }}' ? 'bg-[#5F8C72] text-white font-bold shadow-xs' : 'bg-white border border-[#EADBDB] text-neutral-800 hover:bg-[#FAF0EE] font-medium'"
+                        class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs transition-all duration-200 whitespace-nowrap cursor-pointer transform hover:scale-105 active:scale-95 shrink-0">
+                        {{ $category['name'] }}
+                    </button>
+                @endforeach
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">

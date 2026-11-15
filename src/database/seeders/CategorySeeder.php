@@ -27,6 +27,14 @@ class CategorySeeder extends Seeder
             'Pemeriksaan Medis',
             'Keamanan & Bahaya',
             'Gaya Hidup',
+            'Pertumbuhan Remaja',
+            'Pranikah & Prakonsepsi',
+            'Kehamilan',
+            'Persiapan Persalinan',
+            'Bayi Baru Lahir',
+            'Menyusui',
+            'Makanan Bayi',
+            'Pola Asuh',
         ];
 
         foreach ($categories as $category) {

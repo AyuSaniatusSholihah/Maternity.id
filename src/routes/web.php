@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminEventController;
+use App\Http\Controllers\AdminArticleController;
 use App\Http\Controllers\AdminMaterialController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminVerificationController;
@@ -74,15 +75,19 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
     Route::get('/approval', [AdminVerificationController::class, 'dashboard'])
         ->name('admin.approval');
 
-    Route::get('/article', function () {
-        return view('admin.dashboard');
-    })->name('admin.article');
+    Route::get('/article', [AdminArticleController::class, 'index'])->name('admin.article');
+    Route::get('/article/add', [AdminArticleController::class, 'create'])->name('admin.article.create');
+    Route::get('/article/{id}/edit', [AdminArticleController::class, 'edit'])->name('admin.article.edit');
+    Route::post('/article', [AdminArticleController::class, 'store'])->name('admin.article.store');
+    Route::put('/article/{id}', [AdminArticleController::class, 'update'])->name('admin.article.update');
+    Route::delete('/article/{id}', [AdminArticleController::class, 'destroy'])->name('admin.article.destroy');
 
     Route::get('/event', [AdminEventController::class, 'index'])->name('admin.event');
     Route::get('/event/add', [AdminEventController::class, 'create'])->name('admin.event.create');
     Route::get('/event/{slug}/edit', [AdminEventController::class, 'edit'])->name('admin.event.edit');
     Route::post('/event', [AdminEventController::class, 'store'])->name('admin.event.store');
     Route::put('/event/{slug}', [AdminEventController::class, 'update'])->name('admin.event.update');
+    Route::delete('/event/{slug}', [AdminEventController::class, 'destroy'])->name('admin.event.destroy');
 
     Route::get('/ebook', [AdminMaterialController::class, 'index'])->name('admin.ebook');
     Route::get('/ebook/add', [AdminMaterialController::class, 'create'])->name('admin.ebook.create');

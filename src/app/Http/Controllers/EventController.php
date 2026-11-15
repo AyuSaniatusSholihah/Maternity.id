@@ -125,15 +125,10 @@ class EventController extends Controller
             ['code' => 'Des', 'name' => 'Des'],
         ];
 
-        $categories = Event::query()
-            ->whereNotNull('categories')
-            ->distinct()
-            ->orderBy('categories')
-            ->pluck('categories')
-            ->map(fn (string $category): array => [
-                'slug' => $category,
-                'name' => ucfirst($category),
-            ])
+        $categories = collect([
+            ['slug' => 'online', 'name' => 'Online'],
+            ['slug' => 'offline', 'name' => 'Offline'],
+        ])
             ->prepend(['slug' => 'all', 'name' => 'Semua Kategori'])
             ->values()
             ->all();

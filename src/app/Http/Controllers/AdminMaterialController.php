@@ -16,7 +16,10 @@ class AdminMaterialController extends Controller
     public function create(): View
     {
         return view('admin.materials.create', [
-            'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
+            'adminCategories' => Category::query()
+                ->whereIn('slug', Category::MODULE_SLUGS)
+                ->orderBy('name')
+                ->get(['id', 'name']),
         ]);
     }
 
@@ -24,7 +27,10 @@ class AdminMaterialController extends Controller
     {
         return view('admin.materials.edit', [
             'material' => Material::query()->findOrFail($id),
-            'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
+            'adminCategories' => Category::query()
+                ->whereIn('slug', Category::MODULE_SLUGS)
+                ->orderBy('name')
+                ->get(['id', 'name']),
         ]);
     }
 
