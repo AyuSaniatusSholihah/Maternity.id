@@ -49,7 +49,7 @@ Route::get('/consult', function () {
 Route::get('/product', [ProductController::class, 'index'])->name('product');
 
 Route::get('/mitra', function () {
-    return view('landing');
+    return redirect()->to(url('/').'#mitra');
 })->name('mitra.index');
 
 Route::get('/admin/login', function () {

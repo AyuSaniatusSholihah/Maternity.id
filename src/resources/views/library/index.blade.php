@@ -84,8 +84,6 @@
 
 
         {{-- ── 2. CATEGORY FILTER TABS (PILLS) ── --}}
-        {{-- COMMENTED OUT: Category filter not in database schema --}}
-        {{-- 
         <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
             @foreach ($categories as $cat)
                 @php
@@ -98,7 +96,6 @@
                 </a>
             @endforeach
         </div>
-        --}}
 
         <!-- ── 3. SECTION HEADER & SORT / DATE CONTROLS ── -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">

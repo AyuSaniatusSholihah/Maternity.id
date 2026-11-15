@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Material;
 use Illuminate\Http\Request;
 
@@ -17,9 +18,16 @@ class EbookController extends Controller
         $sort = $request->input('sort', 'latest');
         $dateStart = $request->input('dateStart');
         $dateEnd = $request->input('dateEnd');
+        $category = $request->input('category', 'all');
 
         // Query materials dengan eager loading uploader relation
         $query = Material::with('uploader.account');
+
+        if ($category && $category !== 'all') {
+            $query->whereHas('category', function ($categoryQuery) use ($category) {
+                $categoryQuery->where('slug', $category);
+            });
+        }
 
         // Apply date filtering jika ada
         if ($dateStart && $dateEnd) {
@@ -54,8 +62,31 @@ class EbookController extends Controller
             ];
         });
 
+        $categoryIds = Material::query()
+            ->whereNotNull('categories')
+            ->distinct()
+            ->pluck('categories');
+        $categories = Category::query()
+            ->whereIn('id', $categoryIds)
+            ->orderBy('name')
+            ->get(['slug', 'name'])
+            ->map(fn (Category $item): array => [
+                'slug' => $item->slug,
+                'name' => $item->name,
+                'icon' => 'fa-solid fa-book-open',
+            ])
+            ->prepend([
+                'slug' => 'all',
+                'name' => 'Semua',
+                'icon' => 'fa-solid fa-shapes',
+            ])
+            ->values()
+            ->all();
+
         return view('library.index', [
             'ebooks' => $ebooks,
+            'categories' => $categories,
+            'currentCategory' => $category,
             'currentSort' => $sort,
             'dateStart' => $dateStart,
             'dateEnd' => $dateEnd,

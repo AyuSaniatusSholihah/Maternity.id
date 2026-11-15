@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\Event;
 use App\Models\Material;
 use App\Models\Product;
@@ -12,6 +13,51 @@ class HomeController extends Controller
     public function index()
     {
         $fallbackImage = config('app.fallback_image_url');
+
+        $eventCategories = Event::query()
+            ->whereNotNull('categories')
+            ->distinct()
+            ->orderBy('categories')
+            ->pluck('categories')
+            ->map(fn (string $category): array => [
+                'slug' => $category,
+                'name' => ucfirst($category),
+            ])
+            ->prepend(['slug' => 'all', 'name' => 'Semua'])
+            ->values()
+            ->all();
+
+        $ebookCategoryIds = Material::query()
+            ->whereNotNull('categories')
+            ->distinct()
+            ->pluck('categories');
+        $ebookCategories = Category::query()
+            ->whereIn('id', $ebookCategoryIds)
+            ->orderBy('name')
+            ->get(['slug', 'name'])
+            ->map(fn (Category $category): array => [
+                'slug' => $category->slug,
+                'name' => $category->name,
+            ])
+            ->prepend(['slug' => 'all', 'name' => 'Semua'])
+            ->values()
+            ->all();
+
+        $productCategoryIds = Product::query()
+            ->whereNotNull('categories')
+            ->distinct()
+            ->pluck('categories');
+        $productCategories = Category::query()
+            ->whereIn('id', $productCategoryIds)
+            ->orderBy('name')
+            ->get(['slug', 'name'])
+            ->map(fn (Category $category): array => [
+                'slug' => $category->slug,
+                'name' => $category->name,
+            ])
+            ->prepend(['slug' => 'all', 'name' => 'Semua'])
+            ->values()
+            ->all();
 
         $events = Event::query()
             ->latest('event_date')
@@ -88,6 +134,14 @@ class HomeController extends Controller
             })
             ->all();
 
-        return view('landing', compact('events', 'ebooks', 'articles', 'products'));
+        return view('landing', compact(
+            'events',
+            'ebooks',
+            'articles',
+            'products',
+            'eventCategories',
+            'ebookCategories',
+            'productCategories',
+        ));
     }
 }

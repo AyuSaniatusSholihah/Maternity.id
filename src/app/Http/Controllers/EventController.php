@@ -60,8 +60,8 @@ class EventController extends Controller
                 'format' => $event->categories === 'online' ? 'ONLINE' : 'OFFLINE',
                 'format_type' => $event->categories,
                 'location' => $event->location,
-                'category' => 'Event',
-                'category_slug' => 'event',
+                'category' => ucfirst($event->categories),
+                'category_slug' => $event->categories,
                 'duration' => '',
                 'price' => $priceDisplay,
                 'price_numeric' => $event->fee,
@@ -125,12 +125,18 @@ class EventController extends Controller
             ['code' => 'Des', 'name' => 'Des'],
         ];
 
-        $categories = [
-            ['slug' => 'all', 'name' => 'Semua Kategori'],
-            ['slug' => 'workshop', 'name' => 'Workshop'],
-            ['slug' => 'seminar', 'name' => 'Seminar'],
-            ['slug' => 'kelas-yoga', 'name' => 'Kelas Yoga'],
-        ];
+        $categories = Event::query()
+            ->whereNotNull('categories')
+            ->distinct()
+            ->orderBy('categories')
+            ->pluck('categories')
+            ->map(fn (string $category): array => [
+                'slug' => $category,
+                'name' => ucfirst($category),
+            ])
+            ->prepend(['slug' => 'all', 'name' => 'Semua Kategori'])
+            ->values()
+            ->all();
 
         return view('events.index', [
             'events' => $events,
