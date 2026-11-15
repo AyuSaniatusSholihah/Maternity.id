@@ -84,8 +84,6 @@
 
 
         {{-- ── 2. CATEGORY FILTER TABS (PILLS) ── --}}
-        {{-- COMMENTED OUT: Category filter not in database schema --}}
-        {{-- 
         <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
             @foreach ($categories as $cat)
                 @php
@@ -98,7 +96,6 @@
                 </a>
             @endforeach
         </div>
-        --}}
 
         <!-- ── 3. SECTION HEADER & SORT / DATE CONTROLS ── -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
@@ -287,7 +284,7 @@
                          class="flex gap-3.5 sm:gap-5 overflow-x-auto py-2.5 px-1 sm:px-2 no-scrollbar snap-x snap-mandatory scroll-smooth"
                          style="cursor: grab;">
                         @foreach ($ebooks as $product)
-                            <div class="shrink-0 w-[60vw] min-[400px]:w-[54vw] sm:w-[240px] md:w-[250px] max-w-[260px] snap-start">
+                            <div class="w-[calc((100vw-3.875rem)/2)] shrink-0 sm:w-[240px] md:w-[250px] max-w-[260px] snap-start">
                                 <x-ebook_card :ebook="$product" />
                             </div>
                         @endforeach

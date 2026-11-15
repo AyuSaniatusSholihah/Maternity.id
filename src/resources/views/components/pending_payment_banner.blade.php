@@ -1,4 +1,20 @@
 {{-- Component: Pending Payment Banner & Cancellation Modal --}}
+@php
+    $serverPayment = auth()->check()
+        ? \Illuminate\Support\Facades\DB::table('event_registration')
+            ->join('events', 'event_registration.event_id', '=', 'events.id')
+            ->where('event_registration.user_id', auth()->id())
+            ->whereIn('event_registration.payment_status', ['pending', 'approved'])
+            ->latest('event_registration.updated_at')
+            ->select([
+                'events.slug as event_slug',
+                'events.title as event_title',
+                'event_registration.payment_status',
+            ])
+            ->first()
+        : null;
+@endphp
+
 <div x-data="pendingPaymentBanner()" 
      x-init="init()"
      class="w-full flex justify-center">
@@ -55,37 +71,43 @@
                     <div class="hidden sm:flex items-center gap-1.5">
                         <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F8DED9] text-[#8C433C] uppercase tracking-wider">
                             <span class="w-1.5 h-1.5 rounded-full bg-[#8C433C] animate-ping"></span>
-                            Menunggu Pembayaran
+                            <span x-text="pendingPayment?.status === 'approved' ? 'Pendaftaran Diterima' : (pendingPayment?.status === 'paid' ? 'Menunggu Verifikasi' : 'Menunggu Pembayaran')"></span>
                         </span>
                     </div>
 
                     {{-- Nama Event & Harga Fit Sesuaikan Tulisan --}}
                     <div class="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
                         <span class="text-xs sm:text-sm font-bold text-neutral-800 leading-tight truncate max-w-[150px] min-[380px]:max-w-[210px] sm:max-w-none" x-text="pendingPayment?.eventTitle || 'Prenatal Yoga for Calm & Strength'"></span>
-                        <span class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded bg-[#FAF0EE] text-[#8C433C] border border-[#DEAAA1]/40 shrink-0" x-text="pendingPayment?.totalAmount || 'Rp 75.000,00'"></span>
+                        <span x-show="!isPaid()"
+                              class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded bg-[#FAF0EE] text-[#8C433C] border border-[#DEAAA1]/40 shrink-0"
+                              x-text="pendingPayment?.totalAmount || 'Rp 75.000,00'"></span>
                     </div>
 
                     {{-- Subteks 1 Kalimat Padat (Desktop Only) --}}
                     <p class="hidden sm:block text-[11px] text-neutral-500 leading-tight">
-                        Pendaftaran tersimpan. Selesaikan pembayaran untuk mengamankan kuota peserta.
+                        <span x-text="pendingPayment?.status === 'approved' ? 'Pendaftaran Anda telah disetujui admin.' : (pendingPayment?.status === 'paid' ? 'Bukti pembayaran sedang dikonfirmasi admin.' : 'Pendaftaran tersimpan. Selesaikan pembayaran untuk mengamankan kuota peserta.')"></span>
                     </p>
                 </div>
             </div>
 
             {{-- Bagian Kanan: Tombol Aksi & Tombol Close --}}
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                {{-- Tombol Batalkan --}}
+                {{-- Tombol Batalkan hanya sebelum pembayaran --}}
                 <button type="button" 
+                        x-show="!isPaid()"
                         @click="openCancelModal()"
                         class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-white hover:bg-red-50 text-[#8C433C] border border-[#DEAAA1] hover:border-red-300 font-semibold text-[11px] sm:text-xs transition shadow-2xs cursor-pointer">
                     Batalkan
                 </button>
 
-                {{-- Tombol Lanjutkan Pembayaran --}}
-                <a :href="'/events/' + (pendingPayment?.eventSlug || 'mindful-motherhood') + '/checkout?step=' + (pendingPayment?.step === 3 ? '3' : '2')"
+                {{-- Tombol Bayar atau Lihat Status --}}
+                <a :href="pendingPayment?.status === 'approved'
+                    ? '/events/' + (pendingPayment?.eventSlug || 'mindful-motherhood') + '/approved'
+                    : pendingPayment?.status === 'paid'
+                        ? '/events/' + (pendingPayment?.eventSlug || 'mindful-motherhood') + '/verification'
+                    : '/events/' + (pendingPayment?.eventSlug || 'mindful-motherhood') + '/checkout?step=' + (pendingPayment?.step === 3 ? '3' : '2')"
                    class="inline-flex items-center gap-1 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-[#5F8C72] hover:bg-[#4e745d] active:scale-95 text-white font-semibold text-[11px] sm:text-xs shadow-sm transition cursor-pointer">
-                    <span class="hidden sm:inline">Lanjutkan Pembayaran</span>
-                    <span class="inline sm:hidden">Bayar</span>
+                    <span x-text="isPaid() ? 'Lihat Status' : 'Bayar'"></span>
                     <i class="fa-solid fa-arrow-right text-[9px] sm:text-[10px]"></i>
                 </a>
 
@@ -215,6 +237,11 @@
     function pendingPaymentBanner() {
         return {
             pendingPayment: null,
+            serverPayment: @js($serverPayment ? [
+                'eventSlug' => $serverPayment->event_slug,
+                'eventTitle' => $serverPayment->event_title,
+                'status' => $serverPayment->payment_status === 'approved' ? 'approved' : 'paid',
+            ] : null),
             hasPending: false,
             isDismissed: false,
             showCancelModal: false,
@@ -260,7 +287,14 @@
             checkPending() {
                 try {
                     const raw = localStorage.getItem('maternity_pending_payment');
-                    if (raw) {
+                    if (this.serverPayment) {
+                        this.pendingPayment = {
+                            ...(raw ? JSON.parse(raw) : {}),
+                            ...this.serverPayment,
+                            status: this.serverPayment.status
+                        };
+                        this.hasPending = true;
+                    } else if (raw) {
                         this.pendingPayment = JSON.parse(raw);
                         this.hasPending = true;
                     } else {
@@ -270,6 +304,10 @@
                 } catch (e) {
                     this.hasPending = false;
                 }
+            },
+
+            isPaid() {
+                return ['paid', 'approved'].includes(this.pendingPayment?.status);
             },
 
             dismissBanner() {

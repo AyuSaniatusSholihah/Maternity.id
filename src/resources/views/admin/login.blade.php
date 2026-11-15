@@ -37,17 +37,13 @@
 
     {{-- Main Container Card --}}
     <div class="w-full max-w-md relative z-10" x-data="{
-        username: '',
+        username: 'admin@maternity.id',
         password: '',
         showPassword: false,
         rememberMe: true,
         isLoading: false,
-        errorMessage: '',
+        errorMessage: @js($errors->first('email', '')),
         handleLogin() {
-            if (!this.username.trim()) {
-                this.errorMessage = 'Silakan masukkan username atau email admin.';
-                return;
-            }
             if (!this.password) {
                 this.errorMessage = 'Silakan masukkan password admin.';
                 return;
@@ -58,12 +54,14 @@
             fetch('{{ route('login.post') }}', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify({
-                        email: this.username
+                body: new URLSearchParams({
+                    _token: '{{ csrf_token() }}',
+                        email: this.username,
+                        password: this.password,
+                    remember: this.rememberMe ? '1' : '0'
                     })
                 })
                 .then(res => res.json())
@@ -72,7 +70,7 @@
                         window.location.href = data.redirect;
                     } else {
                         this.isLoading = false;
-                        this.errorMessage = data.message || 'Login gagal. Periksa username/email admin.';
+                        this.errorMessage = data.message || 'Login gagal. Periksa password admin.';
                     }
                 })
                 .catch(() => {
@@ -124,7 +122,7 @@
                     Admin Authentication
                 </h1>
                 <p class="text-xs text-neutral-500 mt-1">
-                    Masukkan kredensial administrator untuk mengelola sistem
+                    Masukkan kredensial admin untuk mengelola sistem
                 </p>
             </div>
 
@@ -137,26 +135,10 @@
             </div>
 
             {{-- Form Login --}}
-            <form action="{{ route('admin.ebook') }}" method="GET" @submit.prevent="handleLogin()" class="space-y-4">
+            <form action="{{ route('login.post') }}" method="POST" class="space-y-4">
+                @csrf
 
-                {{-- Username / Email Field --}}
-                <div>
-                    <label class="block text-xs font-bold text-neutral-700 mb-1.5">
-                        Username atau Email Admin
-                    </label>
-                    <div class="relative">
-                        <span
-                            class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-neutral-400 pointer-events-none">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </span>
-                        <input type="text" x-model="username" name="username"
-                            placeholder="admin@maternity.id atau sarah_admin" autocomplete="username"
-                            class="w-full bg-[#FAF5F2] border border-neutral-300/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#5F8C72] focus:bg-white transition">
-                    </div>
-                </div>
+                <input type="hidden" name="email" value="admin@maternity.id">
 
                 {{-- Password Field with Show/Hide Toggle --}}
                 <div>
@@ -165,7 +147,7 @@
                             Password
                         </label>
                         <a href="javascript:void(0)"
-                            @click="alert('Silakan hubungi Super Admin / Tim IT Maternity.id untuk reset password akun administrator.')"
+                            @click="alert('Silakan hubungi Super Admin / Tim IT Maternity.id untuk reset password akun admin.')"
                             class="text-[11px] text-[#8C433C] hover:underline font-medium">
                             Lupa password?
                         </a>
@@ -192,7 +174,7 @@
                 {{-- Remember Me & Security Info --}}
                 <div class="flex items-center justify-between pt-1">
                     <label class="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" x-model="rememberMe"
+                        <input type="checkbox" name="remember" value="1" x-model="rememberMe"
                             class="w-4 h-4 text-[#5F8C72] bg-[#FAF5F2] border-neutral-300 rounded focus:ring-[#5F8C72] cursor-pointer">
                         <span class="text-xs text-neutral-600 font-medium">Ingat perangkat ini</span>
                     </label>
@@ -236,15 +218,10 @@
                         d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                         clip-rule="evenodd" />
                 </svg>
-                <span>Akses Terenkripsi & Terotorisasi Administrator</span>
+                <span>Akses Terenkripsi & Terotorisasi</span>
             </div>
 
         </div>
-
-        {{-- Copyright & Help Info --}}
-        <p class="text-center text-[11px] text-neutral-500 mt-5">
-            &copy; {{ date('Y') }} Maternity.id. Seluruh hak cipta dilindungi.
-        </p>
 
     </div>
 

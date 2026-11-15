@@ -20,7 +20,7 @@ class AccountSeeder extends Seeder
         // Admin accounts
         Account::create([
             'id' => Str::uuid(),
-            'name' => 'Admin Utama',
+            'name' => 'Administrator',
             'email' => 'admin@maternity.id',
             'role' => 'admin',
             'email_verified_at' => now(),

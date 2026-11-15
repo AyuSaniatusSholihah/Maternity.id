@@ -20,6 +20,8 @@ class EnsureUserIsAdmin
             return $next($request);
         }
 
-        return redirect()->route('home');
+        return Auth::check()
+            ? redirect()->route('home')
+            : redirect()->route('admin.login');
     }
 }

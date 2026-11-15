@@ -3,8 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Member;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -50,11 +57,11 @@ class EventController extends Controller
                 'date_string' => $event->event_date ? $event->event_date->format('d M Y') : 'Jadwal Terbuka',
                 'time_string' => '',
                 'month' => $indonesianMonth,
-                'format' => $event->venue === 'online' ? 'ONLINE' : 'OFFLINE',
-                'format_type' => $event->venue,
+                'format' => $event->categories === 'online' ? 'ONLINE' : 'OFFLINE',
+                'format_type' => $event->categories,
                 'location' => $event->location,
-                'category' => 'Event',
-                'category_slug' => 'event',
+                'category' => ucfirst($event->categories),
+                'category_slug' => $event->categories,
                 'duration' => '',
                 'price' => $priceDisplay,
                 'price_numeric' => $event->fee,
@@ -118,12 +125,18 @@ class EventController extends Controller
             ['code' => 'Des', 'name' => 'Des'],
         ];
 
-        $categories = [
-            ['slug' => 'all', 'name' => 'Semua Kategori'],
-            ['slug' => 'workshop', 'name' => 'Workshop'],
-            ['slug' => 'seminar', 'name' => 'Seminar'],
-            ['slug' => 'kelas-yoga', 'name' => 'Kelas Yoga'],
-        ];
+        $categories = Event::query()
+            ->whereNotNull('categories')
+            ->distinct()
+            ->orderBy('categories')
+            ->pluck('categories')
+            ->map(fn (string $category): array => [
+                'slug' => $category,
+                'name' => ucfirst($category),
+            ])
+            ->prepend(['slug' => 'all', 'name' => 'Semua Kategori'])
+            ->values()
+            ->all();
 
         return view('events.index', [
             'events' => $events,
@@ -165,18 +178,26 @@ class EventController extends Controller
             'thumbnail_image' => $event->image_url ?? $fallbackImage,
             'location' => $event->location,
             'date' => $event->event_date,
-            'venue' => null,
-            'format_type' => null,
-            'format' => 'EVENT',
+            'venue' => $event->categories,
+            'format_type' => $event->categories,
+            'format' => strtoupper($event->categories),
             'mentor_name' => null,
             'speaker' => $event->speaker,
             'speaker_bio' => null,
             'is_verified' => true,
             'badge' => $event->is_available ? 'Tersedia' : 'Penuh',
-            'rating' => '4.8',
             'total_participants' => $event->slot ?? 0,
             'max_participants' => $event->slot ?? 0,
             'maps_url' => null,
+            'registration_closed' => $event->close_registration_date
+                ? now()->startOfDay()->greaterThan($event->close_registration_date) || session('registration_closed', false)
+                : (bool) session('registration_closed', false),
+            'payment_status' => Auth::check()
+                ? DB::table('event_registration')
+                    ->where('event_id', $event->id)
+                    ->where('user_id', Auth::id())
+                    ->value('payment_status')
+                : null,
         ];
 
         $relatedEvents = Event::where('id', '!=', $event->id)
@@ -220,6 +241,12 @@ class EventController extends Controller
             return redirect()->route('events');
         }
 
+        if ($event->close_registration_date
+            && now()->startOfDay()->greaterThan($event->close_registration_date)) {
+            return redirect()->route('events.show', $event->slug)
+                ->with('registration_closed', true);
+        }
+
         $priceDisplay = $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis';
 
         $eventData = [
@@ -230,11 +257,110 @@ class EventController extends Controller
             'price' => $priceDisplay,
             'price_numeric' => $event->fee,
             'thumbnail_image' => $event->image_url ?? $fallbackImage,
+            'registration_closed' => false,
+            'payment_status' => Auth::check()
+                ? DB::table('event_registration')
+                    ->where('event_id', $event->id)
+                    ->where('user_id', Auth::id())
+                    ->value('payment_status')
+                : null,
         ];
 
         return view('events.checkout', [
             'event' => (object) $eventData,
         ]);
+    }
+
+    public function submitPaymentProof(Request $request, string $slug): RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect()->route('login')->with('status', 'Silakan login terlebih dahulu untuk mengirim bukti pembayaran.');
+        }
+
+        $event = Event::query()->where('slug', $slug)->firstOrFail();
+
+        if ($event->close_registration_date
+            && now()->startOfDay()->greaterThan($event->close_registration_date)) {
+            return redirect()->route('events.show', $event->slug)
+                ->with('registration_closed', true);
+        }
+
+        $validated = $request->validate([
+            'payment_proof' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'name' => ['required', 'string', 'max:255'],
+            'whatsapp' => ['required', 'string', 'max:20'],
+            'birth_date' => ['required', 'date'],
+        ]);
+
+        $account = $request->user();
+        $proofPath = $request->file('payment_proof')->store('payment-proofs', 'public');
+
+        DB::transaction(function () use ($account, $event, $validated, $proofPath): void {
+            Member::query()->updateOrCreate(
+                ['account_id' => $account->id],
+                [
+                    'name' => $validated['name'],
+                    'email' => $account->email,
+                    'phone' => $validated['whatsapp'],
+                    'date_of_birth' => $validated['birth_date'] ?? null,
+                ],
+            );
+
+            $existingProof = DB::table('event_registration')
+                ->where('event_id', $event->id)
+                ->where('user_id', $account->id)
+                ->value('proof_img_url');
+
+            DB::table('event_registration')->updateOrInsert(
+                [
+                    'event_id' => $event->id,
+                    'user_id' => $account->id,
+                ],
+                [
+                    'payment_status' => 'pending',
+                    'proof_img_url' => $proofPath,
+                    'reviewer_id' => null,
+                    'reviewed_at' => null,
+                    'message' => 'Bukti pembayaran menunggu verifikasi admin.',
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ],
+            );
+
+            if ($existingProof && $existingProof !== $proofPath) {
+                Storage::disk('public')->delete($existingProof);
+            }
+        });
+
+        $adminEmails = DB::table('accounts')
+            ->where('role', 'admin')
+            ->whereNotNull('email')
+            ->pluck('email');
+
+        foreach ($adminEmails as $adminEmail) {
+            try {
+                Mail::raw(
+                    "Ada bukti pembayaran baru yang perlu diverifikasi.\n\n"
+                    ."Peserta: {$validated['name']}\n"
+                    ."Email: {$account->email}\n"
+                    ."Event: {$event->title}\n\n"
+                    .'Silakan buka dashboard admin untuk memeriksa dan memprosesnya.',
+                    fn ($mail) => $mail->to($adminEmail)
+                        ->subject('Bukti Pembayaran Baru - Maternity.id')
+                );
+            } catch (\Throwable $exception) {
+                Log::error('Gagal mengirim email notifikasi admin.', [
+                    'admin_email' => $adminEmail,
+                    'event_id' => $event->id,
+                    'user_id' => $account->id,
+                    'error' => $exception->getMessage(),
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('events.checkout', ['slug' => $event->slug, 'step' => 4])
+            ->with('status', 'Bukti pembayaran berhasil dikirim dan sedang menunggu verifikasi admin.');
     }
 
     /**

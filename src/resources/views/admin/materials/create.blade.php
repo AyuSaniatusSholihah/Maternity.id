@@ -79,10 +79,10 @@
                     </label>
                 </div>
                 <div class="md:col-span-2">
-                    <label for="image_url" class="mb-1.5 block text-xs font-bold text-neutral-700">URL Gambar</label>
-                    <input id="image_url" type="url" name="image_url" value="{{ old('image_url') }}" maxlength="255"
-                        class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20"
-                        placeholder="https://...">
+                    <label for="image" class="mb-1.5 block text-xs font-bold text-neutral-700">Cover E-Book</label>
+                    <input id="image" type="file" name="image" accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                        class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-3 py-2.5 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#5F8C72] file:px-3 file:py-2 file:text-xs file:font-bold file:text-white focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
+                    <p class="mt-1.5 text-[11px] text-neutral-500">Format JPG atau PNG, maksimal 5 MB. Rekomendasi ukuran A4 (2480 × 3508 px).</p>
                 </div>
                 <div class="md:col-span-2">
                     <label for="description" class="mb-1.5 block text-xs font-bold text-neutral-700">Deskripsi <span

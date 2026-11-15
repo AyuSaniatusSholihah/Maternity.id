@@ -48,7 +48,8 @@
         @endif
 
         <form action="{{ $event ? route('admin.event.update', $event->slug) : route('admin.event.store') }}"
-            method="POST" class="space-y-6 rounded-3xl border border-neutral-200/70 bg-white p-5 shadow-sm sm:p-8">
+            method="POST" enctype="multipart/form-data"
+            class="space-y-6 rounded-3xl border border-neutral-200/70 bg-white p-5 shadow-sm sm:p-8">
             @csrf
             @if ($event)
                 @method('PUT')
@@ -70,10 +71,8 @@
                     <select id="categories" name="categories" required
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-3 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
                         <option value="">Pilih kategori</option>
-                        @foreach ($adminCategories as $category)
-                            <option value="{{ $category->id }}" @selected(old('categories', $event?->categories) === $category->id)>{{ $category->name }}
-                            </option>
-                        @endforeach
+                        <option value="online" @selected(old('categories', $event?->categories) === 'online')>Online</option>
+                        <option value="offline" @selected(old('categories', $event?->categories) === 'offline')>Offline</option>
                     </select>
                 </div>
 
@@ -137,11 +136,14 @@
                 </div>
 
                 <div class="md:col-span-2">
-                    <label for="image_url" class="mb-1.5 block text-xs font-bold text-neutral-700">URL Gambar</label>
-                    <input id="image_url" type="url" name="image_url"
-                        value="{{ old('image_url', $event?->image_url) }}" maxlength="255"
-                        class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20"
-                        placeholder="https://...">
+                    <label for="image" class="mb-1.5 block text-xs font-bold text-neutral-700">Poster Event</label>
+                    <input id="image" type="file" name="image" accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                        class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-3 py-2.5 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#5F8C72] file:px-3 file:py-2 file:text-xs file:font-bold file:text-white focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">
+                    @if ($event?->image_url)
+                        <img src="{{ $event->image_url }}" alt="Poster {{ $event->title }}"
+                            class="mt-2 h-24 w-20 rounded-lg object-cover">
+                    @endif
+                    <p class="mt-1.5 text-[11px] text-neutral-500">Format JPG atau PNG, maksimal 5 MB. Rekomendasi A4: 2480 × 3508 px.</p>
                 </div>
 
                 <div class="md:col-span-2">

@@ -143,6 +143,29 @@
                     </a>
                 </div>
 
+                <div class="flex w-full max-w-[340px] items-center gap-3 text-xs text-[#8A817D]">
+                    <span class="h-px flex-1 bg-[#E8DCDA]"></span>
+                    <span>atau masuk dengan email</span>
+                    <span class="h-px flex-1 bg-[#E8DCDA]"></span>
+                </div>
+
+                <form action="{{ route('login.post') }}" method="POST" class="w-full max-w-[340px] space-y-3 text-left">
+                    @csrf
+                    @if ($errors->any())
+                        <div class="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
+                    <input type="email" name="email" required placeholder="Email"
+                        class="w-full rounded-xl border border-[#D9D9D9] bg-white px-4 py-3 text-sm outline-none focus:border-[#5F8C72] focus:ring-2 focus:ring-[#5F8C72]/20">
+                    <input type="password" name="password" required placeholder="Password"
+                        class="w-full rounded-xl border border-[#D9D9D9] bg-white px-4 py-3 text-sm outline-none focus:border-[#5F8C72] focus:ring-2 focus:ring-[#5F8C72]/20">
+                    <button type="submit"
+                        class="w-full rounded-xl bg-[#5F8C72] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#4f755e]">
+                        Masuk
+                    </button>
+                </form>
+
             </div>
         </div>
 

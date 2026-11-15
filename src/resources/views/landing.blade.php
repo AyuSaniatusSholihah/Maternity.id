@@ -416,21 +416,19 @@
             </div>
 
             <!-- Category Filter Badges -->
-            @php
-                $eventCategories = ['Semua', 'Webinar', 'Workshop', 'Kelas Prenatal', 'Kesehatan Anak'];
-            @endphp
             <div class="flex items-center gap-2 sm:gap-2.5 overflow-x-auto pb-1 no-scrollbar reveal-on-scroll">
-                @foreach ($eventCategories as $idx => $cat)
-                    <button type="button" class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap {{ $idx === 0 ? 'bg-[#4D7C59] text-white font-bold shadow-xs' : 'bg-white text-[#5C4542] hover:text-[#2A1614] border border-gray-200 shadow-2xs' }}">
-                        {{ $cat }}
-                    </button>
+                @foreach ($eventCategories as $idx => $category)
+                    <a href="{{ $category['slug'] === 'all' ? route('events') : route('events', ['category' => $category['slug']]) }}"
+                       class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap {{ $idx === 0 ? 'bg-[#4D7C59] text-white font-bold shadow-xs' : 'bg-white text-[#5C4542] hover:text-[#2A1614] border border-gray-200 shadow-2xs' }}">
+                        {{ $category['name'] }}
+                    </a>
                 @endforeach
             </div>
 
             <!-- Cards Container -->
             <div class="flex gap-3.5 sm:gap-5 overflow-x-auto py-2 px-1 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:py-0">
                 @foreach ($events as $index => $event)
-                    <div class="shrink-0 w-[80vw] min-[400px]:w-[74vw] max-w-[330px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} lg:w-auto {{ $loop->iteration === 3 ? 'lg:col-span-1' : '' }}">
+                    <div class="w-[calc((100vw-3.875rem)/2)] shrink-0 max-w-[330px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} sm:w-[310px] lg:w-auto {{ $loop->iteration === 3 ? 'lg:col-span-1' : '' }}">
                         <x-event_card :event="$event" />
                     </div>
                 @endforeach
@@ -463,34 +461,18 @@
             </div>
 
             {{-- Filter / Category Badges --}}
-            @php
-                $ebookCategories = [
-                    'Semua',
-                    'Parenting',
-                    'Mental Health',
-                    'Nutrisi',
-                    'Self Care',
-                    'Mindfulness'
-                ];
-            @endphp
-
             <div class="flex items-center gap-2 sm:gap-2.5 overflow-x-auto pb-1 no-scrollbar reveal-on-scroll">
                 @foreach ($ebookCategories as $idx => $category)
-                    <button 
-                        type="button"
-                        class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer
-                        {{ $idx === 0 
-                            ? 'bg-[#4D7C59] text-white font-bold shadow-xs' 
-                            : 'bg-white text-[#5C4542] hover:text-[#2A1614] border border-gray-200 shadow-2xs' 
-                        }}">
-                        {{ $category }}
-                    </button>
+                    <a href="{{ $category['slug'] === 'all' ? route('library') : route('library', ['category' => $category['slug']]) }}"
+                       class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer {{ $idx === 0 ? 'bg-[#4D7C59] text-white font-bold shadow-xs' : 'bg-white text-[#5C4542] hover:text-[#2A1614] border border-gray-200 shadow-2xs' }}">
+                        {{ $category['name'] }}
+                    </a>
                 @endforeach
             </div>
 
             <div class="flex gap-3.5 sm:gap-5 overflow-x-auto py-2 px-1 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:py-0">
                 @foreach ($ebooks as $product)
-                    <div class="shrink-0 w-[60vw] min-[400px]:w-[54vw] max-w-[260px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} lg:w-auto">
+                    <div class="w-[calc((100vw-3.875rem)/2)] shrink-0 max-w-[260px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} sm:w-[240px] lg:w-auto">
                         <x-ebook_card :ebook="$product" />
                     </div>
                 @endforeach
@@ -674,27 +656,18 @@
             </div>
 
             {{-- Category Tabs --}}
-            @php
-                $productCategories = ['Semua', 'Perlengkapan Nakes', 'Kebutuhan Wanita', 'Herbal & Vitamin'];
-            @endphp
-
             <div class="flex items-center gap-2 sm:gap-2.5 overflow-x-auto pb-1 no-scrollbar reveal-on-scroll">
                 @foreach ($productCategories as $idx => $category)
-                    <button 
-                        type="button"
-                        class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer
-                        {{ $idx === 0 
-                            ? 'bg-[#4D7C59] text-white font-bold shadow-xs' 
-                            : 'bg-white text-[#5C4542] hover:text-[#2A1614] border border-gray-200 shadow-2xs' 
-                        }}">
-                        {{ $category }}
-                    </button>
+                    <a href="{{ $category['slug'] === 'all' ? route('product') : route('product', ['category' => $category['slug']]) }}"
+                       class="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer {{ $idx === 0 ? 'bg-[#4D7C59] text-white font-bold shadow-xs' : 'bg-white text-[#5C4542] hover:text-[#2A1614] border border-gray-200 shadow-2xs' }}">
+                        {{ $category['name'] }}
+                    </a>
                 @endforeach
             </div>
 
             <div class="flex gap-3 overflow-x-auto py-2 px-1 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:py-0">
                 @foreach ($products as $product)
-                    <div class="shrink-0 w-[72vw] min-[400px]:w-[62vw] max-w-[280px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} lg:w-auto">
+                    <div class="w-[calc((100vw-3.75rem)/2)] shrink-0 max-w-[280px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} sm:w-[240px] lg:w-auto">
                         <x-product_card :product="$product" />
                     </div>
                 @endforeach
@@ -709,6 +682,19 @@
             <path d="M0,32L48,42.7C96,53,192,75,288,80C384,85,480,75,576,58.7C672,43,768,21,864,26.7C960,32,1056,64,1152,74.7C1248,85,1344,75,1392,69.3L1440,64L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z" fill="currentColor"></path>
         </svg>
     </div>
+
+    <!-- ── MITRA SEMESTA SECTION ── -->
+    <section id="mitra" class="relative w-full bg-[#FAF0EE] px-4 sm:px-6 lg:px-8 py-7 sm:py-9 overflow-hidden scroll-mt-24" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+        <div class="relative max-w-7xl mx-auto">
+            <div class="flex flex-col items-center justify-center gap-2 bg-white/80 border border-[#DEA69E]/35 rounded-3xl px-5 py-5 sm:px-8 sm:py-6 shadow-sm reveal-on-scroll text-center">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-[#2A1614]" style="font-family: 'DM Serif Display', serif;">
+                    Mitra Kami
+                </h2>
+                <img src="{{ asset('images/mitra.png') }}" alt="Logo Mitra Maternity.id" class="w-20 h-20 sm:w-24 sm:h-24 object-contain">
+                <p class="text-sm sm:text-base font-extrabold tracking-[0.2em] text-[#8C433C]">SEMESTA</p>
+            </div>
+        </div>
+    </section>
 
     <!-- ── INTERACTIVE ARCHITECTURAL GRID BANNER (KOMUNITAS & KONSULTASI) ── -->
     <div class="py-3 sm:py-5 bg-[#FAF0EE]">

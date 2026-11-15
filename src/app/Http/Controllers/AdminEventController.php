@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Event;
 use App\Models\Material;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -16,7 +16,6 @@ class AdminEventController extends Controller
     public function create(): View
     {
         return view('admin.events.create', [
-            'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
             'event' => null,
         ]);
     }
@@ -26,7 +25,6 @@ class AdminEventController extends Controller
         $event = Event::query()->with('materials')->where('slug', $slug)->firstOrFail();
 
         return view('admin.events.create', [
-            'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
             'adminMaterials' => Material::query()->orderBy('title')->get(['id', 'title', 'description']),
             'event' => $event,
         ]);
@@ -40,14 +38,13 @@ class AdminEventController extends Controller
             ->pluck('total', 'event_id');
 
         $events = Event::query()
-            ->with('category')
             ->latest('event_date')
             ->get()
             ->map(fn (Event $event): array => [
                 'id' => $event->id,
                 'slug' => $event->slug,
                 'title' => $event->title,
-                'category' => $event->category?->name ?? 'Tanpa kategori',
+                'category' => ucfirst($event->categories),
                 'categoryColor' => 'bg-[#FAF5F2] text-[#8C433C]',
                 'month' => $event->event_date->format('Y-m'),
                 'monthLabel' => $event->event_date->format('F Y'),
@@ -65,7 +62,6 @@ class AdminEventController extends Controller
 
         return view('admin.dashboard', [
             'adminEvents' => $events,
-            'adminCategories' => Category::query()->orderBy('name')->get(['id', 'name']),
             'adminEventMonths' => $events->unique('month')->values(),
         ]);
     }
@@ -73,6 +69,7 @@ class AdminEventController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateEvent($request);
+        $validated = $this->storeUploadedImage($request, $validated);
         $slug = $this->uniqueSlug($validated['title']);
 
         Event::create([
@@ -90,6 +87,7 @@ class AdminEventController extends Controller
     {
         $event = Event::query()->where('slug', $slug)->firstOrFail();
         $validated = $this->validateEvent($request);
+        $validated = $this->storeUploadedImage($request, $validated);
         $validatedMaterials = $request->validate([
             'materials' => ['sometimes', 'array'],
             'materials.*' => ['uuid', 'distinct', 'exists:materials,id'],
@@ -112,17 +110,29 @@ class AdminEventController extends Controller
     {
         return $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'categories' => ['required', 'uuid', 'exists:categories,id'],
+            'categories' => ['required', 'in:online,offline'],
             'description' => ['required', 'string'],
             'event_date' => ['required', 'date'],
             'open_registration_date' => ['required', 'date'],
             'close_registration_date' => ['required', 'date', 'after_or_equal:open_registration_date'],
             'location' => ['required', 'string', 'max:255'],
-            'image_url' => ['nullable', 'url', 'max:255'],
+            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
             'slot' => ['required', 'integer', 'min:1'],
             'fee' => ['required', 'integer', 'min:0'],
             'speaker' => ['required', 'string', 'max:255'],
         ]);
+    }
+
+    private function storeUploadedImage(Request $request, array $validated): array
+    {
+        unset($validated['image']);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('events', 'public');
+            $validated['image_url'] = Storage::disk('public')->url($path);
+        }
+
+        return $validated;
     }
 
     private function uniqueSlug(string $title, ?string $ignoreId = null): string

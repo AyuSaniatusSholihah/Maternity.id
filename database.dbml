@@ -254,7 +254,7 @@ Table "articles" {
 
 Table "events" {
   "id" char(36) [pk, not null]
-  "categories" char(36) [not null, note: 'on delete restrict', ref: > "categories"."id"]
+  "categories" varchar(10) [not null, note: 'enum: online, offline']
   "title" varchar(255) [not null]
   "slug" varchar(255) [unique, not null]
   "description" text [not null]

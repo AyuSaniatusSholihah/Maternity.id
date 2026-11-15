@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Material;
 use Illuminate\Http\Request;
 
@@ -17,9 +18,16 @@ class EbookController extends Controller
         $sort = $request->input('sort', 'latest');
         $dateStart = $request->input('dateStart');
         $dateEnd = $request->input('dateEnd');
+        $category = $request->input('category', 'all');
 
         // Query materials dengan eager loading uploader relation
         $query = Material::with('uploader.account');
+
+        if ($category && $category !== 'all') {
+            $query->whereHas('category', function ($categoryQuery) use ($category) {
+                $categoryQuery->where('slug', $category);
+            });
+        }
 
         // Apply date filtering jika ada
         if ($dateStart && $dateEnd) {
@@ -47,15 +55,38 @@ class EbookController extends Controller
                 'cover' => $material->image_url ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80',
                 'author' => $material->uploader?->name ?? 'Tim Medis Maternity.id',
                 'price' => 'Gratis',
-                'link_text' => 'akses online',
+                'link_text' => 'Akses online',
                 'handle' => '@maternity.id',
                 'btn_text' => 'Baca Sekarang',
                 'url' => $material->content_link,
             ];
         });
 
+        $categoryIds = Material::query()
+            ->whereNotNull('categories')
+            ->distinct()
+            ->pluck('categories');
+        $categories = Category::query()
+            ->whereIn('id', $categoryIds)
+            ->orderBy('name')
+            ->get(['slug', 'name'])
+            ->map(fn (Category $item): array => [
+                'slug' => $item->slug,
+                'name' => $item->name,
+                'icon' => 'fa-solid fa-book-open',
+            ])
+            ->prepend([
+                'slug' => 'all',
+                'name' => 'Semua',
+                'icon' => 'fa-solid fa-shapes',
+            ])
+            ->values()
+            ->all();
+
         return view('library.index', [
             'ebooks' => $ebooks,
+            'categories' => $categories,
+            'currentCategory' => $category,
             'currentSort' => $sort,
             'dateStart' => $dateStart,
             'dateEnd' => $dateEnd,

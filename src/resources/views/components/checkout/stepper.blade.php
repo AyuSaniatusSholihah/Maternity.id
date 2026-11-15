@@ -47,16 +47,16 @@
     {{-- Step 3: Konfirmasi --}}
     <div class="flex flex-col items-center cursor-pointer" @click="step = 3">
         <span class="w-9 h-9 flex items-center justify-center rounded-full text-white font-semibold text-sm transition-all duration-300 shadow-xs"
-              :class="step >= 6 ? 'bg-[#5F8C72]' : (step >= 3 ? 'bg-[#DEAAA1]' : 'bg-neutral-300 text-neutral-600')">
-            <span x-show="step >= 6" class="flex items-center justify-center">
+              :class="step >= 4 ? 'bg-[#5F8C72]' : (step >= 3 ? 'bg-[#DEAAA1]' : 'bg-neutral-300 text-neutral-600')">
+            <span x-show="step >= 4" class="flex items-center justify-center">
                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                 </svg>
             </span>
-            <span x-show="step < 6">3</span>
+            <span x-show="step < 4">3</span>
         </span>
         <span class="text-xs font-medium mt-1 transition-colors"
-              :class="step >= 6 ? 'text-[#5F8C72]' : (step >= 3 ? 'text-[#DEAAA1] font-bold' : 'text-neutral-500')">
+              :class="step >= 4 ? 'text-[#5F8C72]' : (step >= 3 ? 'text-[#DEAAA1] font-bold' : 'text-neutral-500')">
             Konfirmasi
         </span>
     </div>

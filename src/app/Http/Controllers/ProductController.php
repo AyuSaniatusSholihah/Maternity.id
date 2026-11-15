@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -41,18 +42,32 @@ class ProductController extends Controller
                 'image' => $product->thumbnail_img,
                 'location' => 'Maternity.id',
                 'price' => 'Rp ' . number_format($product->price, 0, ',', '.'),
-                'tiktok_url' => $product->tiktok_url ?: ($product->whatsapp_url ?: '#'),
+                'tiktok_url' => $product->affiliate_url ?: ($product->tiktok_url ?: ($product->whatsapp_url ?: '#')),
+                'affiliate_url' => $product->affiliate_url,
                 'sold' => '',
             ];
         });
 
-        $categories = [
-            ['slug' => 'all', 'name' => 'Semua', 'icon' => 'fa-solid fa-shapes'],
-            ['slug' => 'perlengkapan-nakes', 'name' => 'Perlengkapan Nakes', 'icon' => 'fa-solid fa-user-nurse'],
-            ['slug' => 'kebutuhan-wanita', 'name' => 'Kebutuhan Wanita', 'icon' => 'fa-solid fa-person-dress'],
-            ['slug' => 'perawatan-ibu-bayi', 'name' => 'Perawatan Ibu & Bayi', 'icon' => 'fa-solid fa-baby'],
-            ['slug' => 'nutrisi-suplemen', 'name' => 'Nutrisi & Suplemen', 'icon' => 'fa-solid fa-apple-whole'],
-        ];
+        $categoryIds = Product::query()
+            ->whereNotNull('categories')
+            ->distinct()
+            ->pluck('categories');
+        $categories = Category::query()
+            ->whereIn('id', $categoryIds)
+            ->orderBy('name')
+            ->get(['slug', 'name'])
+            ->map(fn (Category $item): array => [
+                'slug' => $item->slug,
+                'name' => $item->name,
+                'icon' => 'fa-solid fa-tag',
+            ])
+            ->prepend([
+                'slug' => 'all',
+                'name' => 'Semua',
+                'icon' => 'fa-solid fa-shapes',
+            ])
+            ->values()
+            ->all();
 
         return view('product.index', [
             'products' => $products,

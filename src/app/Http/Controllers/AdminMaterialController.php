@@ -68,18 +68,19 @@ class AdminMaterialController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'pdf_file' => ['required', 'file', 'mimes:pdf', 'max:51200'],
-            'image_url' => ['nullable', 'url', 'max:255'],
+            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
 
         $slug = $this->uniqueSlug($validated['title']);
         $filePath = $request->file('pdf_file')->store('ebooks', 'public');
+        $imageUrl = $this->storeCoverImage($request);
 
         Material::create([
             'categories' => $validated['categories'],
             'title' => $validated['title'],
             'description' => $validated['description'],
             'content' => $filePath,
-            'image_url' => $validated['image_url'] ?? null,
+            'image_url' => $imageUrl,
             'slug' => $slug,
             'uploaded_by' => $request->user()->id,
         ]);
@@ -98,16 +99,21 @@ class AdminMaterialController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:materials,slug,'.$material->id],
             'description' => ['required', 'string'],
-            'image_url' => ['nullable', 'url', 'max:255'],
+            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
 
-        $material->update([
+        $updates = [
             'categories' => $validated['categories'],
             'title' => $validated['title'],
             'slug' => $validated['slug'],
             'description' => $validated['description'],
-            'image_url' => $validated['image_url'] ?? null,
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $updates['image_url'] = $this->storeCoverImage($request);
+        }
+
+        $material->update($updates);
 
         return redirect()
             ->route('admin.ebook')
@@ -128,6 +134,17 @@ class AdminMaterialController extends Controller
         return redirect()
             ->route('admin.ebook')
             ->with('status', 'E-book berhasil dihapus secara permanen.');
+    }
+
+    private function storeCoverImage(Request $request): ?string
+    {
+        if (! $request->hasFile('image')) {
+            return null;
+        }
+
+        $path = $request->file('image')->store('ebook-covers', 'public');
+
+        return Storage::disk('public')->url($path);
     }
 
     public function download(string $slug): BinaryFileResponse

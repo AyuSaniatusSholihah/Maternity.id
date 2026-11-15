@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
-use App\Models\Category;
 use App\Models\Event;
 use App\Models\Material;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -20,7 +19,6 @@ class EventSeeder extends Seeder
     public function run(): void
     {
         $admin = Admin::first();
-        $categories = Category::all();
         $materials = Material::all();
 
         if (!$admin) {
@@ -38,7 +36,7 @@ class EventSeeder extends Seeder
                 'image_url' => null,
                 'slot' => 50,
                 'is_available' => true,
-                'category' => 'Nutrisi & Gizi',
+                'category' => 'offline',
             ],
             [
                 'title' => 'Persalinan Normal: Tips dan Persiapan',
@@ -50,7 +48,7 @@ class EventSeeder extends Seeder
                 'image_url' => null,
                 'slot' => 100,
                 'is_available' => true,
-                'category' => 'Persalinan & Kelahiran',
+                'category' => 'online',
             ],
             [
                 'title' => 'Nutrisi Optimal untuk Kehamilan',
@@ -62,7 +60,7 @@ class EventSeeder extends Seeder
                 'image_url' => null,
                 'slot' => 40,
                 'is_available' => true,
-                'category' => 'Nutrisi & Gizi',
+                'category' => 'offline',
             ],
             [
                 'title' => 'Perawatan Bayi Baru Lahir',
@@ -74,7 +72,7 @@ class EventSeeder extends Seeder
                 'image_url' => null,
                 'slot' => 35,
                 'is_available' => true,
-                'category' => 'Perawatan Bayi',
+                'category' => 'offline',
             ],
             [
                 'title' => 'Manajemen Nyeri Persalinan Alami',
@@ -86,7 +84,7 @@ class EventSeeder extends Seeder
                 'image_url' => null,
                 'slot' => 80,
                 'is_available' => false,
-                'category' => 'Persalinan & Kelahiran',
+                'category' => 'online',
             ],
             [
                 'title' => 'Kesiapan Mental dan Emosional Kehamilan',
@@ -98,7 +96,7 @@ class EventSeeder extends Seeder
                 'image_url' => null,
                 'slot' => 25,
                 'is_available' => true,
-                'category' => 'Kesehatan Mental',
+                'category' => 'offline',
             ],
         ];
 
@@ -112,8 +110,6 @@ class EventSeeder extends Seeder
         ];
 
         foreach ($events as $index => $event) {
-            $category = $categories->where('name', $event['category'])->first();
-            
             // Vary fees: some free, some paid
             $fees = [0, 0, 50000, 75000, 100000, 150000];
             $fee = $fees[$index % count($fees)];
@@ -133,7 +129,7 @@ class EventSeeder extends Seeder
                 'image_url' => $event['image_url'],
                 'slot' => $event['slot'],
                 'is_available' => $event['is_available'],
-                'categories' => $category?->id,
+                'categories' => $event['category'],
                 'fee' => $fee,
                 'speaker' => $speaker,
                 'created_by' => $admin->account_id,

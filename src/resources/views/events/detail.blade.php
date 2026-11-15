@@ -25,7 +25,8 @@
         </style>
     </x-slot>
 
-    <div class="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-8 space-y-4 sm:space-y-5">
+    <div x-data="{ showClosed: @js((bool) ($event->registration_closed ?? false)) }"
+        class="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-8 space-y-4 sm:space-y-5">
 
         {{-- BREADCRUMB --}}
         <nav class="flex items-center gap-1.5 text-xs text-neutral-400 animate-float-up">
@@ -35,11 +36,14 @@
         </nav>
 
         {{-- MAIN DETAIL CARD --}}
-        <div class="bg-white rounded-2xl sm:rounded-3xl border border-[#DEA69E]/30 shadow-sm overflow-hidden card-glow transition-shadow animate-float-up-2">
+        <div x-data="{ showPoster: false }"
+            class="bg-white rounded-2xl sm:rounded-3xl border border-[#DEA69E]/30 shadow-sm overflow-hidden card-glow transition-shadow animate-float-up-2">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
 
                 {{-- KOLOM KIRI: Event Image with Badge --}}
-                <div class="relative h-44 min-[400px]:h-52 sm:h-64 md:h-full md:min-h-[380px] overflow-hidden bg-[#FCEBE7]">
+                <div class="relative self-start mx-auto aspect-[210/297] w-full max-w-[220px] overflow-hidden bg-[#FCEBE7] cursor-zoom-in md:mx-0 md:max-w-[280px] md:justify-self-center"
+                    role="button" tabindex="0" aria-label="Perbesar poster event"
+                    @click="showPoster = true" @keydown.enter="showPoster = true" @keydown.space.prevent="showPoster = true">
                     @php
                         $imgSrc = $event->thumbnail_image ?? 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=800';
                         if (file_exists(public_path('images/yoga_event_detail.jpg')) && str_contains(strtolower($event->title ?? ''), 'yoga')) {
@@ -48,7 +52,7 @@
                     @endphp
                     <img src="{{ $imgSrc }}"
                          alt="{{ $event->title ?? 'Event' }}"
-                         class="absolute inset-0 w-full h-full object-cover">
+                         class="absolute inset-0 w-full h-full object-contain">
 
                     {{-- Gradient Overlay --}}
                     <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none"></div>
@@ -85,25 +89,18 @@
                 </div>
 
                 {{-- KOLOM KANAN: Detail Info --}}
-                <div class="p-3.5 min-[380px]:p-4 sm:p-7 md:p-8 flex flex-col justify-between gap-3 sm:gap-5">
+                <div class="p-3.5 min-[380px]:p-4 sm:p-7 md:p-8 flex flex-col justify-start gap-3 sm:gap-5">
 
-                    {{-- Judul, Rating & Kuota --}}
+                    {{-- Judul & Kuota --}}
                     <div class="space-y-1.5 sm:space-y-2.5">
                         <h1 class="text-base min-[380px]:text-lg sm:text-2xl lg:text-3xl font-extrabold text-[#2A1614] leading-snug tracking-tight"
                             style="font-family: 'DM Serif Display', serif;">
                             {{ $event->title ?? 'Pelatihan Yoga' }}
                         </h1>
 
-                        <div class="flex items-center gap-2.5 text-xs">
-                            <div class="flex items-center gap-1">
-                                <i class="fa-solid fa-star text-amber-400 text-xs"></i>
-                                <span class="font-bold text-neutral-800">{{ $event->rating ?? '4.8' }}</span>
-                            </div>
-                            <span class="text-neutral-300">|</span>
-                            <div class="flex items-center gap-1 text-neutral-600">
-                                <i class="fa-solid fa-chair text-[#5F8C72] text-xs"></i>
-                                <span>{{ number_format($event->total_participants ?? 0) }} kursi tersedia</span>
-                            </div>
+                        <div class="flex items-center gap-1 text-xs text-neutral-600">
+                            <i class="fa-solid fa-chair text-[#5F8C72] text-xs"></i>
+                            <span>{{ number_format($event->total_participants ?? 0) }} kursi tersedia</span>
                         </div>
 
                         <!-- {{-- Progress kuota --}}
@@ -145,6 +142,18 @@
                                 <p class="text-[9px] sm:text-[10px] text-neutral-500 truncate">{{ $event->location ?? '-' }}</p>
                             </div>
                         </div>
+
+                        <div x-show="showPoster" x-cloak x-transition
+                            class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+                            @click.self="showPoster = false" @keydown.escape.window="showPoster = false">
+                            <button type="button" @click="showPoster = false"
+                                class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-xl text-neutral-800 shadow-lg hover:bg-white"
+                                aria-label="Tutup poster">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <img src="{{ $imgSrc }}" alt="{{ $event->title ?? 'Poster event' }}"
+                                class="max-h-[90vh] max-w-full rounded-xl object-contain shadow-2xl">
+                        </div>
                     </div>
 
                     {{-- Harga & Tombol CTA --}}
@@ -157,14 +166,23 @@
                             <p class="text-[9px] text-neutral-500">/ peserta</p>
                         </div>
 
-                        <a href="{{ route('events.checkout', $event->slug ?? 'mindful-motherhood') }}"
-                           id="btn-daftar-sekarang"
-                           class="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 bg-[#2D5C3E] hover:bg-[#1e4329] text-white font-bold text-xs sm:text-sm md:text-lg py-2.5 sm:py-3.5 px-3 sm:px-5  rounded-xl transition-all duration-200 shadow-sm hover:shadow-md group h-full">
-                            <span>Daftar Sekarang</span>
-                            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </a>
+                        @if ($event->registration_closed ?? false)
+                            <button type="button" @click="showClosed = true"
+                                id="btn-daftar-sekarang"
+                                class="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 bg-neutral-400 hover:bg-neutral-500 text-white font-bold text-xs sm:text-sm md:text-lg py-2.5 sm:py-3.5 px-3 sm:px-5 rounded-xl transition-all duration-200 shadow-sm group h-full">
+                                <span>Daftar Sekarang</span>
+                                <i class="fa-solid fa-lock text-xs"></i>
+                            </button>
+                        @else
+                            <a href="{{ route('events.checkout', $event->slug ?? 'mindful-motherhood') }}"
+                               id="btn-daftar-sekarang"
+                               class="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 bg-[#2D5C3E] hover:bg-[#1e4329] text-white font-bold text-xs sm:text-sm md:text-lg py-2.5 sm:py-3.5 px-3 sm:px-5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md group h-full">
+                                <span>Daftar Sekarang</span>
+                                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        @endif
                     </div>
 
                     {{-- Penyelenggara Terverifikasi --}}
@@ -316,6 +334,30 @@
                 </div>
             </div>
         @endif
+
+        <div x-show="showClosed" x-cloak x-transition
+            class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4"
+            @click.self="showClosed = false" @keydown.escape.window="showClosed = false">
+            <div class="w-full max-w-sm rounded-3xl bg-white p-5 text-center shadow-2xl sm:p-6">
+                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#FAF0EE] text-[#8C433C]">
+                    <i class="fa-solid fa-calendar-xmark text-xl"></i>
+                </div>
+                <h2 class="mt-4 text-lg font-bold text-[#2A1614]">Event telah selesai</h2>
+                <p class="mt-2 text-sm leading-relaxed text-neutral-500">
+                    Masa pendaftaran event ini sudah berakhir. Silakan lihat event lainnya.
+                </p>
+                <div class="mt-5 flex items-center justify-center gap-2">
+                    <button type="button" @click="showClosed = false"
+                        class="rounded-xl border border-neutral-200 px-4 py-2.5 text-xs font-bold text-neutral-600 hover:bg-neutral-50">
+                        Saya Mengerti
+                    </button>
+                    <a href="{{ route('events') }}"
+                        class="rounded-xl bg-[#2D5C3E] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#1e4329]">
+                        Lihat Event Lainnya
+                    </a>
+                </div>
+            </div>
+        </div>
 
     </div>
 
