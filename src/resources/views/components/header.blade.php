@@ -178,6 +178,15 @@
                     get unreadCount() {
                         return this.notifications.filter(n => !n.read).length;
                     },
+                    init() {
+                        fetch('{{ route('notifications') }}', {
+                            headers: { 'Accept': 'application/json' }
+                        })
+                            .then(response => response.ok ? response.json() : [])
+                            .then(notifications => {
+                                this.notifications = notifications;
+                            });
+                    },
                     markAllRead() {
                         this.notifications.forEach(n => n.read = true);
                     }

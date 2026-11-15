@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Event extends Model
 {
@@ -21,11 +21,6 @@ class Event extends Model
         'close_registration_date' => 'datetime:Y-m-d',
         'is_available' => 'boolean',
     ];
-
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'categories', 'id');
-    }
 
     public function creator(): BelongsTo
     {

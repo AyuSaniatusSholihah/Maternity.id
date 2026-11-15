@@ -47,7 +47,7 @@ class EbookController extends Controller
                 'cover' => $material->image_url ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80',
                 'author' => $material->uploader?->name ?? 'Tim Medis Maternity.id',
                 'price' => 'Gratis',
-                'link_text' => 'akses online',
+                'link_text' => 'Akses online',
                 'handle' => '@maternity.id',
                 'btn_text' => 'Baca Sekarang',
                 'url' => $material->content_link,

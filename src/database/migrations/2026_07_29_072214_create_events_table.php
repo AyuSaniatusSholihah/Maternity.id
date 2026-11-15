@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('categories');
+            $table->enum('categories', ['online', 'offline']);
             $table->string('title', 255);
             $table->string('slug', 255)->unique();
             $table->text('description');

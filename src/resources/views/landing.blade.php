@@ -430,7 +430,7 @@
             <!-- Cards Container -->
             <div class="flex gap-3.5 sm:gap-5 overflow-x-auto py-2 px-1 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:py-0">
                 @foreach ($events as $index => $event)
-                    <div class="shrink-0 w-[80vw] min-[400px]:w-[74vw] max-w-[330px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} lg:w-auto {{ $loop->iteration === 3 ? 'lg:col-span-1' : '' }}">
+                    <div class="w-[calc((100vw-3.875rem)/2)] shrink-0 max-w-[330px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} sm:w-[310px] lg:w-auto {{ $loop->iteration === 3 ? 'lg:col-span-1' : '' }}">
                         <x-event_card :event="$event" />
                     </div>
                 @endforeach
@@ -490,7 +490,7 @@
 
             <div class="flex gap-3.5 sm:gap-5 overflow-x-auto py-2 px-1 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:py-0">
                 @foreach ($ebooks as $product)
-                    <div class="shrink-0 w-[60vw] min-[400px]:w-[54vw] max-w-[260px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} lg:w-auto">
+                    <div class="w-[calc((100vw-3.875rem)/2)] shrink-0 max-w-[260px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} sm:w-[240px] lg:w-auto">
                         <x-ebook_card :ebook="$product" />
                     </div>
                 @endforeach
@@ -694,7 +694,7 @@
 
             <div class="flex gap-3 overflow-x-auto py-2 px-1 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:py-0">
                 @foreach ($products as $product)
-                    <div class="shrink-0 w-[72vw] min-[400px]:w-[62vw] max-w-[280px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} lg:w-auto">
+                    <div class="w-[calc((100vw-3.75rem)/2)] shrink-0 max-w-[280px] snap-start reveal-on-scroll stagger-{{ $loop->iteration }} sm:w-[240px] lg:w-auto">
                         <x-product_card :product="$product" />
                     </div>
                 @endforeach

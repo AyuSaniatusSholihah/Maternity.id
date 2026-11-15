@@ -13,7 +13,7 @@ class HomeController extends Controller
     {
         $fallbackImage = config('app.fallback_image_url');
 
-        $events = Event::with('category')
+        $events = Event::query()
             ->latest('event_date')
             ->take(3)
             ->get()
@@ -28,7 +28,7 @@ class HomeController extends Controller
                     'date_string' => $event->event_date?->format('d M Y') ?? 'Jadwal Terbuka',
                     'format' => $isOnline ? 'ONLINE' : 'OFFLINE',
                     'format_type' => $isOnline ? 'online' : 'offline',
-                    'category' => $event->category?->name ?? 'Event',
+                    'category' => ucfirst($event->categories),
                     'price' => $event->fee > 0 ? 'Rp ' . number_format($event->fee, 0, ',', '.') : 'Gratis',
                     'thumbnail_image' => $event->image_url ?: $fallbackImage,
                 ];
@@ -47,7 +47,7 @@ class HomeController extends Controller
                     'cover' => $material->image_url,
                     'author' => $material->uploader?->name ?? 'Maternity.id',
                     'price' => 'Gratis',
-                    'link_text' => 'akses online',
+                    'link_text' => 'Akses online',
                     'btn_text' => 'Baca Sekarang',
                     'url' => route('library'),
                 ];
@@ -82,7 +82,8 @@ class HomeController extends Controller
                     'image' => $product->thumbnail_img ?: $fallbackImage,
                     'location' => 'Maternity.id',
                     'price' => 'Rp ' . number_format($product->price, 0, ',', '.'),
-                    'tiktok_url' => $product->tiktok_url ?: ($product->whatsapp_url ?: '#'),
+                    'tiktok_url' => $product->affiliate_url ?: ($product->tiktok_url ?: ($product->whatsapp_url ?: '#')),
+                    'affiliate_url' => $product->affiliate_url,
                 ];
             })
             ->all();

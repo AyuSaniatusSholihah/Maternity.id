@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['categories', 'name', 'slug', 'description', 'price', 'thumbnail_img', 'click_count', 'tiktok_url', 'tokopedia_url', 'shopee_url', 'whatsapp_url', 'created_by'])]
+#[Fillable(['categories', 'name', 'slug', 'description', 'price', 'thumbnail_img', 'affiliate_url', 'click_count', 'tiktok_url', 'tokopedia_url', 'shopee_url', 'whatsapp_url', 'created_by'])]
 class Product extends Model
 {
     use HasUuids;

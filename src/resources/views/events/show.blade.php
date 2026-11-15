@@ -9,18 +9,21 @@
     </x-slot>
 
     <div x-data="{ 
-            step: {{ request('status') === 'approved' ? 6 : (request('status') === 'verifying' ? 5 : (request('step', 1))) }},
+            step: {{ ($event->payment_status ?? null) === 'approved' || request('status') === 'approved' ? 6 : (($event->payment_status ?? null) === 'pending' || request('status') === 'verifying' ? 5 : (request('step', 1))) }},
             openModal: false, 
-            selected: '{{ ($event->slug ?? '') === 'newborn-gentle-care-and-massage' ? 'perawatan-bayi' : 'yoga' }}',
-            tempSelected: '{{ ($event->slug ?? '') === 'newborn-gentle-care-and-massage' ? 'perawatan-bayi' : 'yoga' }}',
-            selectedTitle: '{{ $event->title ?? 'Pelatihan Yoga' }}',
-            selectedPrice: '{{ $event->price ?? 'Rp60.000' }}',
+            selected: @js($event->slug ?? ''),
+            tempSelected: @js($event->slug ?? ''),
+            selectedTitle: @js($event->title ?? 'Pelatihan'),
+            selectedPrice: @js($event->price ?? 'Gratis'),
             promoCode: '',
             promoApplied: false,
             discount: 6000,
-            basePrice: 60000,
+            basePrice: {{ $event->price_numeric ?? 0 }},
             proofSelected: false,
             proofName: '',
+            formReady: false,
+            paymentSubmitted: @js(in_array($event->payment_status ?? null, ['pending', 'approved'], true)),
+            formError: '',
             
             get totalAmount() {
                 let total = this.basePrice - (this.promoApplied ? this.discount : 0);
@@ -40,21 +43,55 @@
 
             saveSelection() {
                 this.selected = this.tempSelected;
-                if (this.selected === 'yoga') {
-                    this.selectedTitle = 'Pelatihan Yoga';
-                    this.selectedPrice = 'Rp60.000';
-                    this.basePrice = 60000;
-                } else if (this.selected === 'perawatan-bayi') {
-                    this.selectedTitle = 'Workshop Perawatan Bayi';
-                    this.selectedPrice = 'Rp60.000';
-                    this.basePrice = 60000;
-                }
                 this.openModal = false;
             },
 
             submitProof() {
                 // Transisi ke Step 4 (Berhasil Mengupload Bukti Pembayaran)
                 this.step = 4;
+            },
+
+            submitPaymentForm(event) {
+                const form = event.target;
+                if (!this.proofSelected) {
+                    this.formError = 'Silakan upload bukti pembayaran JPG/PNG terlebih dahulu.';
+                    return;
+                }
+                if (!form.checkValidity()) {
+                    this.formError = 'Mohon lengkapi semua data dan upload bukti pembayaran terlebih dahulu.';
+                    form.querySelectorAll(':invalid').forEach(input => {
+                        input.classList.add('border-red-400', 'ring-2', 'ring-red-200');
+                    });
+                    return;
+                }
+                this.clearPendingPayment();
+            },
+
+            init() {
+                if (this.paymentSubmitted) {
+                    this.clearPendingPayment();
+                }
+                form.submit();
+            },
+
+            clearPendingPayment() {
+                try {
+                    const pendingPayment = JSON.parse(
+                        localStorage.getItem('maternity_pending_payment') || '{}'
+                    );
+                    localStorage.setItem('maternity_pending_payment', JSON.stringify({
+                        ...pendingPayment,
+                        eventSlug: pendingPayment.eventSlug || @js($event->slug ?? 'mindful-motherhood'),
+                        eventTitle: pendingPayment.eventTitle || @js($event->title ?? 'Pelatihan Maternitas'),
+                        totalAmount: pendingPayment.totalAmount || this.totalAmount,
+                        step: 4,
+                        status: 'paid'
+                    }));
+                } catch(e) {}
+            },
+
+            updateFormReady(form) {
+                this.formReady = this.proofSelected && form.checkValidity();
             }
          }" 
          class="w-full min-h-[calc(100vh-120px)] bg-[#FBF5F2] text-neutral-800 p-4 sm:p-6 md:p-10 font-sans rounded-3xl border border-[#DEAAA1]/30 shadow-xs my-2 relative">
@@ -126,7 +163,7 @@
                             <div class="flex justify-between items-start">
                                 <div>
                                     <span class="font-semibold text-neutral-900 text-sm block" x-text="selectedTitle">
-                                        {{ $event->title ?? 'Pelatihan Yoga' }}
+                                        {{ $event->title ?? 'Pelatihan' }}
                                     </span>
                                     <div>
                                         <button type="button" 
@@ -140,7 +177,7 @@
                                     </div>
                                 </div>
                                 <span class="font-medium text-sm text-neutral-900 shrink-0 ml-4" x-text="selectedPrice">
-                                    {{ $event->price ?? 'Rp60.000' }}
+                                    {{ $event->price ?? 'Gratis' }}
                                 </span>
                             </div>
 
@@ -200,35 +237,9 @@
                         <p class="text-xs text-neutral-500">Scan QRIS di bawah untuk menyelesaikan pembayaran</p>
                     </div>
 
-                    {{-- Kartu QRIS --}}
-                    <div class="w-full max-w-[270px] bg-white rounded-xl shadow-md border border-neutral-200 overflow-hidden relative p-4 mb-4">
-                        {{-- Header Brand QRIS --}}
-                        <div class="flex items-center justify-between pb-2 border-b border-neutral-100">
-                            <span class="text-base font-black tracking-wider text-neutral-900">QRIS</span>
-                            <span class="text-[9px] font-bold text-red-600">GPN</span>
-                        </div>
-
-                        {{-- Merchant Info --}}
-                        <div class="text-center my-2">
-                            <p class="text-xs font-extrabold text-neutral-800 uppercase tracking-wide">TUAN NYONYA</p>
-                            <p class="text-[9px] text-neutral-400 font-mono">NMID: ID19360091130261059010</p>
-                        </div>
-
-                        {{-- QR Code Image --}}
-                        <div class="relative flex justify-center items-center my-2">
-                            <div class="absolute -left-4 top-1 w-2.5 h-16 bg-red-600 rounded-r-sm"></div>
-                            <div class="absolute -right-4 bottom-1 w-2.5 h-12 bg-red-600 rounded-l-sm"></div>
-
-                            <img src="{{ file_exists(public_path('images/qris.png')) ? asset('images/qris.png') : (file_exists(public_path('qris.png')) ? asset('qris.png') : 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Maternity-Payment-Event') }}" 
-                                 alt="Kode QRIS Maternity" 
-                                 onerror="this.onerror=null; this.src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Maternity-Payment-Event';"
-                                 class="w-44 h-44 object-contain rounded-md">
-                        </div>
-
-                        <div class="text-center pt-2">
-                            <p class="text-[9px] text-neutral-400 font-mono">Dicetak oleh: 936009110</p>
-                        </div>
-                    </div>
+                    <img src="{{ asset('images/qris.jpeg') }}"
+                         alt="QRIS Maternity"
+                         class="w-full max-w-[270px] object-contain mb-4">
 
                     {{-- Total Pembayaran --}}
                     <div class="text-center space-y-0.5 mb-5">
@@ -258,8 +269,11 @@
                      x-transition:enter-end="opacity-100 translate-y-0"
                      class="space-y-6">
                     
-                    <form action="#" method="POST" enctype="multipart/form-data" @submit.prevent="submitProof()" class="space-y-6">
+                    <form action="{{ route('events.payment-proof', $event->slug) }}" method="POST" enctype="multipart/form-data" @input="updateFormReady($el)" @change="updateFormReady($el)" @submit.prevent="submitPaymentForm($event)" class="space-y-6">
                         @csrf
+
+                        <div x-show="formError" x-text="formError" x-cloak
+                            class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700"></div>
 
                         {{-- Bagian Upload Bukti Pembayaran --}}
                         <div>
@@ -269,8 +283,9 @@
                                 <input type="file" 
                                        name="payment_proof" 
                                        accept="image/png, image/jpeg" 
+                                       required
                                        class="hidden" 
-                                       @change="proofSelected = true; proofName = $event.target.files[0]?.name || ''">
+                                       @change="proofSelected = !!$event.target.files[0] && ['image/jpeg', 'image/png'].includes($event.target.files[0].type); proofName = $event.target.files[0]?.name || ''; updateFormReady($event.target.form)">
                                 
                                 <div class="text-[#B96A5C] mb-2">
                                     <svg class="w-7 h-7 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -291,14 +306,14 @@
                             {{-- Nama Lengkap --}}
                             <div>
                                 <label class="block text-xs font-medium text-neutral-700 mb-1">Nama Lengkap</label>
-                                <input type="text" name="name" value="{{ Auth::user()->name ?? 'Sandi' }}" 
+                                <input type="text" name="name" value="{{ Auth::user()->name ?? '' }}" required
                                        class="w-full bg-[#D8DCD5] border border-neutral-300 text-neutral-800 text-xs rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#5F8C72]">
                             </div>
 
                             {{-- No. WhatsApp --}}
                             <div>
                                 <label class="block text-xs font-medium text-neutral-700 mb-1">No. WhatsApp</label>
-                                <input type="tel" name="whatsapp" value="089570429XXXX" 
+                                <input type="tel" name="whatsapp" value="{{ Auth::user()?->member?->phone ?? '' }}" required
                                        class="w-full bg-[#D8DCD5] border border-neutral-300 text-neutral-800 text-xs rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#5F8C72]">
                             </div>
 
@@ -306,14 +321,9 @@
                             <div>
                                 <label class="block text-xs font-medium text-neutral-700 mb-1">Tanggal Lahir</label>
                                 <div class="relative">
-                                    <input type="text" name="birth_date" placeholder="DD/MM/YY" 
+                                    <input type="text" name="birth_date" placeholder="DD/MM/YY" required
                                            onfocus="(this.type='date')" onblur="(this.type='text')"
                                            class="w-full bg-[#D8DCD5] border border-neutral-300 text-neutral-800 text-xs rounded-xl px-4 py-2.5 pr-10 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#5F8C72]">
-                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-neutral-600">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                        </svg>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -326,7 +336,9 @@
                                 ← Kembali ke QRIS
                             </button>
                             <button type="submit" 
-                                    class="bg-[#5F8C72] hover:bg-[#4d725d] text-white font-semibold text-xs px-8 py-2.5 rounded-xl shadow-xs transition cursor-pointer">
+                                    :disabled="!formReady"
+                                    :class="formReady ? 'bg-[#5F8C72] hover:bg-[#4d725d] text-white cursor-pointer' : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'"
+                                    class="font-semibold text-xs px-8 py-2.5 rounded-xl shadow-xs transition">
                                 Kirim
                             </button>
                         </div>
@@ -422,19 +434,17 @@
                                 Bukti pembayaran Anda telah kami terima dan sedang dalam proses verifikasi oleh admin.
                             </p>
                             <p>
-                                Kami akan menghubungi Anda melalui email jika sudah ada pembaruan.
+                                Kami akan mengonfirmasi hasil verifikasi melalui WhatsApp.
+                            </p>
+                            <p>
+                                Jika dalam 2 hari belum ada kabar, silakan hubungi kontak Maternity.id untuk bantuan.
                             </p>
                         </div>
 
                         {{-- Tombol Aksi --}}
                         <div class="w-full space-y-2">
-                            <button type="button"
-                                    @click="step = 6"
-                                    class="w-full py-3 px-6 rounded-2xl bg-[#5F8C72] hover:bg-[#4e745d] text-white font-medium text-xs tracking-wide transition shadow-sm text-center cursor-pointer">
-                                Simulasi: Verifikasi Disetujui Admin
-                            </button>
                             <a href="{{ url('/') }}" 
-                               class="w-full block py-2.5 px-6 rounded-2xl text-neutral-600 hover:text-neutral-900 font-medium text-xs tracking-wide transition text-center">
+                               class="w-full block py-3 px-6 rounded-2xl bg-[#5F8C72] hover:bg-[#4e745d] text-white font-medium text-xs tracking-wide transition shadow-sm text-center">
                                 Kembali ke Beranda
                             </a>
                         </div>
@@ -473,7 +483,7 @@
 
                         {{-- Deskripsi Pesan --}}
                         <p class="text-xs text-neutral-600 leading-relaxed max-w-xs mb-8">
-                            Selamat! Pendaftaran Anda telah disetujui oleh admin. Email konfirmasi telah dikirimkan ke alamat email Anda.
+                            Selamat! Pendaftaran Anda telah disetujui oleh admin. Konfirmasi akan disampaikan melalui WhatsApp.
                         </p>
 
                         {{-- Tombol Aksi --}}
@@ -490,7 +500,7 @@
         </div>
 
         {{-- ── MODAL PILIH / GANTI PELATIHAN (KOMPONEN REUSABLE) ── --}}
-        <x-checkout.modal-training />
+        <x-checkout.modal-training :event="$event" />
 
     </div>
 </x-layout>

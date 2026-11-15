@@ -24,7 +24,7 @@ class AdminSeeder extends Seeder
         if ($adminUtama) {
             Admin::create([
                 'account_id' => $adminUtama->id,
-                'name' => 'Admin Utama',
+                'name' => 'Administrator',
                 'email' => 'admin@maternity.id',
                 'phone' => '081234567890',
                 'profile_img' => null,

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdminEventController;
 use App\Http\Controllers\AdminMaterialController;
+use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\AdminVerificationController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminVoucherController;
 use App\Http\Controllers\ArticleController;
@@ -27,6 +29,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events', [EventController::class, 'index'])->name('events');
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
 Route::get('/events/{slug}/checkout', [EventController::class, 'checkout'])->name('events.checkout');
+Route::post('/events/{slug}/payment-proof', [EventController::class, 'submitPaymentProof'])->name('events.payment-proof');
 Route::get('/events/{slug}/verification', [EventController::class, 'verification'])->name('events.verification');
 Route::get('/events/{slug}/approved', [EventController::class, 'approved'])->name('events.approved');
 
@@ -49,15 +52,15 @@ Route::get('/mitra', function () {
     return view('landing');
 })->name('mitra.index');
 
+Route::get('/admin/login', function () {
+    return view('admin.login');
+})->name('admin.login');
+
 // Admin Knowledge & Portal Routes
 Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admin')->group(function () {
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/', [AdminVerificationController::class, 'dashboard'])->name('admin.dashboard');
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.home');
+    Route::get('/dashboard', [AdminVerificationController::class, 'dashboard'])->name('admin.home');
 
     Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
     Route::get('/users/deleted', [AdminUserController::class, 'deleted'])->name('admin.users.deleted');
@@ -68,9 +71,8 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
     Route::put('/users/{user_id}', [AdminUserController::class, 'update'])->name('admin.users.update');
     Route::delete('/users/{user_id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 
-    Route::get('/approval', function () {
-        return view('admin.dashboard');
-    })->name('admin.approval');
+    Route::get('/approval', [AdminVerificationController::class, 'dashboard'])
+        ->name('admin.approval');
 
     Route::get('/article', function () {
         return view('admin.dashboard');
@@ -90,6 +92,15 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
     Route::delete('/ebook/{id}', [AdminMaterialController::class, 'destroy'])->name('admin.ebook.destroy');
     Route::get('/ebook/{slug}/download', [AdminMaterialController::class, 'download'])->name('admin.ebook.download');
 
+    Route::patch('/verification/{eventId}/{userId}/approve', [AdminVerificationController::class, 'approve'])
+        ->name('admin.verification.approve');
+    Route::get('/product', [AdminProductController::class, 'index'])->name('admin.product');
+    Route::get('/product/add', [AdminProductController::class, 'create'])->name('admin.product.create');
+    Route::post('/product', [AdminProductController::class, 'store'])->name('admin.product.store');
+    Route::get('/product/{id}/edit', [AdminProductController::class, 'edit'])->name('admin.product.edit');
+    Route::put('/product/{id}', [AdminProductController::class, 'update'])->name('admin.product.update');
+    Route::delete('/product/{id}', [AdminProductController::class, 'destroy'])->name('admin.product.destroy');
+
     Route::get('/voucher', [AdminVoucherController::class, 'index'])->name('admin.voucher');
     Route::get('/voucher/add', [AdminVoucherController::class, 'create'])->name('admin.voucher.create');
     Route::post('/voucher', [AdminVoucherController::class, 'store'])->name('admin.voucher.store');
@@ -102,6 +113,7 @@ Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admi
 
 // Member Protected Routes
 Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', [AdminVerificationController::class, 'notifications'])->name('notifications');
     Route::get('/profile', [MyController::class, 'viewAccount'])->name('profile.edit');
     Route::get('/my/account', [MyController::class, 'viewAccount'])->name('my.account');
     Route::match(['get', 'post'], '/logout', [LogoutController::class, 'logout'])->name('logout');

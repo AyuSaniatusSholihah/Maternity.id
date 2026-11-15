@@ -214,7 +214,7 @@
                          class="flex gap-3.5 sm:gap-5 overflow-x-auto py-2.5 px-1 sm:px-2 no-scrollbar snap-x snap-mandatory scroll-smooth"
                          style="cursor: grab;">
                         @foreach ($events as $event)
-                            <div class="shrink-0 w-[80vw] min-[400px]:w-[74vw] sm:w-[310px] md:w-[320px] max-w-[330px] snap-start">
+                            <div class="w-[calc((100vw-3.875rem)/2)] shrink-0 sm:w-[310px] md:w-[320px] max-w-[330px] snap-start">
                                 <x-event_card :event="$event" />
                             </div>
                         @endforeach

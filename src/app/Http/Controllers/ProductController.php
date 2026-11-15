@@ -41,7 +41,8 @@ class ProductController extends Controller
                 'image' => $product->thumbnail_img,
                 'location' => 'Maternity.id',
                 'price' => 'Rp ' . number_format($product->price, 0, ',', '.'),
-                'tiktok_url' => $product->tiktok_url ?: ($product->whatsapp_url ?: '#'),
+                'tiktok_url' => $product->affiliate_url ?: ($product->tiktok_url ?: ($product->whatsapp_url ?: '#')),
+                'affiliate_url' => $product->affiliate_url,
                 'sold' => '',
             ];
         });

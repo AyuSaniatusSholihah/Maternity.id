@@ -112,9 +112,11 @@
 
         <!-- ── 4. PRODUCT CARDS GRID (IDENTICAL TO LANDING DESIGN) ── -->
         @if(count($products) > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4 lg:gap-5">
+            <div class="flex gap-2.5 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 sm:gap-4 lg:gap-5 overflow-x-auto sm:overflow-visible no-scrollbar">
                 @foreach ($products as $product)
-                    <x-product_card :product="$product" />
+                    <div class="w-[calc((100vw-3.25rem)/2)] shrink-0 sm:w-auto">
+                        <x-product_card :product="$product" />
+                    </div>
                 @endforeach
             </div>
             <div class="pt-4">

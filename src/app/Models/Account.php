@@ -25,4 +25,9 @@ class Account extends Authenticatable
     {
         return $this->hasOne(Member::class, 'account_id', 'id');
     }
+
+    public function getProfileImgAttribute(): ?string
+    {
+        return $this->admin?->profile_img ?? $this->member?->image_url;
+    }
 }

@@ -57,15 +57,7 @@
         users: {{ Illuminate\Support\Js::from($adminUsers ?? [])->toHtml() }},
         selectedVerification: null,
         showProofModal: false,
-        verifications: [{
-            id: 'TRX-895',
-            userName: 'Nadia Rahmawati',
-            userEmail: 'nadia.r@yahoo.com',
-            userWhatsapp: '0878-9988-1122',
-            userBirthDate: '05/11/1995',
-            eventName: 'Seminar Gizi 1000 Hari Pertama (Jogja)',
-            linkedEvent: null
-        }],
+        verifications: {{ Illuminate\Support\Js::from($adminVerifications ?? [])->toHtml() }},
     
         articleFilter: 'all',
         showArticleModal: false,
@@ -85,7 +77,7 @@
         eventPosterPreview: '',
         eventForm: {
             title: '',
-            category: {{ Illuminate\Support\Js::from(($adminCategories ?? collect())->first()?->id)->toHtml() }},
+            category: 'online',
             date: '{{ now()->toDateString() }}',
             openDate: '{{ now()->toDateString() }}',
             closeDate: '{{ now()->addDays(7)->toDateString() }}',
@@ -105,7 +97,10 @@
                 reader.readAsDataURL(file);
             }
         },
-        eventCategories: {{ Illuminate\Support\Js::from($adminCategories ?? [])->toHtml() }},
+        eventCategories: [
+            { id: 'online', name: 'Online' },
+            { id: 'offline', name: 'Offline' }
+        ],
         events: {{ Illuminate\Support\Js::from($adminEvents ?? [])->toHtml() }},
         get filteredEvents() {
             return this.events.filter(ev => {
@@ -121,10 +116,33 @@
         pdfResources: {{ Illuminate\Support\Js::from($adminMaterials ?? [])->toHtml() }},
     
         // ── METHOD APPROVAL ACTION ──
-        approveVerification(item) {
-            item.status = 'approved';
-            item.adminNotes = 'Disetujui oleh admin pada ' + new Date().toLocaleTimeString('id-ID');
-            this.showProofModal = false;
+        async approveVerification(item) {
+            try {
+                const response = await fetch('{{ url('/admin/verification') }}/' + item.eventId + '/' + item.userId + '/approve', {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    const error = await response.json().catch(() => null);
+                    throw new Error(error?.message || 'Approval gagal diproses.');
+                }
+
+                const result = await response.json();
+                if (result.status !== 'approved') {
+                    throw new Error('Respons approval tidak valid.');
+                }
+
+                item.status = 'approved';
+                item.adminNotes = 'Disetujui oleh admin pada ' + new Date().toLocaleTimeString('id-ID');
+                this.showProofModal = false;
+            } catch (error) {
+                alert(error.message || 'Approval gagal diproses. Silakan coba lagi.');
+                return;
+            }
         },
         rejectVerification(item) {
             const reason = prompt('Masukkan alasan penolakan pembayaran:') || 'Bukti pembayaran tidak sesuai atau tidak valid.';
@@ -196,7 +214,7 @@
 
                 {{-- Admin User Card --}}
                 <div class="bg-[#FAF5F2] rounded-2xl p-3.5 flex items-center gap-3 mb-6 border border-[#EFE8E3]">
-                    <img src="{{ auth()->user()->profile_img ?? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop' }}"
+                    <img src="{{ auth()->user()->admin?->profile_img ?? asset('logologin.png') }}"
                         alt="Admin Profile"
                         class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-xs shrink-0">
                     <div class="min-w-0">
@@ -274,6 +292,15 @@
                             <span>E-Book & Modul PDF</span>
                         </div>
                         <span class="text-[10px] text-neutral-400 font-semibold" x-text="pdfResources.length"></span>
+                    </a>
+
+                    {{-- 6. Produk Afiliasi --}}
+                    <a href="{{ route('admin.product') }}" @click="mobileSidebar = false"
+                        class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition text-xs cursor-pointer text-left text-neutral-600 hover:bg-[#FAF5F2] hover:text-neutral-900 font-medium">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-box-open text-xs text-emerald-800"></i>
+                            <span>Produk Afiliasi</span>
+                        </div>
                     </a>
 
                     {{-- 6. Voucher Management --}}
@@ -898,7 +925,7 @@
                                 </button>
                             </div>
 
-                            <form action="{{ route('admin.event.store') }}" method="POST" class="space-y-5">
+                            <form action="{{ route('admin.event.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                                 @csrf
 
                                 {{-- Baris 1: Judul & Kategori --}}
@@ -932,7 +959,7 @@
                                             Event</label>
                                         <label
                                             class="flex flex-col items-center justify-center border-2 border-dashed border-neutral-300 hover:border-[#5F8C72] rounded-2xl p-4 text-center cursor-pointer bg-[#FAF5F2] hover:bg-white transition h-40 relative overflow-hidden">
-                                            <input type="file" accept="image/*" class="hidden"
+                                            <input type="file" name="image" accept=".jpg,.jpeg,.png,image/jpeg,image/png" class="hidden"
                                                 @change="handleEventPoster($event)">
 
                                             <template x-if="!eventPosterPreview">
@@ -941,8 +968,7 @@
                                                     <p class="text-xs font-bold text-neutral-800">Upload Poster
                                                         Pelatihan
                                                     </p>
-                                                    <p class="text-[10px] text-neutral-500">Format JPG, PNG (Rasio 16:9
-                                                        disarankan)</p>
+                                                    <p class="text-[10px] text-neutral-500">Format JPG/PNG, maksimal 5 MB (ukuran A4)</p>
                                                 </div>
                                             </template>
 
