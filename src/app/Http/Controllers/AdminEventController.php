@@ -106,6 +106,22 @@ class AdminEventController extends Controller
             ->with('status', 'Event berhasil diperbarui.');
     }
 
+    public function destroy(string $slug): RedirectResponse
+    {
+        $event = Event::query()->where('slug', $slug)->firstOrFail();
+        $posterUrl = $event->image_url;
+
+        $event->delete();
+
+        if ($posterUrl && str_contains($posterUrl, '/storage/')) {
+            Storage::disk('public')->delete(Str::after($posterUrl, '/storage/'));
+        }
+
+        return redirect()
+            ->route('admin.event')
+            ->with('status', 'Event berhasil dihapus secara permanen.');
+    }
+
     private function validateEvent(Request $request): array
     {
         return $request->validate([

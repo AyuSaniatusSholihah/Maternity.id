@@ -1219,12 +1219,16 @@
                                                         title="Edit Jadwal">
                                                         <i class="fa-solid fa-pen-to-square text-xs"></i>
                                                     </a>
-                                                    <button type="button"
-                                                        @click="events = events.filter(e => e.id !== ev.id)"
+                                                    <form :action="'{{ url('/admin/event') }}/' + ev.slug" method="POST"
+                                                        onsubmit="return confirm('Hapus event ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
                                                         class="p-1.5 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
                                                         title="Hapus Pelatihan">
                                                         <i class="fa-solid fa-trash-can text-xs"></i>
-                                                    </button>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
 

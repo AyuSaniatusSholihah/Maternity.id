@@ -11,5 +11,14 @@ class Category extends Model
 {
     use HasUuids;
 
+    public const MODULE_SLUGS = [
+        'kehamilan',
+        'persiapan-persalinan',
+        'bayi-baru-lahir',
+        'menyusui',
+        'makanan-bayi',
+        'pola-asuh',
+    ];
+
     protected $table = 'categories';
 }

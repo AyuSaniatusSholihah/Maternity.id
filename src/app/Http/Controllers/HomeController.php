@@ -15,24 +15,37 @@ class HomeController extends Controller
         $fallbackImage = config('app.fallback_image_url');
 
         $eventCategories = Event::query()
-            ->whereNotNull('categories')
+            ->whereIn('categories', ['online', 'offline'])
             ->distinct()
-            ->orderBy('categories')
             ->pluck('categories')
-            ->map(fn (string $category): array => [
-                'slug' => $category,
-                'name' => ucfirst($category),
+            ->mapWithKeys(fn (string $category): array => [
+                $category => [
+                    'slug' => $category,
+                    'name' => ucfirst($category),
+                ],
             ])
+            ->union(collect([
+                'online' => ['slug' => 'online', 'name' => 'Online'],
+                'offline' => ['slug' => 'offline', 'name' => 'Offline'],
+            ]))
+            ->sortKeys()
+            ->values()
             ->prepend(['slug' => 'all', 'name' => 'Semua'])
             ->values()
             ->all();
 
-        $ebookCategoryIds = Material::query()
-            ->whereNotNull('categories')
-            ->distinct()
-            ->pluck('categories');
+        $articleCategories = Category::query()
+            ->orderBy('name')
+            ->get(['slug', 'name'])
+            ->map(fn (Category $category): array => [
+                'slug' => $category->slug,
+                'name' => $category->name,
+            ])
+            ->values()
+            ->all();
+
         $ebookCategories = Category::query()
-            ->whereIn('id', $ebookCategoryIds)
+            ->whereIn('slug', Category::MODULE_SLUGS)
             ->orderBy('name')
             ->get(['slug', 'name'])
             ->map(fn (Category $category): array => [
@@ -64,7 +77,7 @@ class HomeController extends Controller
             ->take(3)
             ->get()
             ->map(function (Event $event) use ($fallbackImage) {
-                $isOnline = str_contains(strtolower($event->location), 'online');
+                $isOnline = $event->categories === 'online';
 
                 return [
                     'id' => $event->id,
@@ -140,6 +153,7 @@ class HomeController extends Controller
             'articles',
             'products',
             'eventCategories',
+            'articleCategories',
             'ebookCategories',
             'productCategories',
         ));

@@ -22,7 +22,7 @@ class ArticleController extends Controller
         // Handle sorting
         $sort = $request->input('sort', 'latest');
         if ($sort === 'popular') {
-            $articlesQuery->orderBy('views_count', 'desc');
+            $articlesQuery->orderBy('updated_at', 'desc');
         } else {
             $articlesQuery->orderBy('updated_at', 'desc');
         }
@@ -40,8 +40,8 @@ class ArticleController extends Controller
         if ($searchQuery) {
             $articlesQuery->where(function ($q) use ($searchQuery) {
                 $q->where('title', 'like', "%{$searchQuery}%")
-                  ->orWhere('short_description', 'like', "%{$searchQuery}%")
-                  ->orWhere('keywords', 'like', "%{$searchQuery}%");
+                  ->orWhere('description', 'like', "%{$searchQuery}%")
+                  ->orWhere('content', 'like', "%{$searchQuery}%");
             });
         }
 
@@ -55,7 +55,7 @@ class ArticleController extends Controller
                 'title' => $article->title,
                 'category' => $article->category?->name ?? 'Umum',
                 'category_slug' => $article->category?->slug ?? 'umum',
-                'excerpt' => $article->short_description,
+                'excerpt' => $article->description,
                 'content' => $article->content,
                 'author' => $article->author?->name ?? 'Tim Medis Maternity.id',
                 'author_role' => 'Praktisi Medis',
@@ -80,7 +80,7 @@ class ArticleController extends Controller
                     'title' => $featuredArticleQuery->title,
                     'category' => $featuredArticleQuery->category?->name ?? 'Umum',
                     'category_slug' => $featuredArticleQuery->category?->slug ?? 'umum',
-                    'excerpt' => $featuredArticleQuery->short_description,
+                    'excerpt' => $featuredArticleQuery->description,
                     'content' => $featuredArticleQuery->content,
                     'author' => $featuredArticleQuery->author?->name ?? 'Tim Medis Maternity.id',
                     'thumbnail_image' => $featuredArticleQuery->image_url ?? $fallbackImage,
@@ -171,7 +171,7 @@ class ArticleController extends Controller
                 'name' => $article->category->name,
                 'slug' => $article->category->slug,
             ]] : [(object) ['name' => 'Umum', 'slug' => 'umum']],
-            'excerpt' => $article->short_description,
+            'excerpt' => $article->description,
             'content' => $article->content,
             'author' => (object) [
                 'name' => $article->author?->name ?? 'Tim Medis Maternity.id',
@@ -182,7 +182,7 @@ class ArticleController extends Controller
             'thumbnail_image' => $article->image_url ?? $fallbackImage,
             'views' => 0,
             'published_at' => $article->updated_at,
-            'tags' => array_filter(array_map('trim', explode(',', $article->keywords ?? ''))),
+            'tags' => [],
         ];
 
         // Get related articles (from same category, exclude current)
@@ -198,7 +198,7 @@ class ArticleController extends Controller
                     'id' => $art->id,
                     'slug' => $art->slug,
                     'title' => $art->title,
-                    'excerpt' => $art->short_description,
+                    'excerpt' => $art->description,
                     'image_url' => $art->image_url ?? $fallbackImage,
                     'thumbnail_image' => $art->image_url ?? $fallbackImage,
                     'author' => (object) [

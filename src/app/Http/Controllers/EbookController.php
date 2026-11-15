@@ -62,12 +62,8 @@ class EbookController extends Controller
             ];
         });
 
-        $categoryIds = Material::query()
-            ->whereNotNull('categories')
-            ->distinct()
-            ->pluck('categories');
         $categories = Category::query()
-            ->whereIn('id', $categoryIds)
+            ->whereIn('slug', Category::MODULE_SLUGS)
             ->orderBy('name')
             ->get(['slug', 'name'])
             ->map(fn (Category $item): array => [
