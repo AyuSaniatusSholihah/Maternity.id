@@ -20,8 +20,8 @@ class EbookController extends Controller
         $dateEnd = $request->input('dateEnd');
         $category = $request->input('category', 'all');
 
-        // Query materials dengan eager loading uploader relation
-        $query = Material::with('uploader.account');
+        // Query materials untuk katalog e-book
+        $query = Material::query();
 
         if ($category && $category !== 'all') {
             $query->whereHas('category', function ($categoryQuery) use ($category) {
@@ -53,12 +53,12 @@ class EbookController extends Controller
                 'book_title' => $material->title,
                 'description' => $material->description,
                 'cover' => $material->image_url ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80',
-                'author' => $material->uploader?->name ?? 'Tim Medis Maternity.id',
+                'author' => '',
                 'price' => 'Gratis',
                 'link_text' => 'Akses online',
                 'handle' => '@maternity.id',
                 'btn_text' => 'Baca Sekarang',
-                'url' => $material->content_link,
+                'url' => $material->content,
             ];
         });
 

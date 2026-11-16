@@ -3,7 +3,7 @@
 @php
     $title = $ebook['title'] ?? 'Modul Edukasi';
     $bookTitle = $ebook['book_title'] ?? ($ebook['title'] ?? 'Panduan Kehamilan');
-    $author = $ebook['author'] ?? 'Tim Medis Maternity.id';
+    $author = $ebook['author'] ?? '';
     $cover = $ebook['cover'] ?? ($ebook['image'] ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600');
     $price = $ebook['price'] ?? 'Gratis';
     $linkText = $ebook['link_text'] ?? 'Akses online';
@@ -41,9 +41,11 @@
                     <p class="text-[5px] min-[400px]:text-[5.5px] sm:text-[6.5px] font-bold text-neutral-800 leading-tight line-clamp-2">
                         {{ $bookTitle }}
                     </p>
-                    <p class="text-[4px] min-[400px]:text-[4.5px] sm:text-[5.5px] text-neutral-500 mt-0.5 truncate">
-                        by {{ $author }}
-                    </p>
+                    @if (!empty($author))
+                        <p class="text-[4px] min-[400px]:text-[4.5px] sm:text-[5.5px] text-neutral-500 mt-0.5 truncate">
+                            by {{ $author }}
+                        </p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -70,6 +72,8 @@
     {{-- Bottom Action Button --}}
     <a 
         href="{{ $url }}" 
+        target="_blank"
+        rel="noopener noreferrer"
         class="w-full bg-[#FAF0EE] hover:bg-[#8C433C] text-[#782819] hover:text-white text-center font-bold py-1.5 sm:py-2.5 text-[10px] min-[380px]:text-[11px] sm:text-sm transition-all duration-300 block border-t border-[#DEA69E]/40 shadow-xs">
         {{ $btnText }}
     </a>

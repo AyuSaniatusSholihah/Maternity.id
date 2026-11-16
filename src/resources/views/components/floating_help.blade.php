@@ -78,7 +78,7 @@
 
         {{-- Footer --}}
         <div class="px-4 py-2.5 bg-gray-50/80 border-t border-gray-100">
-            <a href="https://wa.me/" target="_blank"
+            <a href="https://wa.me/6288985497133" target="_blank" rel="noopener noreferrer"
                class="flex items-center justify-center gap-1.5 text-[11px] text-[#25D366] font-bold hover:underline">
                 <i class="fa-brands fa-whatsapp text-sm"></i>
                 Chat langsung via WhatsApp

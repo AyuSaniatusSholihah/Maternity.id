@@ -21,6 +21,21 @@
             .article-body li {
                 margin-bottom: 0.5rem;
             }
+            .article-body table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1.5rem 0;
+                font-size: 0.95em;
+            }
+            .article-body th, .article-body td {
+                border: 1px solid #d4d4d4;
+                padding: 0.6rem 0.75rem;
+                text-align: left;
+            }
+            .article-body th {
+                background: #faf0ee;
+                font-weight: 700;
+            }
         </style>
     </x-slot>
 
@@ -54,21 +69,20 @@
                 {{-- ── LEFT FLOATING SOCIAL SHARE BAR (WA & IG) ── --}}
                 <aside class="hidden lg:flex flex-col items-center gap-3.5 sticky top-32 lg:col-span-1 py-2 z-20">
                     {{-- WhatsApp Icon Button --}}
-                    <a href="https://api.whatsapp.com/send?text={{ urlencode(($article->title ?? 'Artikel') . ' ' . url()->current()) }}" 
+                    <a href="https://wa.me/6288985497133" 
                        target="_blank" 
                        rel="noopener noreferrer" 
                        class="w-11 h-11 rounded-2xl bg-[#25D366] text-white shadow-sm flex items-center justify-center hover:scale-115 hover:shadow-md transition-all duration-200" 
-                       title="Bagikan ke WhatsApp">
+                       title="Hubungi via WhatsApp">
                         <i class="fa-brands fa-whatsapp text-xl"></i>
                     </a>
                     
                     {{-- Instagram Icon Button --}}
-                    <button type="button" 
-                            onclick="copyCurrentUrl()" 
+                    <a href="https://www.instagram.com/suarakelas_/" target="_blank" rel="noopener noreferrer"
                             class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white shadow-sm flex items-center justify-center hover:scale-115 hover:shadow-md transition-all duration-200" 
-                            title="Bagikan ke Instagram / Salin Tautan">
+                            title="Buka Instagram">
                         <i class="fa-brands fa-instagram text-xl"></i>
-                    </button>
+                    </a>
                 </aside>
 
                 {{-- ── MAIN ARTICLE CONTENT CARD ── --}}
@@ -89,11 +103,6 @@
                         @endforelse
                         <span class="text-slate-300">•</span>
                         <span class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                            <i class="fa-regular fa-user text-slate-400 text-xs"></i>
-                            <span>{{ $article->author->name ?? 'Tim Medis Maternity.id' }}</span>
-                        </span>
-                        <span class="text-slate-300">•</span>
-                        <span class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
                             <i class="fa-regular fa-calendar text-slate-400 text-xs"></i>
                             <span>{{ $article->published_at instanceof \Carbon\Carbon ? $article->published_at->translatedFormat('d F Y') : ($article->published_at ?? '15 Agustus 2026') }}</span>
                         </span>
@@ -104,41 +113,23 @@
                         {{ $article->title ?? 'Tips Hidup Sehat: Menjaga Kebugaran di Tengah Rutinitas Padat' }}
                     </h1>
 
-                    {{-- Author & Quick Action Header (Author info + Bagikan button) --}}
+                    {{-- Quick Action Header --}}
                     <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
-                        <div class="flex items-center gap-3">
-                            @if(!empty($article->author->avatar))
-                                <img src="{{ $article->author->avatar }}" alt="{{ $article->author->name ?? 'Author' }}" class="w-11 h-11 rounded-full object-cover border-2 border-[#DEA69E]">
-                            @else
-                                <div class="w-11 h-11 rounded-full bg-[#FAF0EE] border border-[#DEA69E] flex items-center justify-center font-bold text-[#8C433C] text-sm shadow-inner">
-                                    {{ substr($article->author->name ?? ($article->author ?? 'Admin'), 0, 2) }}
-                                </div>
-                            @endif
-                            <div>
-                                <div class="flex items-center gap-1.5">
-                                    <p class="text-xs sm:text-sm font-bold text-slate-900">{{ $article->author->name ?? ($article->author ?? 'Tim Editorial') }}</p>
-                                    <i class="fa-solid fa-circle-check text-blue-500 text-[11px]" title="Terverifikasi Medis"></i>
-                                </div>
-                                <p class="text-[11px] text-slate-400">{{ $article->author->role ?? ($article->author_role ?? 'Verifikator Medis') }}</p>
-                            </div>
-                        </div>
-
                         {{-- Social Share Group on Header (Mobile & Desktop) --}}
                         <div class="flex items-center gap-2">
                             {{-- Mobile WA & IG icons --}}
-                            <a href="https://api.whatsapp.com/send?text={{ urlencode(($article->title ?? 'Artikel') . ' ' . url()->current()) }}" 
+                            <a href="https://wa.me/6288985497133" 
                                target="_blank" 
                                rel="noopener noreferrer" 
                                class="lg:hidden w-8 h-8 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-xs hover:scale-110 transition" 
-                               title="Bagikan ke WhatsApp">
+                               title="Hubungi via WhatsApp">
                                 <i class="fa-brands fa-whatsapp text-sm"></i>
                             </a>
-                            <button type="button" 
-                                    onclick="copyCurrentUrl()" 
+                            <a href="https://www.instagram.com/suarakelas_/" target="_blank" rel="noopener noreferrer"
                                     class="lg:hidden w-8 h-8 rounded-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white flex items-center justify-center shadow-xs hover:scale-110 transition" 
-                                    title="Bagikan ke Instagram / Salin Link">
+                                    title="Buka Instagram">
                                 <i class="fa-brands fa-instagram text-sm"></i>
-                            </button>
+                            </a>
 
                             {{-- Tombol Bagikan --}}
                             <button type="button" 
@@ -182,14 +173,6 @@
                             </div>
                         </div>
                     @endif
-
-                    {{-- Medical Review Disclaimer --}}
-                    <div class="bg-[#FAF0EE]/60 rounded-2xl p-4 sm:p-5 border border-[#DEA69E]/30 text-xs text-neutral-600 flex items-start gap-3.5">
-                        <i class="fa-solid fa-shield-heart text-[#8C433C] text-lg mt-0.5 shrink-0"></i>
-                        <p class="leading-relaxed">
-                            <strong>Ditinjau secara medis:</strong> Informasi dalam artikel ini telah disusun dan diverifikasi oleh tenaga kesehatan profesional untuk tujuan edukasi. Selalu konsultasikan dengan dokter kandungan atau bidan Anda untuk pemeriksaan kondisi individual kehamilan Anda.
-                        </p>
-                    </div>
 
                 </main>
 
@@ -239,7 +222,6 @@
                                     $itemSlug = is_object($item) ? $item->slug : $item['slug'];
                                     $itemTitle = is_object($item) ? $item->title : $item['title'];
                                     $itemImage = is_object($item) ? ($item->image_url ?? $item->thumbnail_image) : ($item['thumbnail_image'] ?? '');
-                                    $itemAuthor = is_object($item) && isset($item->author) ? (is_object($item->author) ? $item->author->name : $item->author) : 'Tim Medis';
                                 @endphp
                                 <a href="{{ route('articles.show', $itemSlug) }}" class="flex items-start gap-3.5 group p-2 -mx-2 rounded-2xl hover:bg-[#FAF0EE]/60 transition">
                                     <div class="w-20 h-16 sm:w-22 sm:h-16 flex-shrink-0 rounded-2xl overflow-hidden bg-slate-100 relative">
@@ -253,10 +235,6 @@
                                         <h3 class="text-xs sm:text-sm font-bold text-[#2A1614] group-hover:text-[#8C433C] transition line-clamp-2 leading-snug">
                                             {{ $itemTitle }}
                                         </h3>
-                                        <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mt-1.5">
-                                            <i class="fa-regular fa-user text-slate-400 text-xs"></i>
-                                            <span>{{ $itemAuthor }}</span>
-                                        </div>
                                     </div>
                                 </a>
                             @empty
