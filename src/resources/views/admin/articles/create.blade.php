@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@7.9.1/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body class="min-h-screen bg-[#FAF5F2] text-neutral-800" x-data="{ mobileSidebar: false }">
     <div class="flex min-h-screen overflow-hidden">
@@ -54,7 +55,8 @@
             </div>
             <div>
                 <label for="content" class="mb-1 block text-sm font-bold">Isi Artikel</label>
-                <textarea id="content" name="content" required rows="12" class="w-full rounded-lg border border-neutral-300 px-3 py-2.5">{{ old('content', $article?->content) }}</textarea>
+                <textarea id="content" name="content" required rows="18" class="w-full rounded-lg border border-neutral-300 px-3 py-2.5">{{ old('content', $article?->content) }}</textarea>
+                <p class="mt-1 text-xs text-neutral-500">Gunakan toolbar untuk mengatur font, rata teks, daftar, link, dan tabel.</p>
             </div>
             <div class="flex justify-end gap-3 border-t border-neutral-100 pt-4">
                 <a href="{{ route('admin.article') }}" class="rounded-lg px-4 py-2.5 text-sm font-semibold">Batal</a>
@@ -63,5 +65,23 @@
         </form>
         </main>
     </div>
+    <script>
+        tinymce.init({
+            selector: '#content',
+            height: 520,
+            menubar: false,
+            branding: false,
+            plugins: 'lists link table code',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | link table | removeformat code',
+            content_style: 'body { font-family: Arial, sans-serif; font-size: 15px; line-height: 1.7; } table { border-collapse: collapse; width: 100%; } td, th { border: 1px solid #d4d4d4; padding: 8px; }',
+            setup(editor) {
+                editor.on('change', () => editor.save());
+            }
+        });
+
+        document.querySelector('form').addEventListener('submit', () => {
+            tinymce.triggerSave();
+        });
+    </script>
 </body>
 </html>

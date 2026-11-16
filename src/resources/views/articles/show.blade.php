@@ -21,6 +21,21 @@
             .article-body li {
                 margin-bottom: 0.5rem;
             }
+            .article-body table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1.5rem 0;
+                font-size: 0.95em;
+            }
+            .article-body th, .article-body td {
+                border: 1px solid #d4d4d4;
+                padding: 0.6rem 0.75rem;
+                text-align: left;
+            }
+            .article-body th {
+                background: #faf0ee;
+                font-weight: 700;
+            }
         </style>
     </x-slot>
 
