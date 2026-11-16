@@ -116,10 +116,6 @@
 
                             <div class="flex items-center gap-3 text-[10px] sm:text-[11px] text-neutral-500 pt-0.5">
                                 <span class="flex items-center gap-1">
-                                    <i class="fa-regular fa-user text-slate-400 text-[10px]"></i>
-                                    <span>{{ $featuredArticle['author'] }}</span>
-                                </span>
-                                <span class="flex items-center gap-1">
                                     <i class="fa-regular fa-calendar text-slate-400 text-[10px]"></i>
                                     <span>{{ $featuredArticle['published_at'] }}</span>
                                 </span>
@@ -233,7 +229,7 @@
             primaryText="Lihat Topik Lainnya"
             :primaryUrl="route('articles.index')"
             secondaryText="Tanya Bidan via WhatsApp"
-            secondaryUrl="https://wa.me/"
+            secondaryUrl="https://wa.me/6288985497133"
         />
 
     </div>

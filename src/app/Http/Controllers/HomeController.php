@@ -94,7 +94,7 @@ class HomeController extends Controller
             })
             ->all();
 
-        $ebooks = Material::with('uploader')
+        $ebooks = Material::query()
             ->latest()
             ->take(4)
             ->get()
@@ -104,11 +104,11 @@ class HomeController extends Controller
                     'title' => $material->title,
                     'book_title' => $material->title,
                     'cover' => $material->image_url,
-                    'author' => $material->uploader?->name ?? 'Maternity.id',
+                    'author' => '',
                     'price' => 'Gratis',
                     'link_text' => 'Akses online',
                     'btn_text' => 'Baca Sekarang',
-                    'url' => route('library'),
+                    'url' => $material->content,
                 ];
             })
             ->all();

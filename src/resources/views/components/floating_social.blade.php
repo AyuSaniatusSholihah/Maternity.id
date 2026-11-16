@@ -19,7 +19,7 @@
          style="display: none;">
 
         {{-- Instagram --}}
-        <a href="https://instagram.com/maternity.id" target="_blank"
+        <a href="https://www.instagram.com/suarakelas_/" target="_blank" rel="noopener noreferrer"
            class="flex items-center gap-2 bg-gradient-to-r from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white px-3.5 py-2 rounded-full shadow-[0_8px_20px_rgba(238,42,123,0.35)] border border-white transition-all transform hover:scale-105 active:scale-95 text-[11px] font-bold group">
             <span class="hidden sm:inline">Instagram</span>
             <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
@@ -28,7 +28,7 @@
         </a>
 
         {{-- WhatsApp --}}
-        <a href="https://wa.me/" target="_blank"
+        <a href="https://wa.me/6288985497133" target="_blank" rel="noopener noreferrer"
            class="flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white px-3.5 py-2 rounded-full shadow-[0_8px_20px_rgba(37,211,102,0.35)] border border-white transition-all transform hover:scale-105 active:scale-95 text-[11px] font-bold group">
             <span class="hidden sm:inline">WhatsApp Kami</span>
             <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">

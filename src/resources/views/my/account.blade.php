@@ -153,7 +153,7 @@
                     </div>
                 </a>
 
-                <a href="https://wa.me/6281234567890?text=Halo%20Admin%20Maternity.id,%20saya%20ingin%20konsultasi" target="_blank"
+                <a href="https://wa.me/6288985497133" target="_blank" rel="noopener noreferrer"
                    class="bg-white rounded-2xl p-4 flex items-center gap-3.5 border border-[#DEA69E]/40 hover:border-emerald-500 shadow-xs hover:shadow-md transition card-spring group">
                     <div class="w-11 h-11 rounded-xl bg-[#FAF0EE] flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition">
                         <i class="fa-brands fa-whatsapp text-base"></i>

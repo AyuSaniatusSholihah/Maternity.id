@@ -37,7 +37,7 @@ class AdminMaterialController extends Controller
     public function index(): View
     {
         $materials = Material::query()
-            ->with(['category', 'uploader.account', 'events'])
+            ->with(['category', 'events'])
             ->latest()
             ->get()
             ->map(fn (Material $material): array => [
@@ -45,17 +45,9 @@ class AdminMaterialController extends Controller
                 'title' => $material->title,
                 'slug' => $material->slug,
                 'description' => $material->description,
-                'fileName' => $material->content && Storage::disk('public')->exists($material->content)
-                    ? basename($material->content)
-                    : null,
-                'downloadUrl' => $material->content && Storage::disk('public')->exists($material->content)
-                    ? route('admin.ebook.download', $material->slug)
-                    : null,
-                'uploadedBy' => $material->uploaded_by,
+                'contentLink' => $material->content,
                 'imageUrl' => $material->image_url ?: asset('images/placeholder.jpg'),
                 'category' => $material->category?->name ?? 'Tanpa kategori',
-                'uploader' => $material->uploader?->account?->name ?? 'Tidak diketahui',
-                'uploaderEmail' => $material->uploader?->account?->email ?? '-',
                 'events' => $material->events->pluck('title')->values()->all(),
                 'createdAt' => $material->created_at?->format('d M Y H:i') ?? '-',
                 'updatedAt' => $material->updated_at?->format('d M Y H:i') ?? '-',
@@ -73,19 +65,18 @@ class AdminMaterialController extends Controller
             'categories' => ['required', 'uuid', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'pdf_file' => ['required', 'file', 'mimes:pdf', 'max:51200'],
+            'content_link' => ['required', 'url', 'max:2048'],
             'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
 
         $slug = $this->uniqueSlug($validated['title']);
-        $filePath = $request->file('pdf_file')->store('ebooks', 'public');
         $imageUrl = $this->storeCoverImage($request);
 
         Material::create([
             'categories' => $validated['categories'],
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'content' => $filePath,
+            'content' => $validated['content_link'],
             'image_url' => $imageUrl,
             'slug' => $slug,
             'uploaded_by' => $request->user()->id,
@@ -105,6 +96,7 @@ class AdminMaterialController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:materials,slug,'.$material->id],
             'description' => ['required', 'string'],
+            'content_link' => ['required', 'url', 'max:2048'],
             'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
 
@@ -113,6 +105,7 @@ class AdminMaterialController extends Controller
             'title' => $validated['title'],
             'slug' => $validated['slug'],
             'description' => $validated['description'],
+            'content' => $validated['content_link'],
         ];
 
         if ($request->hasFile('image')) {
@@ -129,12 +122,10 @@ class AdminMaterialController extends Controller
     public function destroy(string $id): RedirectResponse
     {
         $material = Material::query()->findOrFail($id);
-        $filePath = $material->content;
-
         $material->delete();
 
-        if ($filePath) {
-            Storage::disk('public')->delete($filePath);
+        if ($material->content && ! filter_var($material->content, FILTER_VALIDATE_URL)) {
+            Storage::disk('public')->delete($material->content);
         }
 
         return redirect()
@@ -153,9 +144,13 @@ class AdminMaterialController extends Controller
         return Storage::disk('public')->url($path);
     }
 
-    public function download(string $slug): BinaryFileResponse
+    public function download(string $slug): BinaryFileResponse|\Illuminate\Http\RedirectResponse
     {
         $material = Material::query()->where('slug', $slug)->firstOrFail();
+
+        if (filter_var($material->content, FILTER_VALIDATE_URL)) {
+            return redirect()->away($material->content);
+        }
 
         abort_unless(Storage::disk('public')->exists($material->content), 404);
 

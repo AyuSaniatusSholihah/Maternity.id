@@ -256,7 +256,7 @@
             primaryText="Daftar Menjadi Pemateri"
             :primaryUrl="route('events')"
             secondaryText="Hubungi Tim Partnership"
-            secondaryUrl="https://wa.me/"
+            secondaryUrl="https://wa.me/6288985497133"
         />
 
     </div>

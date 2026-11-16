@@ -1282,8 +1282,7 @@
                                         <th class="py-3 px-3">E-Book / ID</th>
                                         <th class="py-3 px-3">Kategori</th>
                                         <th class="py-3 px-3">Deskripsi</th>
-                                        <th class="py-3 px-3">File PDF</th>
-                                        <th class="py-3 px-3">Uploader</th>
+                                        <th class="py-3 px-3">Link E-Book</th>
                                         <th class="py-3 px-3">Event Terkait</th>
                                         <th class="py-3 px-3">Dibuat / Diubah</th>
                                         <th class="py-3 px-3 text-right">Aksi</th>
@@ -1319,23 +1318,15 @@
                                                 {{ $material['description'] }}
                                             </td>
                                             <td class="py-4 px-3 max-w-[190px]">
-                                                @if ($material['downloadUrl'])
-                                                    <a href="{{ $material['downloadUrl'] }}"
+                                                @if ($material['contentLink'])
+                                                    <a href="{{ $material['contentLink'] }}" target="_blank" rel="noopener noreferrer"
                                                         class="inline-flex items-center gap-2 rounded-xl bg-[#FAF5F2] px-3 py-2 text-[10px] font-bold text-[#8C433C] hover:bg-[#F3E1DC]">
-                                                        <i class="fa-solid fa-download"></i>
-                                                        <span class="break-all">{{ $material['fileName'] }}</span>
+                                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                                        <span class="break-all">Buka link e-book</span>
                                                     </a>
                                                 @else
-                                                    <span class="text-[11px] text-neutral-400">Belum ada PDF</span>
+                                                    <span class="text-[11px] text-neutral-400">Belum ada link</span>
                                                 @endif
-                                            </td>
-                                            <td class="py-4 px-3 whitespace-nowrap">
-                                                <p class="font-semibold text-neutral-800">{{ $material['uploader'] }}
-                                                </p>
-                                                <p class="mt-1 text-[10px] text-neutral-500">
-                                                    {{ $material['uploaderEmail'] }}</p>
-                                                <p class="mt-1 text-[9px] text-neutral-400 font-mono break-all">ID:
-                                                    {{ $material['uploadedBy'] }}</p>
                                             </td>
                                             <td class="py-4 px-3 max-w-[200px]">
                                                 @if (count($material['events']))
@@ -1362,7 +1353,7 @@
                                                     </a>
                                                     <form action="{{ route('admin.ebook.destroy', $material['id']) }}"
                                                         method="POST"
-                                                        onsubmit="return confirm('Hapus e-book ini secara permanen beserta file PDF-nya?')">
+                                                        onsubmit="return confirm('Hapus e-book ini secara permanen?')">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"

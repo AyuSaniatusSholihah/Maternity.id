@@ -4,7 +4,7 @@
     'primaryText' => 'Mulai Sekarang',
     'primaryUrl' => url('/events'),
     'secondaryText' => 'Konsultasi Ahli',
-    'secondaryUrl' => 'https://wa.me/6281234567890?text=Halo%20Admin%20Maternity.id,%20saya%20ingin%20konsultasi',
+    'secondaryUrl' => 'https://wa.me/6288985497133',
     'badge' => 'Eksklusif & Terpercaya',
     'avatarUrl' => 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=200',
     'avatarAlt' => 'Maternity Care',

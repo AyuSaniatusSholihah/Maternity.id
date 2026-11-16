@@ -25,7 +25,7 @@
                     Kembali ke daftar e-book
                 </a>
                 <h1 class="font-serif-brand text-2xl font-bold text-neutral-900">Edit E-Book</h1>
-                <p class="mt-1 text-xs text-neutral-500">Perbarui metadata tanpa mengubah file PDF yang tersimpan.</p>
+                <p class="mt-1 text-xs text-neutral-500">Perbarui metadata dan link e-book.</p>
             </div>
             <span
                 class="hidden rounded-full bg-[#E4F5E6] px-3 py-1.5 text-[10px] font-bold text-[#428E53] sm:inline-flex">Admin
@@ -92,21 +92,13 @@
                         class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20">{{ old('description', $material->description) }}</textarea>
                 </div>
                 <div class="md:col-span-2">
-                    <span class="mb-1.5 block text-xs font-bold text-neutral-700">File PDF</span>
-                    <div
-                        class="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-neutral-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div class="flex min-w-0 items-center gap-3">
-                            <i class="fa-regular fa-file-pdf text-xl text-[#B96A5C]"></i>
-                            <span
-                                class="break-all text-xs font-semibold text-neutral-700">{{ basename($material->content) }}</span>
-                        </div>
-                        @if ($material->content && \Illuminate\Support\Facades\Storage::disk('public')->exists($material->content))
-                            <a href="{{ route('admin.ebook.download', $material->slug) }}"
-                                class="inline-flex shrink-0 items-center gap-2 text-xs font-bold text-[#5F8C72] hover:text-[#4f755e]">
-                                <i class="fa-solid fa-download"></i>Unduh PDF
-                            </a>
-                        @endif
-                    </div>
+                    <label for="content_link" class="mb-1.5 block text-xs font-bold text-neutral-700">Link E-Book <span
+                            class="text-red-500">*</span></label>
+                    <input id="content_link" type="url" name="content_link"
+                        value="{{ old('content_link', $material->content) }}" required maxlength="2048"
+                        class="w-full rounded-xl border border-neutral-300 bg-[#FAF5F2] px-4 py-3 text-sm focus:border-[#5F8C72] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5F8C72]/20"
+                        placeholder="https://drive.google.com/file/d/...">
+                    <p class="mt-1.5 text-[11px] text-neutral-500">Masukkan link Google Drive atau link publik e-book yang dapat diakses.</p>
                 </div>
             </div>
             <div class="flex items-center justify-end gap-3 border-t border-neutral-100 pt-5">
