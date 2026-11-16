@@ -143,29 +143,6 @@
                     </a>
                 </div>
 
-                <div class="flex w-full max-w-[340px] items-center gap-3 text-xs text-[#8A817D]">
-                    <span class="h-px flex-1 bg-[#E8DCDA]"></span>
-                    <span>atau masuk dengan email</span>
-                    <span class="h-px flex-1 bg-[#E8DCDA]"></span>
-                </div>
-
-                <form action="{{ route('login.post') }}" method="POST" class="w-full max-w-[340px] space-y-3 text-left">
-                    @csrf
-                    @if ($errors->any())
-                        <div class="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700">
-                            {{ $errors->first() }}
-                        </div>
-                    @endif
-                    <input type="email" name="email" required placeholder="Email"
-                        class="w-full rounded-xl border border-[#D9D9D9] bg-white px-4 py-3 text-sm outline-none focus:border-[#5F8C72] focus:ring-2 focus:ring-[#5F8C72]/20">
-                    <input type="password" name="password" required placeholder="Password"
-                        class="w-full rounded-xl border border-[#D9D9D9] bg-white px-4 py-3 text-sm outline-none focus:border-[#5F8C72] focus:ring-2 focus:ring-[#5F8C72]/20">
-                    <button type="submit"
-                        class="w-full rounded-xl bg-[#5F8C72] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#4f755e]">
-                        Masuk
-                    </button>
-                </form>
-
             </div>
         </div>
 
@@ -183,46 +160,6 @@
         </div>
     </section>
 
-    <!-- ════════════ FOOTER — di bawah hero ════════════ -->
-    <footer class="w-full border-t border-[#E8DCDA] px-8 md:px-16 py-6 bg-[#FBF4F2]">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-            <div class="flex items-start gap-4">
-                <div class="w-8 h-8 flex-shrink-0 mt-0.5">
-                    <img src="{{ asset('logologin.png') }}" alt="Maternity Logo" class="w-full h-full object-contain">
-                </div>
-                <p class="text-xs text-[#5C5552] leading-relaxed max-w-xs">
-                    Cerdas memilih, aman melangkah, bersama Maternity.id
-                </p>
-            </div>
-            <div class="space-y-1.5">
-                <h3 class="text-sm font-bold text-[#3B6652]">Jelajahi</h3>
-                <ul class="space-y-0.5 text-xs text-[#6B6462]">
-                    <li><a href="{{ url('/seminars') }}" class="hover:text-[#3B6652] transition-colors">Pelatihan</a></li>
-                    <li><a href="{{ url('/library') }}" class="hover:text-[#3B6652] transition-colors">Ebook</a></li>
-                </ul>
-            </div>
-            <div class="space-y-1.5">
-                <h3 class="text-sm font-bold text-[#3B6652]">Ikuti Kami</h3>
-                <p class="text-xs text-[#7A7370]">Temukan info dan cerita terbaru dari Maternity</p>
-                <div class="space-y-1 pt-0.5 text-xs text-[#6B6462]">
-                    <a href="https://instagram.com/suara_kelas" target="_blank" class="flex items-center gap-2 hover:text-[#3B6652] transition-colors">
-                        <svg class="w-3.5 h-3.5 text-[#8C3A36]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                        </svg>
-                        <span>suara_kelas</span>
-                    </a>
-                    <a href="https://tiktok.com/@Maternity" target="_blank" class="flex items-center gap-2 hover:text-[#3B6652] transition-colors">
-                        <svg class="w-3.5 h-3.5 text-[#8C3A36]" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298 0 .59.043.87.128V9.38a6.34 6.34 0 0 0-.87-.06A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.48c.38-.4.7-.85.95-1.34V10.7a8.28 8.28 0 0 0 4.82 1.55v-3.45a4.85 4.85 0 0 1-2.11-.64z"/>
-                        </svg>
-                        <span>Maternity</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
 
 </body>
 </html>
