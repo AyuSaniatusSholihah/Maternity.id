@@ -4,7 +4,7 @@
     $title = $event['title'] ?? 'Event Maternity';
     $slug = $event['slug'] ?? '';
     $url = !empty($slug) ? route('events.show', $slug) : ($event['link'] ?? route('events'));
-    $image = $event['thumbnail_image'] ?? ($event['image'] ?? 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=800&q=80');
+    $image = $event['thumbnail_image'] ?? ($event['image'] ?? config('app.fallback_image_url', 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=800'));
     $format = $event['format'] ?? ($event['tag'] ?? 'ONLINE');
     $formatType = $event['format_type'] ?? ($event['tag_type'] ?? (str_contains(strtolower($format), 'offline') ? 'offline' : 'online'));
     $dateString = $event['date_string'] ?? ($event['date'] ?? 'Jadwal Terbuka');
@@ -33,9 +33,6 @@
                 <span class="mt-2 flex items-center gap-1 text-[10px] font-semibold text-white/90 sm:text-xs">
                     <i class="fa-regular fa-calendar text-[9px]"></i>
                     {{ $dateString }}{{ $timeString ? ' • ' . $timeString : '' }}
-                </span>
-                <span class="mt-1 block line-clamp-2 text-[10px] leading-relaxed text-white/85 sm:text-xs">
-                    {{ $event['description'] ?? 'Lihat jadwal, lokasi, dan informasi lengkap event.' }}
                 </span>
             </span>
         </a>

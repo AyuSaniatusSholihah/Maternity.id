@@ -39,11 +39,22 @@ class AdminArticleController extends Controller
     {
         $validated = $this->validateArticle($request);
 
+        $user = $request->user();
+        \App\Models\Admin::firstOrCreate(
+            ['account_id' => $user->id],
+            [
+                'name' => $user->name ?? 'Administrator',
+                'email' => $user->email,
+                'phone' => '081234567890',
+                'role' => 'active',
+            ]
+        );
+
         Article::create([
             ...$validated,
             'slug' => $this->uniqueSlug($validated['title']),
             'image_url' => $this->storeCoverImage($request),
-            'author' => $request->user()->id,
+            'author' => $user->id,
         ]);
 
         return redirect()->route('admin.article')->with('status', 'Artikel berhasil ditambahkan.');

@@ -5,7 +5,7 @@
     $slug = $article['slug'] ?? '';
     $url = !empty($slug) ? route('articles.show', $slug) : ($article['link'] ?? route('articles.index'));
     // Handling for articles without images
-    $image = $article['thumbnail_image'] ?? ($article['image'] ?? 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=600');
+    $image = $article['thumbnail_image'] ?? ($article['image'] ?? config('app.fallback_image_url', 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80'));
     $category = $article['category'] ?? 'Umum';
     $excerpt = $article['excerpt'] ?? '';
     // Display author name instead of reading time
