@@ -45,10 +45,7 @@
                     role="button" tabindex="0" aria-label="Perbesar poster event"
                     @click="showPoster = true" @keydown.enter="showPoster = true" @keydown.space.prevent="showPoster = true">
                     @php
-                        $imgSrc = $event->thumbnail_image ?? 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=800';
-                        if (file_exists(public_path('images/yoga_event_detail.jpg')) && str_contains(strtolower($event->title ?? ''), 'yoga')) {
-                            $imgSrc = asset('images/yoga_event_detail.jpg');
-                        }
+                        $imgSrc = $event->thumbnail_image ?: config('app.fallback_image_url', 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=800');
                     @endphp
                     <img src="{{ $imgSrc }}"
                          alt="{{ $event->title ?? 'Event' }}"

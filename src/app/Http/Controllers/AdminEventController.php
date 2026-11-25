@@ -72,10 +72,21 @@ class AdminEventController extends Controller
         $validated = $this->storeUploadedImage($request, $validated);
         $slug = $this->uniqueSlug($validated['title']);
 
+        $user = $request->user();
+        \App\Models\Admin::firstOrCreate(
+            ['account_id' => $user->id],
+            [
+                'name' => $user->name ?? 'Administrator',
+                'email' => $user->email,
+                'phone' => '081234567890',
+                'role' => 'active',
+            ]
+        );
+
         Event::create([
             ...$validated,
             'slug' => $slug,
-            'created_by' => $request->user()->id,
+            'created_by' => $user->id,
         ]);
 
         return redirect()
